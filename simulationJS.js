@@ -3,11 +3,6 @@
 
 var canvas = document.querySelector('canvas');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight * 3 / 4 ;
+canvas.width = window.innerWidth * 2 / 3;
+canvas.height = window.innerHeight * 1/4 ;
 var ctx = canvas.getContext("2d"); // passing a ton of methods through ctx; it's a magic paintbrush
-
-// ctx.fillRect(1, 4, 100, 40) // arguments are x, y, width, height
-
-
- 

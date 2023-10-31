@@ -10,7 +10,10 @@ body {
 }
 
 canvas {
+    position: absolute;
+    left: 16.7%; /* 1/2 - (width of canvas as a percentage of window)/2 */
     display: block;
+
 }
 
 .fireButton {
