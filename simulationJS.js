@@ -47,7 +47,15 @@ ctx.closePath();
 // depending on the angle requested, the cannon barrel should be pointing in 
 // a specific direction
 
-
+/* 
+(x2, y2)  _____ (x1, y1)
+         /    / 
+        /    /    
+       /    /   
+      /    /
+      -----
+(x3, y3)   (x_start, y_start)
+*/
 
 const drawCannon = (angle, x_start, y_start) => {
     const angleRadians = degreesToRadians(angle);
