@@ -26,25 +26,6 @@ const degreesToRadians = (angle) => {
     return angle * Math.PI / 180;
 }
 
-
-// drawing grass
-ctx.beginPath();
-ctx.rect(0, GROUND_Y_COORD, canvas.width, canvas.height - GROUND_Y_COORD);
-ctx.strokeStyle = 'black';
-ctx.stroke();
-ctx.fillStyle = GROUND_COLOUR;
-ctx.fill();
-ctx.closePath();
-
-// drawing sky
-ctx.beginPath();
-ctx.rect(0, 0, canvas.width, GROUND_Y_COORD);
-ctx.stroke();
-ctx.fillStyle = SKY_COLOUR;
-ctx.fill();
-ctx.closePath();
-
-
 // drawing the cannon
 // depending on the angle requested, the cannon barrel should be pointing in 
 // a specific direction
@@ -99,18 +80,45 @@ const drawCannon = (angle, x_start, y_start) => {
         frontCoord_2: [x2, y2],
     }
 }
-// Example cannon - change the first argument to change the angle,
-// keep the other two parameters fixed.
-const cannonFrontCoords = drawCannon(60, 25, GROUND_Y_COORD);
+
+function drawSetting() {
+
+    // drawing grass
+    ctx.beginPath();
+    ctx.rect(0, GROUND_Y_COORD, canvas.width, canvas.height - GROUND_Y_COORD);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.fillStyle = GROUND_COLOUR;
+    ctx.fill();
+    ctx.closePath();
+
+    // drawing sky
+    ctx.beginPath();
+    ctx.rect(0, 0, canvas.width, GROUND_Y_COORD);
+    ctx.stroke();
+    ctx.fillStyle = SKY_COLOUR;
+    ctx.fill();
+    ctx.closePath();
+
+    // Example cannon - change the first argument to change the angle,
+    // keep the other two parameters fixed.
+    const cannonFrontCoords = drawCannon(60, 25, GROUND_Y_COORD);
+
+    ctx.beginPath();
+    ctx.arc(25, GROUND_Y_COORD, ROTATION_POINT_RADIUS, 0, Math.PI * 2, false);
+    ctx.stroke();
+    ctx.fillStyle = ROTATION_POINT_COLOUR;
+    ctx.fill();
+    ctx.closePath();
+
+    return cannonFrontCoords
+}
+
+
 
 // drawing point of rotation - draw it after the cannon so that it appears in
 // front of the cannon
-ctx.beginPath();
-ctx.arc(25, GROUND_Y_COORD, ROTATION_POINT_RADIUS, 0, Math.PI * 2, false);
-ctx.stroke();
-ctx.fillStyle = ROTATION_POINT_COLOUR;
-ctx.fill();
-ctx.closePath();
+
 
 function fireProjectile(cannonFrontCoords) {
     const x1 = cannonFrontCoords.frontCoord_1[0];
@@ -129,9 +137,67 @@ function fireProjectile(cannonFrontCoords) {
     ctx.fillStyle = 'black';
     ctx.fill();
     ctx.closePath();
+    return {
+        ball_centre_x: mid_x,
+        ball_center_y: mid_y
+    }
 }
+
+const cannonFrontCoords= drawSetting();
+// On fire button click:
+const ball_centre = fireProjectile(cannonFrontCoords);
+
+// could find initial height above the ground using length of cannon and launch angle
+// and then end the trajectory when the required negative displacement is reached.
 // on fire button click:
-fireProjectile(cannonFrontCoords);
+var t = 0;
+var x = ball_centre.ball_centre_x;
+var y = ball_centre.ball_center_y;
+
+var init_angle = 60;
+var accel = 1;
+var init_speed = 5;
+
+
+function trackProjectile() {
+
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // drawSetting();
+    
+    if (y >= GROUND_Y_COORD) {
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
+        
+        console.log('Completed journey');
+        return;
+    }
+    requestAnimationFrame(trackProjectile);
+    
+    
+    const angleRads = degreesToRadians(init_angle);
+    x += init_speed * Math.cos(angleRads) * t;
+    y -= (init_speed * Math.sin(angleRads) * t) - (1/2 * accel * t**2);
+    t += 0.3;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.arc(x, y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
+    ctx.stroke();
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.closePath(); 
+}
+
+
+trackProjectile();
+
+
+
 
 
 
