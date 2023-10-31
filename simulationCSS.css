@@ -11,16 +11,22 @@ body {
 
 canvas {
     position: absolute;
-    left: 16.7%; /* 1/2 - (width of canvas as a percentage of window)/2 */
+    border: 1px solid black;
+    left: 12.5%; /* 1/2 - (width of canvas as a percentage of window)/2 */
     display: block;
-
 }
 
 .fireButton {
     position: absolute;
     left: 50%;
-    margin-left: -50px;
     width: 100px;
     height: 80px;
+    margin-left: -50px; /* this value is -1/2 times the width value*/
     background-color: #fc0303;
-}
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 30px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 30px;
+    margin-top: 240px;
+} 
