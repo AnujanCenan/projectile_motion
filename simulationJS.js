@@ -17,6 +17,8 @@ const ROTATION_POINT_RADIUS = 10;
 const CANNON_LENGTH = 40;
 const CANNON_HEIGHT = 10;
 
+const CANNON_BALL_RADIUS = 5;
+
 
 
 // converting degrees to radians for math purposes
@@ -57,7 +59,17 @@ ctx.closePath();
 (x3, y3)   (x_start, y_start)
 */
 
+// This functino will return the coordinates (x1, y1) and (x2, y2) for future 
+// reference so that I know where I should position a cannon ball.
 const drawCannon = (angle, x_start, y_start) => {
+
+    if (angle > 90 || angle < 0) {
+        console.log(`Invalid input angle. Angle should be between 0 and 90 degs.`);
+        return {
+            frontCoord_1: [-1, -1],
+            frontCoord_2: [-1, -1],
+        }
+    }
     const angleRadians = degreesToRadians(angle);
 
     ctx.beginPath();
@@ -80,16 +92,19 @@ const drawCannon = (angle, x_start, y_start) => {
     ctx.stroke();
     ctx.fillStyle = 'black';
     ctx.fill();
+    ctx.closePath();
 
     return {
         frontCoord_1: [x1, y1],
         frontCoord_2: [x2, y2],
     }
 }
+// Example cannon - change the first argument to change the angle,
+// keep the other two parameters fixed.
+const cannonFrontCoords = drawCannon(60, 25, GROUND_Y_COORD);
 
-const cannonFrontCoords = drawCannon(45, 25, GROUND_Y_COORD);
-
-// drawing point of rotation
+// drawing point of rotation - draw it after the cannon so that it appears in
+// front of the cannon
 ctx.beginPath();
 ctx.arc(25, GROUND_Y_COORD, ROTATION_POINT_RADIUS, 0, Math.PI * 2, false);
 ctx.stroke();
@@ -97,7 +112,26 @@ ctx.fillStyle = ROTATION_POINT_COLOUR;
 ctx.fill();
 ctx.closePath();
 
+function fireProjectile(cannonFrontCoords) {
+    const x1 = cannonFrontCoords.frontCoord_1[0];
+    const y1 = cannonFrontCoords.frontCoord_1[1];
 
+    const x2 = cannonFrontCoords.frontCoord_2[0];
+    const y2 = cannonFrontCoords.frontCoord_2[1];
+
+    const mid_x = (x1 + x2) / 2;
+    const mid_y = (y1 + y2) / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(mid_x, mid_y);
+    ctx.arc(mid_x, mid_y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
+    ctx.stroke();
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.closePath();
+}
+// on fire button click:
+fireProjectile(cannonFrontCoords);
 
 
 

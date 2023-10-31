@@ -10,14 +10,18 @@ body {
 }
 
 canvas {
-    position: absolute;
+    padding-left: 0;   /*     Lines 13 to 17 taken from       */
+    padding-right: 0;  /*    Answer by Marco Luglio:          */
+    margin-left: auto; /* https://stackoverflow.com/questions/5127937/how-to-center-canvas-in-html5  */ 
+    margin-right: auto;
+    display: block; 
+
+
     border: 1px solid black;
-    left: 12.5%; /* 1/2 - (width of canvas as a percentage of window)/2 */
-    display: block;
 }
 
 .fireButton {
-    position: absolute;
+    position: relative;
     left: 50%;
     width: 100px;
     height: 80px;
@@ -28,5 +32,5 @@ canvas {
     border-style: solid;
     border-color: black;
     border-radius: 30px;
-    margin-top: 240px;
+    margin-top: 10px;
 } 
