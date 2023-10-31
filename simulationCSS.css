@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+}
+.dot {
+    height: 60px;
+    width: 60px;
+    background-color: #00b809;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+canvas {
+    display: block;
+}
+
+.fireButton {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px;
+    width: 100px;
+    height: 80px;
+    background-color: #fc0303;
+}
