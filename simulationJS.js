@@ -7,6 +7,8 @@ canvas.width = window.innerWidth * 3/4;
 canvas.height = window.innerHeight * 1/2;
 var ctx = canvas.getContext("2d"); // passing a ton of methods through ctx; it's a magic paintbrush
 
+console.log(canvas.width); // the speed, distance and accel values will depend on this value i think
+
 const GROUND_Y_COORD = canvas.height * (7/8);
 const GROUND_COLOUR = '#00ad14'
 const SKY_COLOUR = '#00aaff'
@@ -151,20 +153,44 @@ const ball_centre = fireProjectile(cannonFrontCoords);
 // and then end the trajectory when the required negative displacement is reached.
 // on fire button click:
 var t = 0;
-var x = ball_centre.ball_centre_x;
-var y = ball_centre.ball_center_y;
+var x_start = ball_centre.ball_centre_x;;
+var x = x_start;
+var y_start = ball_centre.ball_center_y;
+var y = y_start;
+
 
 var init_angle = 60;
-var accel = 1;
+var accel = 0.1;
 var init_speed = 5;
+
+var startTime = Date.now();
 
 
 function trackProjectile() {
 
     // ctx.clearRect(0, 0, canvas.width, canvas.height);
     // drawSetting();
-    
+    requestAnimationFrame(trackProjectile);
+    // console.log(y);
+    // console.log(GROUND_Y_COORD);
     if (y >= GROUND_Y_COORD) {
+        console.log('Completed journey');
+        
+    }
+    console.log(t)
+    
+    const angleRads = degreesToRadians(init_angle);
+    console.log(angleRads);
+    console.log(Math.cos(angleRads))
+    console.log(init_speed);
+    console.log(init_speed * Math.cos(angleRads))
+
+  
+    // if (y - (init_speed * Math.sin(angleRads) * t) + (1/2 * accel * t**2) < GROUND_Y_COORD) {
+
+        x = x_start + init_speed * Math.cos(angleRads) * t;
+        y = y_start - (init_speed * Math.sin(angleRads) * t) + (1/2 * accel * t**2);
+        t += 5;
 
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -172,25 +198,10 @@ function trackProjectile() {
         ctx.stroke();
         ctx.fillStyle = 'black';
         ctx.fill();
-        ctx.closePath();
-        
-        console.log('Completed journey');
-        return;
-    }
-    requestAnimationFrame(trackProjectile);
+        ctx.closePath(); 
+    // }
     
     
-    const angleRads = degreesToRadians(init_angle);
-    x += init_speed * Math.cos(angleRads) * t;
-    y -= (init_speed * Math.sin(angleRads) * t) - (1/2 * accel * t**2);
-    t += 0.3;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.arc(x, y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
-    ctx.stroke();
-    ctx.fillStyle = 'black';
-    ctx.fill();
-    ctx.closePath(); 
 }
 
 
