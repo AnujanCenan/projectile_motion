@@ -36,9 +36,15 @@ const SKY_COLOUR = '#00aaff'
 const ROTATION_POINT_COLOUR = '#6b423f'
 const CANNON_COLOUR = '#333333'
 
+////////////////////////////////////////////////////////////////////////////////
+
 // starts at 60 and will change depending on user input:
 var currLaunchAngle = 30; // (degs)
 var cannonCoords;
+
+/////////////////////////////////////////////////////////////////////////////////
+// boolean values
+var draggingCannon = false;
 
 
 
@@ -315,18 +321,33 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
 
 }
 
-// What to do if the user clicks on the canvas:
-document.getElementById("canvas").addEventListener("click", (event) => {
 
+
+// What to do if the user clicks on the canvas:
+document.getElementById("canvas").addEventListener("mousedown", (event) => {
   if (userClicksCannon(cannonCoords, event.clientX - canvasInfo.left, event.clientY  - canvasInfo.top)) {
     console.log('User clicked the cannon');
-    // listen for dragging and figure out angle change based on change in 
-    // mouse position.
+    draggingCannon = true;
+    
   } else {
     console.log('User did NOT clicked the cannon');
   }
 });
 
+
+// What to do when the user starts dragging 
+document.getElementById("canvas").addEventListener("mousemove", (event) => {
+  if (draggingCannon) {
+    console.log(event.clientX - canvasInfo.left);
+    console.log(event.clientY - canvasInfo.top);
+  }
+})
+
+
+// What to do when the user unclicks the canvas
+document.getElementById("canvas").addEventListener("mouseup", () => {
+  draggingCannon = false;
+})
 
 
 
