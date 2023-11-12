@@ -9,6 +9,10 @@ var ctx = canvas.getContext("2d"); // passing a ton of methods through ctx; it's
 
 const canvasInfo = document.getElementById("canvas").getBoundingClientRect();
 
+console.log(`CanvasWidth = ${canvas.width}`);
+console.log(`CanvasHeight = ${canvas.height}`);
+
+
 // https://www.youtube.com/watch?v=dyzAyDByfvY&t=57s : Potentially a (relatively hardcode-y) way of fixing the resolution issues.
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +25,7 @@ const ROTATION_POINT_RADIUS = 20;
 const CANNON_HEIGHT = ROTATION_POINT_RADIUS; 
 const CANNON_LENGTH = CANNON_HEIGHT * 4;
     // Length : Height = 4 : 1 
+const CANNON_BORDER_THICKNESS = 10;
 
 const CANNON_BALL_RADIUS = CANNON_HEIGHT / 2;
 
@@ -29,12 +34,13 @@ const GROUND_Y_COORD = canvas.height * (7/8);
 const GROUND_COLOUR = '#00ad14'
 const SKY_COLOUR = '#00aaff'
 const ROTATION_POINT_COLOUR = '#6b423f'
+const CANNON_COLOUR = '#333333'
 
 // starts at 60 and will change depending on user input:
-var currLaunchAngle = 60; // (degs)
+var currLaunchAngle = 30; // (degs)
 var cannonCoords;
 
-ctx.lineWidth = 10;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -81,26 +87,44 @@ const drawCannon = (angle, x_start, y_start) => {
   const x1 = x_start + CANNON_LENGTH * Math.cos(angleRadians);
   const y1 = y_start - CANNON_LENGTH * Math.sin(angleRadians);
   ctx.lineTo(x1, y1);
+  ctx.stroke();
 
   const x2 = x1 - CANNON_HEIGHT * Math.sin(angleRadians);
   const y2 = y1 - CANNON_HEIGHT * Math.cos(angleRadians);
   ctx.lineTo(x2, y2);
+  ctx.stroke();
 
   const x3 = x2 - CANNON_LENGTH * Math.cos(angleRadians);
   const y3 = y2 + CANNON_LENGTH * Math.sin(angleRadians);
   ctx.lineTo(x3, y3);
+  ctx.stroke();
 
   ctx.lineTo(x_start, y_start);
-  ctx.strokeStyle = 'red'     // Delete later
   ctx.stroke();
-  ctx.fillStyle = 'red';    // change to black
+  ctx.fillStyle = CANNON_COLOUR;    
   ctx.fill();
   ctx.closePath();
 
+  // the additional trigonometry in the return objectis to find the coordinates 
+  // of the outer corners of the cannon. The coordinates found so far are for the
+  // inner (non-black) body's corners.
   return {
-    frontCoord_1: [x1, y1],
-    frontCoord_2: [x2, y2],
-    backCoord_1: [x3, y3],
+    startCoord: [
+      x_start + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) - Math.cos(angleRadians)),
+      y_start + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) + Math.cos(angleRadians))
+    ],
+    frontCoord_1: [
+      x1 + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) + Math.cos(angleRadians)),
+      y1 + CANNON_BORDER_THICKNESS/2 * (- Math.sin(angleRadians) + Math.cos(angleRadians))
+    ],
+    frontCoord_2: [
+      x2 + CANNON_BORDER_THICKNESS/2 * (- Math.sin(angleRadians) + Math.cos(angleRadians)), 
+      y2 + CANNON_BORDER_THICKNESS/2 * (- Math.sin(angleRadians) - Math.cos(angleRadians))
+    ],
+    backCoord_1: [
+      x3 + CANNON_BORDER_THICKNESS/2 * (- Math.sin(angleRadians) - Math.cos(angleRadians)),
+      y3 + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) - Math.cos(angleRadians))
+    ],
   }
 }
 
@@ -109,7 +133,7 @@ const drawCannon = (angle, x_start, y_start) => {
  * @returns {Object} - the three coordinates that are returned in drawCannon.
  */
 function drawSetting() {
-
+  ctx.lineWidth = CANNON_BORDER_THICKNESS;
   // drawing grass
   ctx.beginPath();
   ctx.rect(0, GROUND_Y_COORD, canvas.width, canvas.height - GROUND_Y_COORD);
@@ -127,19 +151,21 @@ function drawSetting() {
   ctx.fill();
   ctx.closePath();
 
+  // drawing point of rotation - draw it after the cannon so that it appears in
+  // front of the cannon
+  ctx.beginPath();
+  ctx.arc(CANNON_PIVOT_X, GROUND_Y_COORD, ROTATION_POINT_RADIUS, 0, Math.PI * 2, false);
+  ctx.stroke();
+  ctx.fillStyle = ROTATION_POINT_COLOUR;
+  ctx.fill();
+  ctx.closePath();
+
   // Example cannon - change the first argument to change the angle (degrees),
   // keep the other two parameters fixed.
   const cannonCoords = 
     drawCannon(currLaunchAngle, CANNON_PIVOT_X, GROUND_Y_COORD);
 
-  // drawing point of rotation - draw it after the cannon so that it appears in
-  // front of the cannon
-  // ctx.beginPath();
-  // ctx.arc(CANNON_PIVOT_X, GROUND_Y_COORD, ROTATION_POINT_RADIUS, 0, Math.PI * 2, false);
-  // ctx.stroke();
-  // ctx.fillStyle = ROTATION_POINT_COLOUR;
-  // ctx.fill();
-  // ctx.closePath();
+
 
   return cannonCoords
 }
@@ -211,17 +237,12 @@ function fullProjectileCycle() {
     ctx.clearRect(0, 0, canvas.widthh, canvas.height);
     drawSetting();
 
-
-    if (y >= GROUND_Y_COORD) {
-        console.log('Completed journey');
-    }
-
     const angleRads = degreesToRadians(init_angle);
 
     if (y - (init_speed * Math.sin(angleRads) * t) + (1/2 * accel * t**2) < GROUND_Y_COORD) {    
       x = x_start + init_speed * Math.cos(angleRads) * t;                             // (1)
       y = 
-          y_start - (init_speed * Math.sin(angleRads) * t) + (1/2 * accel * t**2);    // (2)
+        y_start - (init_speed * Math.sin(angleRads) * t) + (1/2 * accel * t**2);    // (2)
       t += 0.1;
 
       // redrawing the cannon ball in a new position
@@ -261,26 +282,19 @@ function fullProjectileCycle() {
   trackProjectile();
 }
 
-
-
 // the math behind this function can be found on the repo and wiki
 function userClicksCannon(cannonCoords, user_x, user_y) {
-  
-  const x0 = CANNON_PIVOT_X;
-  const y0 = GROUND_Y_COORD;
+  // NOTE: These coordinates refer to the corners of the filled in part of the 
+  // cannon, NOT the surrounding border. More intense is required for finding 
+  // the corners of the cannon border.
+  const x0 = cannonCoords.startCoord[0];
+  const y0 = cannonCoords.startCoord[1];
 
   const x1 = cannonCoords.frontCoord_1[0];
   const y1 = cannonCoords.frontCoord_1[1];
 
-  // const x2 = cannonCoords.frontCoord_2[0];
-  // const y2 = cannonCoords.frontCoord_2[1];
-
   const x3 = cannonCoords.backCoord_1[0];
   const y3 = cannonCoords.backCoord_1[1];
-  console.log(`With respect to canvas, click is at: (${user_x}, ${user_y})`);
-  console.log(`(x0, y0) = (${x0}, ${y0})`)
-  console.log(`(x1, y1) = (${x1}, ${y1})`)
-  console.log(`(x3, y3) = (${x3}, ${y3})`)
 
   const C1 = user_x - x0;
   const X1 = x1 - x0;
@@ -290,7 +304,7 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
   const Y1 = y1 - y0;
   const Y2 = y3 - y0;
 
-  const mu = (C2 - ((Y1 * C1) / X1)) / (Y2 - ((Y1 * X2) / X1));
+  const mu = (C1 * Y1 - C2 * X1) / (X2 * Y1 - X1 * Y2);
   const lambda = (C1 - X2 * mu) / X1;
 
   if (mu >= 0 && mu <= 1 && lambda >= 0 && lambda <= 1) {
@@ -301,13 +315,11 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
 
 }
 
-
 // What to do if the user clicks on the canvas:
-
 document.getElementById("canvas").addEventListener("click", (event) => {
 
   if (userClicksCannon(cannonCoords, event.clientX - canvasInfo.left, event.clientY  - canvasInfo.top)) {
-    ctx.clearRect(0,0, 100, 100)
+    console.log('User clicked the cannon');
     // listen for dragging and figure out angle change based on change in 
     // mouse position.
   } else {
