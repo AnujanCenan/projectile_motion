@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    background-color: white;
 }
 .dot {
     height: 60px;
@@ -10,14 +11,23 @@ body {
 }
 
 canvas {
-    padding-left: 0;   /*     Lines 13 to 17 taken from       */
+    padding-left: 0;   /*     Lines 14 to 18 taken from       */
     padding-right: 0;  /*    Answer by Marco Luglio:          */
     margin-left: auto; /* https://stackoverflow.com/questions/5127937/how-to-center-canvas-in-html5  */ 
     margin-right: auto;
     display: block; 
+    /* width: 1000px;
+    height: 600px; */
 
+    border: 2px solid black;
+}
 
-    border: 1px solid black;
+.txtbox {
+    padding-left: 0;   /*     Lines 13 to 17 taken from       */
+    padding-right: 0;  /*    Answer by Marco Luglio:          */
+    margin-top: 50px;
+    margin-left: 240px;
+    display: block;
 }
 
 .fireButton {
