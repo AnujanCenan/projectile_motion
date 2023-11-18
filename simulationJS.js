@@ -39,14 +39,21 @@ const CANNON_COLOUR = '#333333'
 ////////////////////////////////////////////////////////////////////////////////
 
 // starts at 60 and will change depending on user input:
+
 var currLaunchAngle = 30; // (degs)
 var cannonCoords;
 
 /////////////////////////////////////////////////////////////////////////////////
-// boolean values
+// User behaviour
+var userClick_x;
+var userClick_y;
+var scalarFactorOfCannonLength; // (lambda value of user clicks cannon)
+var scalarFactorOfCannonWidth; // (mu value of user clicks cannon)
+
+var userDrag_x;
+var userDrag_y;
+
 var draggingCannon = false;
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -157,6 +164,11 @@ function drawSetting() {
   ctx.fill();
   ctx.closePath();
 
+  // Example cannon - change the first argument to change the angle (degrees),
+  // keep the other two parameters fixed.
+  const cannonCoords = 
+    drawCannon(currLaunchAngle, CANNON_PIVOT_X, GROUND_Y_COORD);
+
   // drawing point of rotation - draw it after the cannon so that it appears in
   // front of the cannon
   ctx.beginPath();
@@ -165,13 +177,6 @@ function drawSetting() {
   ctx.fillStyle = ROTATION_POINT_COLOUR;
   ctx.fill();
   ctx.closePath();
-
-  // Example cannon - change the first argument to change the angle (degrees),
-  // keep the other two parameters fixed.
-  const cannonCoords = 
-    drawCannon(currLaunchAngle, CANNON_PIVOT_X, GROUND_Y_COORD);
-
-
 
   return cannonCoords
 }
@@ -314,6 +319,8 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
   const lambda = (C1 - X2 * mu) / X1;
 
   if (mu >= 0 && mu <= 1 && lambda >= 0 && lambda <= 1) {
+    scalarFactorOfCannonLength = lambda;
+    scalarFactorOfCannonWidth = mu; 
     return true;
   }
 
@@ -321,11 +328,11 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
 
 }
 
-
-
 // What to do if the user clicks on the canvas:
 document.getElementById("canvas").addEventListener("mousedown", (event) => {
-  if (userClicksCannon(cannonCoords, event.clientX - canvasInfo.left, event.clientY  - canvasInfo.top)) {
+  userClick_x = event.clientX - canvasInfo.left;
+  userClick_y = event.clientY - canvasInfo.top;
+  if (userClicksCannon(cannonCoords, userClick_x, userClick_y)) {
     console.log('User clicked the cannon');
     draggingCannon = true;
     
@@ -334,26 +341,33 @@ document.getElementById("canvas").addEventListener("mousedown", (event) => {
   }
 });
 
-
 // What to do when the user starts dragging 
 document.getElementById("canvas").addEventListener("mousemove", (event) => {
   if (draggingCannon) {
+    userDrag_x = event.clientX - canvasInfo.left;
+    userDrag_y = event.clientY - canvasInfo.top;
+    // function for figuring out the new launch angle.
+
     console.log(event.clientX - canvasInfo.left);
     console.log(event.clientY - canvasInfo.top);
+
+
   }
-})
+});
+
+function findNewLaunchAngle() {
+
+  
+
+
+
+}
+
+
+
 
 
 // What to do when the user unclicks the canvas
 document.getElementById("canvas").addEventListener("mouseup", () => {
   draggingCannon = false;
 })
-
-
-
-
-
-
-
-
-
