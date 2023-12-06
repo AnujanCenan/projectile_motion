@@ -21,11 +21,15 @@ console.log(`CanvasHeight = ${canvas.height}`);
 
 // this value basically sets everything else:
 const ROTATION_POINT_RADIUS = 20;
-
-const CANNON_HEIGHT = ROTATION_POINT_RADIUS; 
-const CANNON_LENGTH = CANNON_HEIGHT * 4;
-    // Length : Height = 4 : 1 
 const CANNON_BORDER_THICKNESS = 10;
+
+// Length : Height = 4 : 1 
+const CANNON_HEIGHT = ROTATION_POINT_RADIUS; 
+const CANNON_HEIGHT_W_BORDERS = CANNON_HEIGHT + CANNON_BORDER_THICKNESS;
+const CANNON_LENGTH = CANNON_HEIGHT * 4;
+const CANNON_LENGTH_W_BORDERS = CANNON_LENGTH + CANNON_BORDER_THICKNESS
+    
+
 
 const CANNON_BALL_RADIUS = CANNON_HEIGHT / 2;
 
@@ -40,18 +44,22 @@ const CANNON_COLOUR = '#333333'
 
 // starts at 60 and will change depending on user input:
 
-var currLaunchAngle = 30; // (degs)
+var currLaunchAngle = 0; // (degs)
 var cannonCoords;
 
 /////////////////////////////////////////////////////////////////////////////////
 // User behaviour
 var userClick_x;
 var userClick_y;
-var scalarFactorOfCannonLength; // (lambda value of user clicks cannon)
-var scalarFactorOfCannonWidth; // (mu value of user clicks cannon)
+var scalarFactorOfCannonLength; // (lambda value of userClicksCannon
+var scalarFactorOfCannonWidth; // (mu value of userClicksCannon)
 
 var userDrag_x;
 var userDrag_y;
+
+
+var userFocus_x;
+
 
 var draggingCannon = false;
 
@@ -64,6 +72,15 @@ var draggingCannon = false;
  */
 const degreesToRadians = (angle) => {
     return angle * Math.PI / 180;
+}
+
+/**
+ * Converts an angle that is in degrees into the equivalent angle in raidans.
+ * @param {number} angle the angle in radians.
+ * @returns {number} the angle in degrees
+ */
+const radiansToDegrees = (angle) => {
+  return angle * 180 / Math.PI;
 }
 
 /**
@@ -89,8 +106,12 @@ const degreesToRadians = (angle) => {
 */
 const drawCannon = (angle, x_start, y_start) => {
 
-  if (angle > 90 || angle < 0) {
-    throw new Error(`Invalid input angle. Angle should be between 0 and 90 degs.`);
+  if (angle > 90) {
+    angle = 90;
+    currLaunchAngle = angle;
+  } else if (angle < 0) {
+    angle = 0;
+    currLaunchAngle = angle;
   }
   const angleRadians = degreesToRadians(angle);
 
@@ -118,9 +139,8 @@ const drawCannon = (angle, x_start, y_start) => {
   ctx.fill();
   ctx.closePath();
 
-  // the additional trigonometry in the return objectis to find the coordinates 
-  // of the outer corners of the cannon. The coordinates found so far are for the
-  // inner (non-black) body's corners.
+  // The math involved here is explained by 'FindingOuterCornersOfCannons' in 
+  // MathematicalArguments.
   return {
     startCoord: [
       x_start + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) - Math.cos(angleRadians)),
@@ -182,6 +202,8 @@ function drawSetting() {
 }
 
 cannonCoords = drawSetting();
+console.log('Initial cannon Coords are:');
+console.log(cannonCoords);
 
 /**
  * Draws the initial cannon ball. Takes the midpoint of the mouth of the cannon
@@ -294,7 +316,7 @@ function fullProjectileCycle() {
 }
 
 // the math behind this function can be found on the repo and wiki
-function userClicksCannon(cannonCoords, user_x, user_y) {
+function userClicksCannon() {
   // NOTE: These coordinates refer to the corners of the filled in part of the 
   // cannon, NOT the surrounding border. More intense is required for finding 
   // the corners of the cannon border.
@@ -307,17 +329,32 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
   const x3 = cannonCoords.backCoord_1[0];
   const y3 = cannonCoords.backCoord_1[1];
 
-  const C1 = user_x - x0;
+  const C1 = userClick_x - x0;
   const X1 = x1 - x0;
   const X2 = x3 - x0;
 
-  const C2 = user_y - y0;
+  const C2 = userClick_y - y0;
   const Y1 = y1 - y0;
   const Y2 = y3 - y0;
 
   const mu = (C1 * Y1 - C2 * X1) / (X2 * Y1 - X1 * Y2);
-  const lambda = (C1 - X2 * mu) / X1;
 
+  console.log(`mu = ${mu}`);
+  // bug: when in the upright position, lambda is coming as Nan and Infinity :(
+  // This is because in the upright position, X1 is 0 so there was some illegal 
+  // dividing-by-zero shennagians occuring. But now I have this if-else check
+  // so that I don't divide by zero.
+
+  console.log(`X1 = ${X1}`);
+  let lambda;
+  if (X1 !== 0) {
+    lambda = (C1 - X2 * mu) / X1;
+  } else {
+    lambda = (C2 - Y2 * mu) / Y1;
+  }
+  console.log(`lambda = ${lambda}`);
+
+  
   if (mu >= 0 && mu <= 1 && lambda >= 0 && lambda <= 1) {
     scalarFactorOfCannonLength = lambda;
     scalarFactorOfCannonWidth = mu; 
@@ -332,7 +369,8 @@ function userClicksCannon(cannonCoords, user_x, user_y) {
 document.getElementById("canvas").addEventListener("mousedown", (event) => {
   userClick_x = event.clientX - canvasInfo.left;
   userClick_y = event.clientY - canvasInfo.top;
-  if (userClicksCannon(cannonCoords, userClick_x, userClick_y)) {
+  console.log(`Coords of user click = (${userClick_x}, ${userClick_y})`);
+  if (userClicksCannon()) {
     console.log('User clicked the cannon');
     draggingCannon = true;
     
@@ -347,25 +385,110 @@ document.getElementById("canvas").addEventListener("mousemove", (event) => {
     userDrag_x = event.clientX - canvasInfo.left;
     userDrag_y = event.clientY - canvasInfo.top;
     // function for figuring out the new launch angle.
-
-    console.log(event.clientX - canvasInfo.left);
-    console.log(event.clientY - canvasInfo.top);
-
-
+    findNewLaunchAngle();
   }
 });
 
+// Math behind this code can be found on the repo and wiki.
 function findNewLaunchAngle() {
+  const A = {
+    x: cannonCoords.startCoord[0],
+    y: cannonCoords.startCoord[1]
+  };
+  console.log(`User clicked at ${userClick_x}, ${userClick_y}`)
 
-  
+  const C = {
+    x: userDrag_x,
+    y: userDrag_y
+  }
+  console.log(`Drag coords are (${C.x}, ${C.y})`);
 
+  const AC = {
+    x: C.x - A.x,
+    y: C.y - A.y
+  };
+  console.log('Vec A is:')
+  console.log(A)
+  console.log('Vec AC is:')
+  console.log(AC);
+  const magAC = Math.sqrt(AC.x ** 2 + AC.y ** 2);
+  const alpha = Math.asin((scalarFactorOfCannonWidth * (CANNON_HEIGHT_W_BORDERS)) / magAC);
+  console.log(`alpha is ${alpha * 180/Math.PI}`);
 
+  const magAE = magAC * Math.cos(alpha);
+  const beta = Math.atan(Math.abs(AC.y) / Math.abs(AC.x));
+  console.log(`beta is ${beta * 180/Math.PI}`)
+
+  const e1 = magAE * Math.cos(beta - alpha) + A.x;
+  const e2 = magAE * Math.sin(beta - alpha) + A.y;
+
+  AE = {
+    x: e1 - A.x,
+    y: e2 - A.y
+  }
+  console.log('Vec AE is:')
+  console.log(AE);
+  D = {
+    x: cannonCoords.frontCoord_1[0],
+    y: cannonCoords.frontCoord_1[1]
+  }
+  console.log('Vec D is');
+  console.log(D)
+  AD = {
+    x: D.x - A.x,
+    y: D.y - A.y
+  }
+  console.log('Vec AD is:')
+  console.log(AD);
+  const magAD = Math.sqrt(AD.x ** 2 + AD.y ** 2)
+  let thetaInRadians = Math.acos((AE.x * AD.x + AE.y * AD.y) / (magAE * magAD));
+  // This resulting fraction would sometimes be 1.000000..002 because of how 
+  // similar the top and bottom the fraction is. This as an input value for Math.acos()
+  // causes a return of a NaN value. I am curious for what user 
+  // behaviours you get this resulting behaviour. 
+
+  // For now, if this NaN return behaviour occurs, I will assume the input of 
+  // the acos was close to 1, so I will let thetaInRadians = 0 since 
+  // acos(1) === 0;
+
+  // a way of checking if a value is NaN
+  if (thetaInRadians !== thetaInRadians) {
+    // console.log('NaN Check was triggered');
+    thetaInRadians = 0;
+  }
+  const theta = radiansToDegrees(thetaInRadians);
+
+  // if you drag to the left, you are dragging up
+  if (userDrag_x < userClick_x) {
+    console.log('Need to drag up');
+    currLaunchAngle += theta;
+  } else {
+    console.log('Need to drag down');
+    currLaunchAngle -= theta;
+  }
+
+  console.log(`Calculated theta = ${theta}`);
+  ctx.clearRect(0, 0, canvas.widthh, canvas.height);
+  cannonCoords = drawSetting();
+  console.log(`new currLaunchAngle value = ${currLaunchAngle}`);
+
+  console.log(cannonCoords);
+
+  // new bug: when in upright position, if I click and drag, it immediately 
+  // makes launch angle = 0. :( Actually, upon further investigation, I think
+  // dragging downwards in general (that is decreasing launch angle) is a bit
+  // dodge. TBF, the main working out I did was for the case where you drag
+  // upwards so it is possible that I completely shanked it.
+
+  // Ok I just worked through it, it seems to be the same math so Idk.
+  // Nvm the math changes a bit
+  // Where I do beta - alpha, it will not always be like that, it depends on the 
+  // case type. I believe if I am lowering the cannon, it might flip or smth.
+  // Ok so the case is when you drag the cursor from a point within the cannon to
+  // another point within the cannon. I think it only really happens when you are
+  // in the upright position.
 
 }
-
-
-
-
 
 // What to do when the user unclicks the canvas
 document.getElementById("canvas").addEventListener("mouseup", () => {
