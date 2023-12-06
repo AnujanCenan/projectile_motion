@@ -13,7 +13,7 @@ Motivation: One way of changing the launch angle of the cannon is to click and h
 Consider the following diagram:\\
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.08]{FindingOuterCornersOfCannon_1.png}
+	\includegraphics[scale=0.08]{Images/FindingOuterCornersOfCannon_1.png}
 	\caption{Overview of the whole cannon}
 \end{figure}\\
 Recall that points $A$, $B$, $C$ and $D$ are known points, while $A'$, $B'$, $C'$ and $D'$ are the points we are looking for.\vspace{\baselineskip}\\
@@ -22,11 +22,11 @@ Point $X$ is constructed such that $AX \perp A'X$. Let $$\vec{a} = \overrightarr
 Consider the following diagram:\\
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.2]{FindingOuterCornersOfCannon_2.png}\\
+	\includegraphics[scale=0.2]{Images/FindingOuterCornersOfCannon_2.png}\\
 	\caption{Focusing on the point A'}
 \end{figure}\\
 Notice that $\angle XA'X'' = \theta$ since $A'X''$ is a horizontal line and $A'X$ represents a segment of the long edge of the cannon. Therefore, $\angle A'XX'' = \frac{\pi}{2} - \theta$ by the internal angle sum of a triangle and $\angle AXX' = \theta$ by the angle of a straight line. \vspace{\baselineskip}\\
-Breaking $\vec{a}$ into its horizontal and vertical components, 
+Breaking $\vec{a}$ and $\vec{b}$ into their horizontal and vertical components, 
 $$\overrightarrow{XX''} = 
 \begin{pmatrix}
 	0\\
@@ -50,7 +50,7 @@ $$\overrightarrow{X'X} =
 	0\\
 	d\cos{\theta}
 \end{pmatrix}.$$
-Therefore, we can conclude that $$\vec{a} = \overrightarrow{XX''} + \overrightarrow{X''A}= 
+Therefore, we can conclude that $$\vec{a} = \overrightarrow{XX''} + \overrightarrow{X''A'}= 
 \begin{pmatrix}
 	-d\cos{\theta}\\
 	d\sin{\theta}
@@ -61,6 +61,6 @@ $$\vec{b} = \overrightarrow{AX'} + \overrightarrow{X'X} =
 	d\sin{\theta}\\
 	d\cos{\theta}
 \end{pmatrix}.$$
-Now considering Figure 1 again, we can find the position vectors of $A'$, $B'$, $C'$ and $D'$. $$\overrightarrow{OA'} = \overrightarrow{OA} + \vec{b} + \vec{a},$$ $$\overrightarrow{OB'} = \overrightarrow{OB} + \vec{b} - \vec{a},$$ $$\overrightarrow{OC'} = \overrightarrow{OC} + -\vec{b} - \vec{a}$$ and $$\overrightarrow{OD'} = \overrightarrow{OD} - \vec{b} + \vec{a}.$$
+Now considering Figure 1 again, we can find the position vectors of $A'$, $B'$, $C'$ and $D'$. $$\overrightarrow{OA'} = \overrightarrow{OA} + \vec{b} + \vec{a},$$ $$\overrightarrow{OB'} = \overrightarrow{OB} + \vec{b} - \vec{a},$$ $$\overrightarrow{OC'} = \overrightarrow{OC} -\vec{b} - \vec{a}$$ and $$\overrightarrow{OD'} = \overrightarrow{OD} - \vec{b} + \vec{a}.$$
 
 \end{document}

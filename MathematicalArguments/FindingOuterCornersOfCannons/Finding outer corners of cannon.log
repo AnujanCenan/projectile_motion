@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.20)  4 DEC 2023 12:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.3.20)  4 DEC 2023 15:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -174,44 +174,44 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 12.
 (/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<FindingOuterCornersOfCannon_1.png, id=1, 3032.32875pt x 2416.02625pt>
-File: FindingOuterCornersOfCannon_1.png Graphic file (type png)
-<use FindingOuterCornersOfCannon_1.png>
-Package pdftex.def Info: FindingOuterCornersOfCannon_1.png  used on input line 
-16.
+<Images/FindingOuterCornersOfCannon_1.png, id=1, 3032.32875pt x 2416.02625pt>
+File: Images/FindingOuterCornersOfCannon_1.png Graphic file (type png)
+<use Images/FindingOuterCornersOfCannon_1.png>
+Package pdftex.def Info: Images/FindingOuterCornersOfCannon_1.png  used on inpu
+t line 16.
 (pdftex.def)             Requested size: 242.59126pt x 193.28604pt.
  [1
 
-{/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Findi
-ngOuterCornersOfCannon_1.png>]
-<FindingOuterCornersOfCannon_2.png, id=15, 1252.68pt x 1509.64pt>
-File: FindingOuterCornersOfCannon_2.png Graphic file (type png)
-<use FindingOuterCornersOfCannon_2.png>
-Package pdftex.def Info: FindingOuterCornersOfCannon_2.png  used on input line 
-25.
+{/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Image
+s/FindingOuterCornersOfCannon_1.png>]
+<Images/FindingOuterCornersOfCannon_2.png, id=15, 1252.68pt x 1509.64pt>
+File: Images/FindingOuterCornersOfCannon_2.png Graphic file (type png)
+<use Images/FindingOuterCornersOfCannon_2.png>
+Package pdftex.def Info: Images/FindingOuterCornersOfCannon_2.png  used on inpu
+t line 25.
 (pdftex.def)             Requested size: 250.53156pt x 301.92265pt.
- [2 <./FindingOuterCornersOfCannon_2.png>] [3]
-(./Finding outer corners of cannon.aux) ) 
+ [2 <./Images/FindingOuterCornersOfCannon_2.png>]
+[3] (./Finding outer corners of cannon.aux) ) 
 Here is how much of TeX's memory you used:
- 2491 strings out of 478268
- 36994 string characters out of 5846347
+ 2492 strings out of 478268
+ 37085 string characters out of 5846347
  332280 words of memory out of 5000000
  20707 multiletter control sequences out of 15000+600000
  471565 words of font info for 38 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,14n,62p,586b,230s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2022/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2022/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2022/texmf-dist/font
-s/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/publi
-c/amsfonts/symbols/msam10.pfb>
-Output written on "Finding outer corners of cannon.pdf" (3 pages, 292575 bytes)
+</usr/local/texlive/2022/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2022/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2022/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/p
+ublic/amsfonts/symbols/msam10.pfb>
+Output written on "Finding outer corners of cannon.pdf" (3 pages, 292579 bytes)
 .
 PDF statistics:
  69 PDF objects out of 1000 (max. 8388607)
