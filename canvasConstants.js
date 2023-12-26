@@ -1,5 +1,5 @@
 export const ROTATION_POINT_RADIUS = 20;
-export const CANNON_BORDER_THICKNESS = 10;
+export const CANNON_BORDER_THICKNESS = 5;
 
 // Length : Height = 4 : 1 
 export const CANNON_HEIGHT = ROTATION_POINT_RADIUS; 
@@ -10,7 +10,7 @@ export const CANNON_LENGTH_W_BORDERS = CANNON_LENGTH + CANNON_BORDER_THICKNESS
 export const CANNON_BALL_RADIUS = CANNON_HEIGHT / 2;
 export const CANNON_PIVOT_X = ROTATION_POINT_RADIUS + 50;
 
-export const GROUND_Y_COORD = window.innerWidth * 3/4 * (7/8);
+export const GROUND_Y_COORD = window.innerHeight * 3/4 * (7/8);
 
 
 // Colours

@@ -30,7 +30,7 @@ canvas {
     display: block;
 }
 
-.fireButton {
+#fireButton {
     position: relative;
     left: 50%;
     width: 100px;

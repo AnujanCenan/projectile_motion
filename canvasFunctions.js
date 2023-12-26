@@ -14,7 +14,8 @@ import {
   CANNON_COLOUR
 } from "./canvasConstants.js";
 
-import { ctx } from "./simulationJS.js";
+import { ctx, canvasWidth, canvasHeight } from "./simulationJS.js";
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -169,6 +170,29 @@ const degreesToRadians = (angle) => {
     return angle * Math.PI / 180;
 }
 
+function initialiseProjectile(cannonCoords) {
+  const x1 = cannonCoords.frontCoord_1[0];
+  const y1 = cannonCoords.frontCoord_1[1];
+
+  const x2 = cannonCoords.frontCoord_2[0];
+  const y2 = cannonCoords.frontCoord_2[1];
+
+  const mid_x = (x1 + x2) / 2;
+  const mid_y = (y1 + y2) / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(mid_x, mid_y);
+  ctx.arc(mid_x, mid_y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
+  ctx.stroke();
+  ctx.fillStyle = 'black';
+  ctx.fill();
+  ctx.closePath();
+  return {
+    ball_centre_x: mid_x,
+    ball_center_y: mid_y
+  }
+}
+
 // const cannonCoords = drawSetting();
 // On fire button click:
 // const ball_centre = initialiseProjectile(cannonCoords);
@@ -177,7 +201,7 @@ const degreesToRadians = (angle) => {
 // and then end the trajectory when the required negative displacement is reached.
 // on fire button click:
 
-function fullProjectileCycle() {
+export function fullProjectileCycle() {
   const cannonCoords = drawSetting();
   const ball_centre = initialiseProjectile(cannonCoords);
 
@@ -244,32 +268,6 @@ function fullProjectileCycle() {
 
   trackProjectile();
 }
-
-function initialiseProjectile(cannonCoords) {
-  const x1 = cannonCoords.frontCoord_1[0];
-  const y1 = cannonCoords.frontCoord_1[1];
-
-  const x2 = cannonCoords.frontCoord_2[0];
-  const y2 = cannonCoords.frontCoord_2[1];
-
-  const mid_x = (x1 + x2) / 2;
-  const mid_y = (y1 + y2) / 2;
-
-  ctx.beginPath();
-  ctx.moveTo(mid_x, mid_y);
-  ctx.arc(mid_x, mid_y, CANNON_BALL_RADIUS, 0, Math.PI * 2, false);
-  ctx.stroke();
-  ctx.fillStyle = 'black';
-  ctx.fill();
-  ctx.closePath();
-  return {
-    ball_centre_x: mid_x,
-    ball_center_y: mid_y
-  }
-}
-
-
-
 
 /**
  * Converts an angle that is in degrees into the equivalent angle in raidans.
