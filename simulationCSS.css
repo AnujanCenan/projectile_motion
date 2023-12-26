@@ -23,14 +23,18 @@ canvas {
 }
 
 .txtbox {
-    padding-left: 0;   /*     Lines 13 to 17 taken from       */
-    padding-right: 0;  /*    Answer by Marco Luglio:          */
+    padding-left: 0;  
+    padding-right: 0;  
     margin-top: 50px;
     margin-left: 240px;
     display: block;
 }
 
 #fireButton {
+    position: relative;
+}
+
+.fireButton {
     position: relative;
     left: 50%;
     width: 100px;
@@ -44,3 +48,21 @@ canvas {
     border-radius: 30px;
     margin-top: 10px;
 } 
+
+.fireButtonOnClick {
+    position: relative;
+    left: 50%;
+    width: 90px;
+    height: 75px;
+    margin-left: -45px; /* this value is -1/2 times the width value*/
+    background-color: #ff7070;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 30px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 30px;
+    margin-top: 10px;
+
+
+}
+

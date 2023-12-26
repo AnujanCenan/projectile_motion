@@ -27,18 +27,14 @@ console.log(`Canvas height = ${canvas.height}`);
 drawSetting();
 
 const fireButton = document.getElementById('fireButton');
-const buttonWidth = 120;
-const buttonHeight = 100;
+// const buttonWidth = 120;
+// const buttonHeight = 100;
 fireButton.addEventListener("mousedown", (event) => {
-  fireButton.style.backgroundColor = 'blue';
-  fireButton.style.width = 90 + "px";
-  fireButton.style.width = 70+ "px";
+  fireButton.className = 'fireButtonOnClick';
 });
 
 fireButton.addEventListener("mouseup", (event) => {
-  fireButton.style.backgroundColor = 'red';
-  fireButton.style.width = buttonWidth + "px";
-  fireButton.style.width = buttonHeight+ "px";
+  fireButton.className = 'fireButton';
 
 });
 document.getElementById('fireButton').addEventListener("click", (event) => {
