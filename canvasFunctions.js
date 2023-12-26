@@ -21,7 +21,7 @@ import { ctx, canvasWidth, canvasHeight } from "./simulationJS.js";
 
 // starts at 60 and will change depending on user input:
 
-var currLaunchAngle = 60; // (degs)
+var currLaunchAngle = 30; // (degs)
 var cannonCoords;
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -322,6 +322,105 @@ export function userClicksCannon(userClick_x, userClick_y) {
   }
 
   return false;
+}
+
+
+export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDrag_y) {
+  cannonCoords = drawSetting();
+  const A = {
+    x: cannonCoords.startCoord[0],
+    y: cannonCoords.startCoord[1]
+  };
+  console.log(`User clicked at ${userClick_x}, ${userClick_y}`)
+
+  const C = {
+    x: userDrag_x,
+    y: userDrag_y
+  }
+  console.log(`Drag coords are (${C.x}, ${C.y})`);
+
+  const AC = {
+    x: C.x - A.x,
+    y: C.y - A.y
+  };
+  // console.log('Vec A is:')
+  // console.log(A)
+  // console.log('Vec AC is:')
+  // console.log(AC);
+  const magAC = Math.sqrt(AC.x ** 2 + AC.y ** 2);
+  const alpha = Math.asin((scalarFactorOfCannonWidth * (CANNON_HEIGHT_W_BORDERS)) / magAC);
+  // console.log(`alpha is ${alpha * 180/Math.PI}`);
+
+  const magAE = magAC * Math.cos(alpha);
+  const beta = Math.atan(Math.abs(AC.y) / Math.abs(AC.x));
+  // console.log(`beta is ${beta * 180/Math.PI}`)
+
+  const e1 = magAE * Math.cos(beta - alpha) + A.x;
+  const e2 = magAE * Math.sin(beta - alpha) + A.y;
+
+  const AE = {
+    x: e1 - A.x,
+    y: e2 - A.y
+  }
+  // console.log('Vec AE is:')
+  // console.log(AE);
+  const D = {
+    x: cannonCoords.frontCoord_1[0],
+    y: cannonCoords.frontCoord_1[1]
+  }
+  // console.log('Vec D is');
+  // console.log(D)
+  const AD = {
+    x: D.x - A.x,
+    y: D.y - A.y
+  }
+  // console.log('Vec AD is:')
+  // console.log(AD);
+  const magAD = Math.sqrt(AD.x ** 2 + AD.y ** 2)
+  let thetaInRadians = Math.acos((AE.x * AD.x + AE.y * AD.y) / (magAE * magAD));
+  // This resulting fraction would sometimes be 1.000000..002 because of how 
+  // similar the top and bottom the fraction is. This as an input value for Math.acos()
+  // causes a return of a NaN value.
+
+  // For now, if this NaN return behaviour occurs, I will assume the input of 
+  // the acos was close to 1, so I will let thetaInRadians = 0 since 
+  // acos(1) === 0;
+
+  // a way of checking if a value is NaN
+  if (thetaInRadians !== thetaInRadians) {
+    // console.log('NaN Check was triggered');
+    thetaInRadians = 0;
+  }
+  // this divding by 100 is an 'engineering' solution, not a mathematical one.
+  // Take it out and see how the thing behaves.
+  const theta = radiansToDegrees(thetaInRadians) / 40;
+
+  // if you drag to the left, you are dragging up
+  if (userDrag_x === userClick_x && userDrag_y === userClick_y) {
+
+  } else if ((currLaunchAngle < 45 && userDrag_y < userClick_y)
+      || currLaunchAngle > 45 && userDrag_x < userClick_x) {
+    console.log('Need to drag up');
+    currLaunchAngle += theta;
+  } else {
+    console.log('Need to drag down');
+    currLaunchAngle -= theta;
+  }
+
+  // console.log(`Calculated theta = ${theta}`);
+  ctx.clearRect(0, 0, canvas.widthh, canvas.height);
+  cannonCoords = drawSetting();
+  console.log(`new currLaunchAngle value = ${currLaunchAngle}`);
+
+  console.log(cannonCoords);
+  return cannonCoords;
+
+  // Where I do beta - alpha, it will not always be like that, it depends on the 
+  // case type. I believe if I am lowering the cannon, it might flip or smth.
+  // Ok so the case is when you drag the cursor from a point within the cannon to
+  // another point within the cannon. I think it only really happens when you are
+  // in the upright position.
+
 }
 
 /**

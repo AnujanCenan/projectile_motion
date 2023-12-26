@@ -88,12 +88,17 @@ document.getElementById("canvas").addEventListener("mousemove", (event) => {
   if (draggingCannon) {
     userDrag_x = event.clientX - canvasInfo.left;
     userDrag_y = event.clientY - canvasInfo.top;
+
+    findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDrag_y);
+    userClick_x = userDrag_x;
+    userClick_y = userDrag_y;
     // function for figuring out the new launch angle.
-    findNewLaunchAngle();
   }
 });
 
 document.getElementById("canvas").addEventListener("mouseup", () => {
   draggingCannon = false;
 });
+
+
 

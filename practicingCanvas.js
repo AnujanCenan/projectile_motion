@@ -58,19 +58,19 @@ var cannonCoords;
 
 /////////////////////////////////////////////////////////////////////////////////
 // User behaviour
-var userClick_x;
-var userClick_y;
-var scalarFactorOfCannonLength; // (lambda value of userClicksCannon
-var scalarFactorOfCannonWidth; // (mu value of userClicksCannon)
+// var userClick_x;
+// var userClick_y;
+// var scalarFactorOfCannonLength; // (lambda value of userClicksCannon
+// var scalarFactorOfCannonWidth; // (mu value of userClicksCannon)
 
-var userDrag_x;
-var userDrag_y;
+// var userDrag_x;
+// var userDrag_y;
 
 
-var userCurr_x;
-var userCurr_y;
+// var userCurr_x;
+// var userCurr_y;
 
-var draggingCannon = false;
+// var draggingCannon = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -395,7 +395,7 @@ document.getElementById("canvas").addEventListener("mousemove", (event) => {
 });
 
 // Math behind this code can be found on the repo and wiki.
-function findNewLaunchAngle() {
+export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDrag_y) {
   const A = {
     x: cannonCoords.startCoord[0],
     y: cannonCoords.startCoord[1]
@@ -427,19 +427,19 @@ function findNewLaunchAngle() {
   const e1 = magAE * Math.cos(beta - alpha) + A.x;
   const e2 = magAE * Math.sin(beta - alpha) + A.y;
 
-  AE = {
+  const AE = {
     x: e1 - A.x,
     y: e2 - A.y
   }
   console.log('Vec AE is:')
   console.log(AE);
-  D = {
+  const D = {
     x: cannonCoords.frontCoord_1[0],
     y: cannonCoords.frontCoord_1[1]
   }
   console.log('Vec D is');
   console.log(D)
-  AD = {
+  const AD = {
     x: D.x - A.x,
     y: D.y - A.y
   }
