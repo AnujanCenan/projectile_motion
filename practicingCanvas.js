@@ -326,9 +326,6 @@ function fullProjectileCycle() {
 
 // the math behind this function can be found on the repo and wiki
 function userClicksCannon() {
-  // NOTE: These coordinates refer to the corners of the filled in part of the 
-  // cannon, NOT the surrounding border. More intense is required for finding 
-  // the corners of the cannon border.
   const x0 = cannonCoords.startCoord[0];
   const y0 = cannonCoords.startCoord[1];
 
@@ -371,7 +368,6 @@ function userClicksCannon() {
   }
 
   return false;
-
 }
 
 // What to do if the user clicks on the canvas:

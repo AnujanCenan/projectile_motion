@@ -42,6 +42,9 @@ var draggingCannon = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// Drawing the environemnt
+
 /**
  * Draws the main objects of the setting - grass, sky and cannon.
  * @returns {Object} - the three coordinates that are returned in drawCannon.
@@ -169,7 +172,8 @@ const drawCannon = (angle, x_start, y_start) => {
 const degreesToRadians = (angle) => {
     return angle * Math.PI / 180;
 }
-
+////////////////////////////////////////////////////////////////////////////////
+// Firing a projectile
 function initialiseProjectile(cannonCoords) {
   const x1 = cannonCoords.frontCoord_1[0];
   const y1 = cannonCoords.frontCoord_1[1];
@@ -267,6 +271,57 @@ export function fullProjectileCycle() {
   }
 
   trackProjectile();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Changing launch angle
+
+// the math behind this function can be found on the repo and wiki
+export function userClicksCannon(userClick_x, userClick_y) {
+  const cannonCoords = drawSetting();
+  console.log(cannonCoords);
+  const x0 = cannonCoords.startCoord[0];
+  const y0 = cannonCoords.startCoord[1];
+
+  const x1 = cannonCoords.frontCoord_1[0];
+  const y1 = cannonCoords.frontCoord_1[1];
+
+  const x3 = cannonCoords.backCoord_1[0];
+  const y3 = cannonCoords.backCoord_1[1];
+
+  const C1 = userClick_x - x0;
+  const X1 = x1 - x0;
+  const X2 = x3 - x0;
+
+  const C2 = userClick_y - y0;
+  const Y1 = y1 - y0;
+  const Y2 = y3 - y0;
+
+  const mu = (C1 * Y1 - C2 * X1) / (X2 * Y1 - X1 * Y2);
+
+  console.log(`mu = ${mu}`);
+  // bug: when in the upright position, lambda is coming as Nan and Infinity :(
+  // This is because in the upright position, X1 is 0 so there was some illegal 
+  // dividing-by-zero shennagians occuring. But now I have this if-else check
+  // so that I don't divide by zero.
+
+  console.log(`X1 = ${X1}`);
+  let lambda;
+  if (X1 !== 0) {
+    lambda = (C1 - X2 * mu) / X1;
+  } else {
+    lambda = (C2 - Y2 * mu) / Y1;
+  }
+  console.log(`lambda = ${lambda}`);
+
+  
+  if (mu >= 0 && mu <= 1 && lambda >= 0 && lambda <= 1) {
+    scalarFactorOfCannonLength = lambda;
+    scalarFactorOfCannonWidth = mu; 
+    return true;
+  }
+
+  return false;
 }
 
 /**
