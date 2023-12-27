@@ -393,13 +393,12 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
   }
   // this divding by 100 is an 'engineering' solution, not a mathematical one.
   // Take it out and see how the thing behaves.
-  const theta = radiansToDegrees(thetaInRadians) / 40;
+  const theta = radiansToDegrees(thetaInRadians) / 30;
 
-  // if you drag to the left, you are dragging up
   if (userDrag_x === userClick_x && userDrag_y === userClick_y) {
-
+    // do nothing 
   } else if ((currLaunchAngle < 45 && userDrag_y < userClick_y)
-      || currLaunchAngle > 45 && userDrag_x < userClick_x) {
+      || currLaunchAngle >= 45 && userDrag_x < userClick_x) {
     console.log('Need to drag up');
     currLaunchAngle += theta;
   } else {

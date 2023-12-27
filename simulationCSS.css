@@ -16,6 +16,7 @@ canvas {
     margin-left: auto; /* https://stackoverflow.com/questions/5127937/how-to-center-canvas-in-html5  */ 
     margin-right: auto;
     display: block; 
+    /* border: none; */
     /* width: 1000px;
     height: 600px; */
 

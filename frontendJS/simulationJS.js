@@ -11,8 +11,8 @@ export var ctx = canvas.getContext("2d");
 
 window.devicePixelRatio = 2;
 
-export const canvasWidth = window.innerWidth * 3/4;
-export const canvasHeight = window.innerHeight * 3/4;
+export const canvasWidth = window.innerWidth * 1;
+export const canvasHeight = window.innerHeight * 4/5;
 canvas.style.width = canvasWidth + "px";
 canvas.style.height = canvasHeight + "px";
 
