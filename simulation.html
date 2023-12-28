@@ -5,18 +5,18 @@
 <link rel="stylesheet" href="simulationCSS.css">
 </head>
 <body>
-
-<div style="text-align:center">
-  <h1>Projectile Simulator - No Air Resistance</h1>
+<div style="text-align:center;">
+  <p style="font-family: NeonOverdrive;" class="pageTitle">Projectile Motion Simulator</p>
 </div>
 
-<div class="positionedClass">
+<div class="canvasDiv">
   <canvas id="canvas"></canvas>
    <!--Velocity Slider-->
   <div class="slidecontainer">
     <input type="range" min="0" max="25" value="15" class="slider" id="velocitySlider">
     <script type="module" src="frontendJS/simulationJS.js"></script>
-
+    
+    <!--Velocity Textbox-->
     <div id="velocityLabel">
       <label style="display: inline-block" for="velocityVal">Velocity: </label> 
       <input type="text" size="4" id="velocityVal"> 
@@ -24,8 +24,7 @@
       <span>ms<sup>-1</sup></span>
     </div>
   </div>
-  <!--Velocity Textbox-->
- 
+  
   <!--Launch Angle Textbox-->
   <div id="launchAngleDiv">
     <label for="launchAngleText"></label>
