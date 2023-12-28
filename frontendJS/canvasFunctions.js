@@ -15,7 +15,7 @@ import {
   CANNON_COLOUR,
 } from "./canvasConstants.js";
 
-import { ctx, canvasWidth, canvasHeight } from "./simulationJS.js";
+import { ctx } from "./simulationJS.js";
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,10 +181,9 @@ const drawCannon = (angle, x_start, y_start) => {
     ctx.arc(CANNON_PIVOT_X, GROUND_Y_COORD, CANNON_LENGTH_W_BORDERS / 2, -angleRadians, 0);
     ctx.stroke();
     ctx.font = "10px Arial";
-    ctx.strokeText(`${Math.round(angle * 100) / 100}\u00B0`, CANNON_PIVOT_X + 50, GROUND_Y_COORD - 5)
+    ctx.fillStyle = "white";
+    ctx.fillText(`${Math.round(angle * 100) / 100}\u00B0`, CANNON_PIVOT_X + 50, GROUND_Y_COORD - 5)
     ctx.lineWidth = CANNON_BORDER_THICKNESS;
-
-
 
   }
 

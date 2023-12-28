@@ -6,24 +6,26 @@ import {
   changeInitVelocity
 
 } from "./canvasFunctions.js";
+import {
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT
+} from "./canvasConstants.js"
 
 var canvas = document.querySelector('canvas');
 export var ctx = canvas.getContext("2d");
 
 window.devicePixelRatio = 2;
 
-export const canvasWidth = window.innerWidth * 1;
-export const canvasHeight = window.innerHeight * 4/5;
-canvas.style.width = canvasWidth + "px";
-canvas.style.height = canvasHeight + "px";
+canvas.style.width = CANVAS_WIDTH + "px";
+canvas.style.height = CANVAS_HEIGHT + "px";
 
-console.log(`Naive canvasWidth is ${canvasWidth}`);
-console.log(`Naive canvasHeight is ${canvasHeight}`);
+console.log(`Naive canvasWidth is ${CANVAS_WIDTH}`);
+console.log(`Naive canvasHeight is ${CANVAS_HEIGHT}`);
 
 var scale = window.devicePixelRatio;
 
-canvas.width = Math.floor(canvasWidth * scale);
-canvas.height = Math.floor(canvasHeight * scale);
+canvas.width = Math.floor(CANVAS_WIDTH * scale);
+canvas.height = Math.floor(CANVAS_HEIGHT * scale);
 ctx.scale(scale, scale);
 console.log(`Canvas width = ${canvas.width}`);
 console.log(`Canvas height = ${canvas.height}`);
@@ -99,13 +101,21 @@ document.getElementById("canvas").addEventListener("mouseup", () => {
   draggingCannon = false;
 });
 
-var slider = document.getElementById("velocity");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value; // Display the default slider value
+var slider = document.getElementById("velocitySlider");
+const sliderOutput = document.getElementById("velocityVal");
+console.log(sliderOutput);
+sliderOutput.value = slider.value;
 slider.oninput = function() {
-  output.innerHTML = this.value;
-  changeInitVelocity(parseInt(this.value));
-
-
+  sliderOutput.value = slider.value;
+  changeInitVelocity(parseInt(slider.value));
 }
+
+sliderOutput.oninput = function() {
+  changeInitVelocity(parseFloat(sliderOutput.value));
+}
+// output.innerHTML = slider.value; // Display the default slider value
+// slider.oninput = function() {
+//   output.innerHTML = this.value;
+//   changeInitVelocity(parseInt(this.value));
+// }
 

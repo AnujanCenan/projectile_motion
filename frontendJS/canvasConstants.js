@@ -1,3 +1,6 @@
+export const CANVAS_WIDTH = window.innerWidth * 1;
+export const CANVAS_HEIGHT = window.innerHeight * 4/5;
+
 export const ROTATION_POINT_RADIUS = 20;
 export const CANNON_BORDER_THICKNESS = 5;
 

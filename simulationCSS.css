@@ -89,8 +89,18 @@ canvas {
     transition: opacity .2s;
 }
 
-#velocity {
+#velocitySlider {
     background-color: red;
+}
+
+#velocityLabel {
+    position: absolute;
+    bottom: 3%;
+    left: 3.4%
+}
+
+.velocityVal {
+    size: "2";
 }
 
 
