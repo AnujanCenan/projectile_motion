@@ -11,7 +11,8 @@ import {
   GROUND_COLOUR,
   SKY_COLOUR,
   ROTATION_POINT_COLOUR,
-  CANNON_COLOUR
+  METRES_TO_PX,
+  CANNON_COLOUR,
 } from "./canvasConstants.js";
 
 import { ctx, canvasWidth, canvasHeight } from "./simulationJS.js";
@@ -22,6 +23,7 @@ import { ctx, canvasWidth, canvasHeight } from "./simulationJS.js";
 // starts at 60 and will change depending on user input:
 
 var currLaunchAngle = 30; // (degs)
+var init_speed = 15 * METRES_TO_PX;
 var cannonCoords;
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +41,7 @@ var userCurr_x;
 var userCurr_y;
 
 var draggingCannon = false;
+var annotationsOn = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -144,7 +147,7 @@ const drawCannon = (angle, x_start, y_start) => {
 
   // The math involved here is explained by 'FindingOuterCornersOfCannons' in 
   // MathematicalArguments.
-  return {
+  const outerCannonCoords =  {
     startCoord: [
       x_start + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) - Math.cos(angleRadians)),
       y_start + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) + Math.cos(angleRadians))
@@ -162,6 +165,32 @@ const drawCannon = (angle, x_start, y_start) => {
       y3 + CANNON_BORDER_THICKNESS/2 * (Math.sin(angleRadians) - Math.cos(angleRadians))
     ],
   }
+
+  if (annotationsOn) {
+    // const midBottomLongEdge = {
+    //   x: (outerCannonCoords.startCoord[0] + outerCannonCoords.frontCoord_1[0]) / 2,
+    //   y: (outerCannonCoords.startCoord[1] + outerCannonCoords.frontCoord_1[1]) / 2
+    // };
+
+    // const groundPoint = {
+    //   x: CANNON_PIVOT_X + 15,
+    //   y: GROUND_Y_COORD
+    // };
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(CANNON_PIVOT_X, GROUND_Y_COORD, CANNON_LENGTH_W_BORDERS / 2, -angleRadians, 0);
+    ctx.stroke();
+    ctx.font = "10px Arial";
+    ctx.strokeText(`${Math.round(angle * 100) / 100}\u00B0`, CANNON_PIVOT_X + 50, GROUND_Y_COORD - 5)
+    ctx.lineWidth = CANNON_BORDER_THICKNESS;
+
+
+
+  }
+
+
+
+  return outerCannonCoords;
 }
 
 /**
@@ -217,8 +246,8 @@ export function fullProjectileCycle() {
   
   // hard coded for now:
   var init_angle = currLaunchAngle;
-  var accel = 80;
-  var init_speed = 200;
+  var accel = 9.8 * METRES_TO_PX;
+  
   var keepTracking = true;
 
   function trackProjectile() {
@@ -244,6 +273,8 @@ export function fullProjectileCycle() {
       ctx.fillStyle = 'black';
       ctx.fill();
       ctx.closePath(); 
+      console.log(`ball centre: (${x}, ${y})`);
+
     } else {
 
       // Finding position of cannonball when it hits y = GROUND_Y_COORD.
@@ -299,21 +330,13 @@ export function userClicksCannon(userClick_x, userClick_y) {
 
   const mu = (C1 * Y1 - C2 * X1) / (X2 * Y1 - X1 * Y2);
 
-  console.log(`mu = ${mu}`);
-  // bug: when in the upright position, lambda is coming as Nan and Infinity :(
-  // This is because in the upright position, X1 is 0 so there was some illegal 
-  // dividing-by-zero shennagians occuring. But now I have this if-else check
-  // so that I don't divide by zero.
 
-  console.log(`X1 = ${X1}`);
   let lambda;
   if (X1 !== 0) {
     lambda = (C1 - X2 * mu) / X1;
   } else {
     lambda = (C2 - Y2 * mu) / Y1;
   }
-  console.log(`lambda = ${lambda}`);
-
   
   if (mu >= 0 && mu <= 1 && lambda >= 0 && lambda <= 1) {
     scalarFactorOfCannonLength = lambda;
@@ -331,29 +354,20 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
     x: cannonCoords.startCoord[0],
     y: cannonCoords.startCoord[1]
   };
-  console.log(`User clicked at ${userClick_x}, ${userClick_y}`)
-
   const C = {
     x: userDrag_x,
     y: userDrag_y
   }
-  console.log(`Drag coords are (${C.x}, ${C.y})`);
-
   const AC = {
     x: C.x - A.x,
     y: C.y - A.y
   };
-  // console.log('Vec A is:')
-  // console.log(A)
-  // console.log('Vec AC is:')
-  // console.log(AC);
+
   const magAC = Math.sqrt(AC.x ** 2 + AC.y ** 2);
   const alpha = Math.asin((scalarFactorOfCannonWidth * (CANNON_HEIGHT_W_BORDERS)) / magAC);
-  // console.log(`alpha is ${alpha * 180/Math.PI}`);
 
   const magAE = magAC * Math.cos(alpha);
   const beta = Math.atan(Math.abs(AC.y) / Math.abs(AC.x));
-  // console.log(`beta is ${beta * 180/Math.PI}`)
 
   const e1 = magAE * Math.cos(beta - alpha) + A.x;
   const e2 = magAE * Math.sin(beta - alpha) + A.y;
@@ -362,20 +376,15 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
     x: e1 - A.x,
     y: e2 - A.y
   }
-  // console.log('Vec AE is:')
-  // console.log(AE);
   const D = {
     x: cannonCoords.frontCoord_1[0],
     y: cannonCoords.frontCoord_1[1]
   }
-  // console.log('Vec D is');
-  // console.log(D)
   const AD = {
     x: D.x - A.x,
     y: D.y - A.y
   }
-  // console.log('Vec AD is:')
-  // console.log(AD);
+
   const magAD = Math.sqrt(AD.x ** 2 + AD.y ** 2)
   let thetaInRadians = Math.acos((AE.x * AD.x + AE.y * AD.y) / (magAE * magAD));
   // This resulting fraction would sometimes be 1.000000..002 because of how 
@@ -395,6 +404,7 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
   // Take it out and see how the thing behaves.
   const theta = radiansToDegrees(thetaInRadians) / 30;
 
+  // this if-else block could be improved for usability
   if (userDrag_x === userClick_x && userDrag_y === userClick_y) {
     // do nothing 
   } else if ((currLaunchAngle < 45 && userDrag_y < userClick_y)
@@ -405,21 +415,9 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
     console.log('Need to drag down');
     currLaunchAngle -= theta;
   }
-
-  // console.log(`Calculated theta = ${theta}`);
   ctx.clearRect(0, 0, canvas.widthh, canvas.height);
   cannonCoords = drawSetting();
-  console.log(`new currLaunchAngle value = ${currLaunchAngle}`);
-
-  console.log(cannonCoords);
   return cannonCoords;
-
-  // Where I do beta - alpha, it will not always be like that, it depends on the 
-  // case type. I believe if I am lowering the cannon, it might flip or smth.
-  // Ok so the case is when you drag the cursor from a point within the cannon to
-  // another point within the cannon. I think it only really happens when you are
-  // in the upright position.
-
 }
 
 /**
@@ -429,5 +427,9 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
  */
 const radiansToDegrees = (angle) => {
   return angle * 180 / Math.PI;
+}
+
+export const changeInitVelocity = (v) => {
+  init_speed = v * METRES_TO_PX;
 }
 

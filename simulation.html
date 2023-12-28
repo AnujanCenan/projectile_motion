@@ -8,16 +8,17 @@
 
 <div style="text-align:center">
   <h1>Projectile Simulator - No Air Resistance</h1>
-  <!-- <span class="dot"></span>  -->
 </div>
 
-<!--  onmousedown = "userClicks()" -->
-<div>
+<div class="positionedClass">
   <canvas id="canvas"></canvas>
-
+  <div class="slidecontainer">
+    <input type="range" min="0" max="25" value="15" class="slider" id="velocity">
+    <span>Velocity: <span id="demo"></span> ms<sup>-1</sup></span>
+    <script type="module" src="frontendJS/simulationJS.js"></script>
+  </div>
+  <script type="module" src="frontendJS/simulationJS.js"></script>
 </div>
-
-<script type="module" src="frontendJS/simulationJS.js"></script>
 
 <div>
     <button class="fireButton", id="fireButton">Fire!</button>

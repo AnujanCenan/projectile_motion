@@ -12,6 +12,7 @@ export const CANNON_PIVOT_X = ROTATION_POINT_RADIUS + 50;
 
 export const GROUND_Y_COORD = window.innerHeight * 3/4 * (7/8);
 
+export const METRES_TO_PX = (window.innerWidth * 1 - CANNON_PIVOT_X) / 100;
 
 // Colours
 export const GROUND_COLOUR = '#00ad14'

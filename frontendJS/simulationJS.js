@@ -2,7 +2,8 @@ import {
   drawSetting, 
   fullProjectileCycle,
   userClicksCannon,
-  findNewLaunchAngle
+  findNewLaunchAngle,
+  changeInitVelocity
 
 } from "./canvasFunctions.js";
 
@@ -54,8 +55,6 @@ drawSetting();
 // Clicking Fire Button:
 
 const fireButton = document.getElementById('fireButton');
-// const buttonWidth = 120;
-// const buttonHeight = 100;
 fireButton.addEventListener("mousedown", (event) => {
   fireButton.className = 'fireButtonOnClick';
 });
@@ -100,5 +99,13 @@ document.getElementById("canvas").addEventListener("mouseup", () => {
   draggingCannon = false;
 });
 
+var slider = document.getElementById("velocity");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  changeInitVelocity(parseInt(this.value));
 
+
+}
 
