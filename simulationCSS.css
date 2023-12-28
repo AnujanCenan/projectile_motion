@@ -73,7 +73,7 @@ canvas {
 .slidecontainer {
     width: 10%; 
     position: absolute;
-    bottom: 8%;
+    top: 8%;
     left: 3.4%;
 }
 
@@ -95,13 +95,22 @@ canvas {
 
 #velocityLabel {
     position: absolute;
-    bottom: 3%;
-    left: 3.4%
+    top: 100%;
+    left: 0%
 }
 
-.velocityVal {
-    size: "2";
+#launchAngleDiv {
+    position: absolute;
+    bottom: 18.4%;
+    left: 0.7%;
 }
+
+.degreeSymbol {
+    position: absolute;
+    top: -5px;
+    right: -6.4px;
+}
+
 
 
 

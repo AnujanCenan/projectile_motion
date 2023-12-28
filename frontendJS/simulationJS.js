@@ -3,7 +3,8 @@ import {
   fullProjectileCycle,
   userClicksCannon,
   findNewLaunchAngle,
-  changeInitVelocity
+  changeInitVelocity,
+  changeLaunchAngle
 
 } from "./canvasFunctions.js";
 import {
@@ -103,7 +104,6 @@ document.getElementById("canvas").addEventListener("mouseup", () => {
 
 var slider = document.getElementById("velocitySlider");
 const sliderOutput = document.getElementById("velocityVal");
-console.log(sliderOutput);
 sliderOutput.value = slider.value;
 slider.oninput = function() {
   sliderOutput.value = slider.value;
@@ -113,9 +113,13 @@ slider.oninput = function() {
 sliderOutput.oninput = function() {
   changeInitVelocity(parseFloat(sliderOutput.value));
 }
-// output.innerHTML = slider.value; // Display the default slider value
-// slider.oninput = function() {
-//   output.innerHTML = this.value;
-//   changeInitVelocity(parseInt(this.value));
-// }
 
+const launchAngleText = document.getElementById("launchAngleText");
+launchAngleText.oninput = function() {
+  if (parseFloat(launchAngleText.value) !== parseFloat(launchAngleText.value)) {
+    changeLaunchAngle(0);
+  } else {
+    changeLaunchAngle(parseFloat(launchAngleText.value));
+  }
+  
+}

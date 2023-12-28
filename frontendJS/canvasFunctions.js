@@ -432,3 +432,8 @@ export const changeInitVelocity = (v) => {
   init_speed = v * METRES_TO_PX;
 }
 
+export const changeLaunchAngle = (a) => {
+  currLaunchAngle = a;
+  drawSetting();
+}
+
