@@ -1,11 +1,11 @@
 import { 
   drawSetting, 
+  changeSettingCoords,
   fullProjectileCycle,
   userClicksCannon,
   findNewLaunchAngle,
   changeInitVelocity,
   changeLaunchAngle
-
 } from "./canvasFunctions.js";
 import {
   CANVAS_WIDTH,
@@ -54,6 +54,22 @@ var draggingCannon = false;
 ////////////////////////////////////////////////////////////////////////////////
 // Iniital Drawing:
 drawSetting();
+
+// Detecting window resize:
+window.addEventListener('resize', (event) => {
+  canvas.style.width = window.innerWidth + "px";
+  canvas.style.height = (window.innerHeight * 4/5) + "px";
+
+  canvas.width = Math.floor(window.innerWidth * scale);
+  canvas.height = Math.floor(window.innerHeight * 4/5 * scale);
+  ctx.scale(scale, scale);
+  console.log(`Canvas width = ${canvas.width}`);
+  console.log(`Canvas height = ${canvas.height}`);
+
+  changeSettingCoords();
+  drawSetting();
+
+})
 
 // Clicking Fire Button:
 

@@ -22,11 +22,9 @@ body {
 
 .canvasDiv {
     position: relative;
-    background-color: teal;
     padding-left: 0;
     padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100vw;
 }
 
 canvas {
@@ -34,9 +32,9 @@ canvas {
     padding-right: 0;  /*    Answer by Marco Luglio:          */
     margin-left: auto; /* https://stackoverflow.com/questions/5127937/how-to-center-canvas-in-html5  */ 
     margin-right: auto;
+    width: 100vw;
     display: block; 
 
-    border: 2px solid black;
 }
 
 .txtbox {
@@ -83,10 +81,10 @@ canvas {
 }
 
 .slidecontainer {
-    width: 10%; 
+    width: 12%; 
     position: absolute;
-    top: 8%;
-    left: 3.4%;
+    top: 1%;
+    left: 1%;
 }
 
 .slider {
@@ -108,7 +106,8 @@ canvas {
 #velocityLabel {
     position: absolute;
     top: 100%;
-    left: 0%
+    left: 0%;
+    width: 100%;
 }
 
 #launchAngleDiv {

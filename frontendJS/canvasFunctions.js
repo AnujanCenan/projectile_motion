@@ -7,16 +7,16 @@ import {
   CANNON_LENGTH_W_BORDERS,
   CANNON_BALL_RADIUS,
   CANNON_PIVOT_X,
-  GROUND_Y_COORD,
   GROUND_COLOUR,
   SKY_COLOUR,
   ROTATION_POINT_COLOUR,
-  METRES_TO_PX,
   CANNON_COLOUR,
 } from "./canvasConstants.js";
 
 import { ctx } from "./simulationJS.js";
 
+var GROUND_Y_COORD = window.innerHeight * 3/4 * (7/8);
+var METRES_TO_PX = (window.innerWidth * 1 - CANNON_PIVOT_X) / 100;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +44,11 @@ var draggingCannon = false;
 var annotationsOn = true;
 
 ////////////////////////////////////////////////////////////////////////////////
+
+export function changeSettingCoords() {
+  GROUND_Y_COORD = window.innerHeight * 3/4 * (7/8);
+  METRES_TO_PX = (window.innerWidth * 1 - CANNON_PIVOT_X) / 100;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Drawing the environemnt
@@ -234,6 +239,7 @@ function initialiseProjectile(cannonCoords) {
 // on fire button click:
 
 export function fullProjectileCycle() {
+  console.log(`Inner width is ${window.innerWidth}`);
   const cannonCoords = drawSetting();
   const ball_centre = initialiseProjectile(cannonCoords);
 
