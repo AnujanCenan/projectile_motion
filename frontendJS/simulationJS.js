@@ -31,7 +31,7 @@ ctx.scale(scale, scale);
 console.log(`Canvas width = ${canvas.width}`);
 console.log(`Canvas height = ${canvas.height}`);
 
-const canvasInfo = document.getElementById("canvas").getBoundingClientRect();
+var canvasInfo = document.getElementById("canvas").getBoundingClientRect();
 
 
 
@@ -56,6 +56,7 @@ var draggingCannon = false;
 drawSetting();
 
 // Detecting window resize:
+
 window.addEventListener('resize', (event) => {
   canvas.style.width = window.innerWidth + "px";
   canvas.style.height = (window.innerHeight * 4/5) + "px";
@@ -63,11 +64,10 @@ window.addEventListener('resize', (event) => {
   canvas.width = Math.floor(window.innerWidth * scale);
   canvas.height = Math.floor(window.innerHeight * 4/5 * scale);
   ctx.scale(scale, scale);
-  console.log(`Canvas width = ${canvas.width}`);
-  console.log(`Canvas height = ${canvas.height}`);
+
+  canvasInfo = document.getElementById("canvas").getBoundingClientRect();
 
   changeSettingCoords();
-  drawSetting();
 
 })
 
@@ -89,14 +89,17 @@ document.getElementById('fireButton').addEventListener("click", (event) => {
 // Clicking the cannon:
 
 document.getElementById("canvas").addEventListener("mousedown", (event) => {
-  userClick_x = event.clientX - canvasInfo.left;
-  userClick_y = event.clientY - canvasInfo.top;
-  console.log(`Coords of user click = (${userClick_x}, ${userClick_y})`);
+  console.log(`clientY coord: ${event.clientY}`);
+  console.log(`${canvasInfo.top}`)
+  
+  userClick_x = event.offsetX;
+  userClick_y = event.offsetY;
+
+  console.log(`User clicked at ${userClick_x}, ${userClick_y}`);
+  
   if (userClicksCannon(userClick_x, userClick_y)) {
-    console.log('User clicked the cannon');
     draggingCannon = true;
   } else {
-    console.log('User did NOT clicked the cannon');
   }
 });
 

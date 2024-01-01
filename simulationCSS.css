@@ -4,6 +4,7 @@
 }
 body {
     background-color: white;
+    /* overflow-x: hidden; https://blog.hubspot.com/website/hide-scrollbar-css#:~:text=To%20hide%20the%20horizontal%20scrollbar,CSS */
 }
 .pageTitle {
     font-size: 108px;
@@ -83,8 +84,8 @@ canvas {
 .slidecontainer {
     width: 12%; 
     position: absolute;
-    top: 1%;
-    left: 1%;
+    top: 10%;
+    right: 10%;
 }
 
 .slider {
@@ -112,14 +113,14 @@ canvas {
 
 #launchAngleDiv {
     position: absolute;
-    bottom: 18.4%;
-    left: 0.7%;
+    top: 120%;
+    left: 0%;
 }
 
 .degreeSymbol {
     position: absolute;
-    top: -5px;
-    right: -6.4px;
+    bottom: 1px;
+    right: 0px;
 }
 
 

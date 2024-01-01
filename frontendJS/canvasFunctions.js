@@ -48,6 +48,8 @@ var annotationsOn = true;
 export function changeSettingCoords() {
   GROUND_Y_COORD = window.innerHeight * 3/4 * (7/8);
   METRES_TO_PX = (window.innerWidth * 1 - CANNON_PIVOT_X) / 100;
+  drawSetting();
+  console.log(cannonCoords);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,7 @@ export function drawSetting() {
 
   // Example cannon - change the first argument to change the angle (degrees),
   // keep the other two parameters fixed.
-  const cannonCoords = 
+  cannonCoords = 
     drawCannon(currLaunchAngle, CANNON_PIVOT_X, GROUND_Y_COORD);
 
   // drawing point of rotation - draw it after the cannon so that it appears in
@@ -89,8 +91,6 @@ export function drawSetting() {
   ctx.fillStyle = ROTATION_POINT_COLOUR;
   ctx.fill();
   ctx.closePath();
-
-  return cannonCoords
 }
 
 
@@ -172,15 +172,6 @@ const drawCannon = (angle, x_start, y_start) => {
   }
 
   if (annotationsOn) {
-    // const midBottomLongEdge = {
-    //   x: (outerCannonCoords.startCoord[0] + outerCannonCoords.frontCoord_1[0]) / 2,
-    //   y: (outerCannonCoords.startCoord[1] + outerCannonCoords.frontCoord_1[1]) / 2
-    // };
-
-    // const groundPoint = {
-    //   x: CANNON_PIVOT_X + 15,
-    //   y: GROUND_Y_COORD
-    // };
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(CANNON_PIVOT_X, GROUND_Y_COORD, CANNON_LENGTH_W_BORDERS / 2, -angleRadians, 0);
@@ -191,9 +182,6 @@ const drawCannon = (angle, x_start, y_start) => {
     ctx.lineWidth = CANNON_BORDER_THICKNESS;
 
   }
-
-
-
   return outerCannonCoords;
 }
 
@@ -230,17 +218,13 @@ function initialiseProjectile(cannonCoords) {
   }
 }
 
-// const cannonCoords = drawSetting();
-// On fire button click:
-// const ball_centre = initialiseProjectile(cannonCoords);
 
 // could find initial height above the ground using length of cannon and launch angle
 // and then end the trajectory when the required negative displacement is reached.
 // on fire button click:
 
 export function fullProjectileCycle() {
-  console.log(`Inner width is ${window.innerWidth}`);
-  const cannonCoords = drawSetting();
+  drawSetting();
   const ball_centre = initialiseProjectile(cannonCoords);
 
   var t = 0;
@@ -278,7 +262,6 @@ export function fullProjectileCycle() {
       ctx.fillStyle = 'black';
       ctx.fill();
       ctx.closePath(); 
-      console.log(`ball centre: (${x}, ${y})`);
 
     } else {
 
@@ -314,8 +297,7 @@ export function fullProjectileCycle() {
 
 // the math behind this function can be found on the repo and wiki
 export function userClicksCannon(userClick_x, userClick_y) {
-  const cannonCoords = drawSetting();
-  console.log(cannonCoords);
+  drawSetting();
   const x0 = cannonCoords.startCoord[0];
   const y0 = cannonCoords.startCoord[1];
 
@@ -354,7 +336,7 @@ export function userClicksCannon(userClick_x, userClick_y) {
 
 
 export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDrag_y) {
-  cannonCoords = drawSetting();
+  drawSetting();
   const A = {
     x: cannonCoords.startCoord[0],
     y: cannonCoords.startCoord[1]
@@ -402,7 +384,6 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
 
   // a way of checking if a value is NaN
   if (thetaInRadians !== thetaInRadians) {
-    // console.log('NaN Check was triggered');
     thetaInRadians = 0;
   }
   // this divding by 100 is an 'engineering' solution, not a mathematical one.
@@ -414,14 +395,12 @@ export function findNewLaunchAngle(userClick_x, userClick_y, userDrag_x, userDra
     // do nothing 
   } else if ((currLaunchAngle < 45 && userDrag_y < userClick_y)
       || currLaunchAngle >= 45 && userDrag_x < userClick_x) {
-    console.log('Need to drag up');
     currLaunchAngle += theta;
   } else {
-    console.log('Need to drag down');
     currLaunchAngle -= theta;
   }
   ctx.clearRect(0, 0, canvas.widthh, canvas.height);
-  cannonCoords = drawSetting();
+  drawSetting();
   return cannonCoords;
 }
 
