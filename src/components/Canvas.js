@@ -1,16 +1,14 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawCannonPivot,  drawCannon, rotateCannon} from "./drawingFunctions"
-import wheelImg from "../images/CannonWheel.png"
-import barrelImg from "../images/CannonBarrel.png"
+import { drawCannon, rotateCannon} from "./drawingFunctions"
+import cannonImg from "../images/Cannon_v1.png"
 
 
 export default function Canvas() {
 
   const canvasRef = useRef(null);
-  const wheelRef = useRef(null);
-  const barrelRef = useRef(null);
+  const cannonRef = useRef(null);
   // state variables for cannon position
 
   
@@ -37,24 +35,14 @@ export default function Canvas() {
 
     const ctx = canvas.getContext('2d');
 
-    const barrelImage = barrelRef.current;
-    drawCannon(ctx, canvas, barrelImage);
-
-    const wheelImage = wheelRef.current;
-    drawCannonPivot(ctx, canvas, wheelImage);
+    const cannonImage = cannonRef.current;
+    drawCannon(ctx, canvas, cannonImage);
 
     ctx.save();
 
-    rotateCannon(ctx, canvas, 10, barrelImage, wheelImage)
-    // ctx.restore();
+    rotateCannon(ctx, canvas, 40, cannonImage);
 
-
-
-    
-    
-    
-    // const [pivot_x, pivot_y] = drawCannon(ctx, canvas);
-    // drawCannonPivot(ctx, canvas, pivot_x, pivot_y);
+    // console.log(canvas.width, canvas.height);
 
 
 
@@ -62,17 +50,11 @@ export default function Canvas() {
   
   return (
     <>
-    <canvas ref={canvasRef} id="canvas">
+    <canvas ref={canvasRef} style={{height: 1.3 * window.innerHeight}} id="canvas">
       <img
-        src={wheelImg}
-        alt="wheel"
-        ref={wheelRef}
-        style={{border:"2px solid red"}}
-      />
-      <img
-        src={barrelImg}
+        src={cannonImg}
         alt="barrel"
-        ref={barrelRef}
+        ref={cannonRef}
       />
     </canvas>
 
