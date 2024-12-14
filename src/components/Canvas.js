@@ -1,16 +1,17 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawCannonPivot,  drawCannon, rotateCannon} from "./drawingFunctions"
-import wheelImg from "../images/CannonWheel.png"
-import barrelImg from "../images/CannonBarrel.png"
+import { drawDefaultCannon, drawRotatedCannon } from "./drawingFunctions"
+import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
+import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+
 
 
 export default function Canvas() {
 
   const canvasRef = useRef(null);
-  const wheelRef = useRef(null);
-  const barrelRef = useRef(null);
+  const cannonRef = useRef(null);
+  const holsterRef = useRef(null);
   // state variables for cannon position
 
   
@@ -37,24 +38,16 @@ export default function Canvas() {
 
     const ctx = canvas.getContext('2d');
 
-    const barrelImage = barrelRef.current;
-    drawCannon(ctx, canvas, barrelImage);
+    const cannonImage = cannonRef.current;
+    const holsterImage = holsterRef.current;
 
-    const wheelImage = wheelRef.current;
-    drawCannonPivot(ctx, canvas, wheelImage);
-
-    ctx.save();
-
-    rotateCannon(ctx, canvas, 10, barrelImage, wheelImage)
-    // ctx.restore();
-
-
-
+    // drawHolster(ctx, canvas, holsterImage);
     
-    
-    
-    // const [pivot_x, pivot_y] = drawCannon(ctx, canvas);
-    // drawCannonPivot(ctx, canvas, pivot_x, pivot_y);
+    // 'global' cannon position decided by the the draw cannon function
+    // const TOP_LEFT_CORNER = drawCannon(ctx, canvas, cannonImage);
+    drawDefaultCannon(ctx, canvas, cannonImage, holsterImage);
+    drawRotatedCannon(ctx, canvas,  -45, cannonImage, holsterImage);
+
 
 
 
@@ -62,17 +55,16 @@ export default function Canvas() {
   
   return (
     <>
-    <canvas ref={canvasRef} id="canvas">
-      <img
-        src={wheelImg}
-        alt="wheel"
-        ref={wheelRef}
-        style={{border:"2px solid red"}}
+    <canvas ref={canvasRef} style={{height: 1.3 * window.innerHeight}} id="canvas">
+      <img 
+        src={holsterImg}
+        alt="holster"
+        ref={holsterRef}
       />
       <img
-        src={barrelImg}
+        src={cannonImg}
         alt="barrel"
-        ref={barrelRef}
+        ref={cannonRef}
       />
     </canvas>
 

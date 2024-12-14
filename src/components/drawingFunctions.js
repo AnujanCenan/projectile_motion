@@ -1,30 +1,50 @@
-export function drawCannon(ctx, canvas, barrelImage) {
-  const BARREL_WIDTH = canvas.width * 0.164;
-  const BARREL_HEIGHT = canvas.height * 0.088;
-  barrelImage.onload = () => {
-    ctx.drawImage(barrelImage, canvas.width * 0.103, canvas.height * 0.768, BARREL_WIDTH, BARREL_HEIGHT, )
+function drawImageWithRotation(
+  ctx, image, pos_x, pos_y, pivot_x, pivot_y, width, height, angle
+) {
+  image.onload = () => {
+    ctx.translate(pos_x + pivot_x, pos_y + pivot_y);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.drawImage(image, -pivot_x, -pivot_y, width, height);
+    ctx.rotate(-angle * Math.PI / 180);
+    ctx.translate(-pos_x - pivot_x, -pos_y - pivot_y)
+
   }
-
 }
 
-export function drawCannonPivot(ctx, canvas, wheelImage) {
-  const DIAMETER = canvas.height * 0.08;
-  wheelImage.onload = () => {
-    ctx.drawImage(wheelImage, canvas.width * 0.1, canvas.height * 0.80, DIAMETER, DIAMETER);
+export function drawHolster(ctx, canvas, holsterImage) {
+  const TOP_LEFT_CORNER = [
+    canvas.width * 0.05,
+    canvas.height * 0.73
+  ]
+
+  holsterImage.onload = () => { 
+    // 123, 298 is the size of the image in pixels
+    ctx.drawImage(holsterImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], 123, 298);
   }
-
 }
 
-export function rotateCannon(ctx, canvas, angle, barrelImage, wheelImage) {
-  const RADIUS = canvas.height * 0.04;
-  ctx.translate(canvas.width * 0.1 + RADIUS, canvas.height * 0.80 + RADIUS); // First translate the context to the center you wish to rotate around.
-  ctx.rotate( -angle * Math.PI/180 );
-  drawCannon(ctx, canvas, barrelImage);
-  drawCannonPivot(ctx, canvas, wheelImage);
-  ctx.translate(-canvas.width * 0.1 - RADIUS, -canvas.height * 0.80 - RADIUS); // First translate the context to the center you wish to rotate around.
+export function drawCannon(ctx, canvas, cannonImage, angle) {
 
+  const TOP_LEFT_CORNER = [
+    canvas.width * 0.02,
+    canvas.height * 0.65
+  ]
+
+  const PIVOT_POS = [
+    227, 118 // taken from the image
+  ] 
+
+  drawImageWithRotation(ctx, cannonImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1],
+    PIVOT_POS[0], PIVOT_POS[1], 849, 251, angle)
+
+  return TOP_LEFT_CORNER;
 }
 
-// export function drawCannon(ctx, canvas, pivot_x, pivot_y, angle) {
+export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage) {
+  drawHolster(ctx, canvas, holsterImage);
+  drawCannon(ctx, canvas, cannonImage, angle);
+}
 
-// }
+export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage) {
+  drawRotatedCannon(ctx, canvas, 0, cannonImage, holsterImage);
+}
