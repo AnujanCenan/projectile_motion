@@ -34,26 +34,17 @@ export function drawCannon(ctx, canvas, cannonImage, angle) {
     227, 118 // taken from the image
   ] 
 
-  // cannonImage.onload = () => {
-  //   ctx.translate(TOP_LEFT_CORNER[0] + PIVOT_POS[0], TOP_LEFT_CORNER[1] + PIVOT_POS[1]);
-  //   ctx.rotate(Math.PI/180 * -angle); // rotate
-  //   ctx.drawImage(cannonImage, -PIVOT_POS[0], -PIVOT_POS[1], 849, 251);
-  //   // ctx.rotate(Math.PI/180 * 30); // rotate
-  //   ctx.rotate(Math.PI/180 * angle); // rotate
-  //   ctx.translate(-TOP_LEFT_CORNER[0] - PIVOT_POS[0], -TOP_LEFT_CORNER[1] - PIVOT_POS[1]);
-  // }
-
   drawImageWithRotation(ctx, cannonImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1],
-    PIVOT_POS[0], PIVOT_POS[1], 849, 251, -angle)
+    PIVOT_POS[0], PIVOT_POS[1], 849, 251, angle)
 
   return TOP_LEFT_CORNER;
 }
 
-export function rotateCannon(ctx, canvas, angle, cannonImage, holsterImage) {
+export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage) {
   drawHolster(ctx, canvas, holsterImage);
   drawCannon(ctx, canvas, cannonImage, angle);
 }
 
 export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage) {
-  rotateCannon(ctx, canvas, 0, cannonImage, holsterImage);
+  drawRotatedCannon(ctx, canvas, 0, cannonImage, holsterImage);
 }

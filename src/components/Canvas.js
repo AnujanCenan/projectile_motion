@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawDefaultCannon, rotateCannon } from "./drawingFunctions"
+import { drawDefaultCannon, drawRotatedCannon } from "./drawingFunctions"
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 
@@ -46,7 +46,7 @@ export default function Canvas() {
     // 'global' cannon position decided by the the draw cannon function
     // const TOP_LEFT_CORNER = drawCannon(ctx, canvas, cannonImage);
     drawDefaultCannon(ctx, canvas, cannonImage, holsterImage);
-    rotateCannon(ctx, canvas,  45, cannonImage, holsterImage);
+    drawRotatedCannon(ctx, canvas,  -45, cannonImage, holsterImage);
 
 
 
