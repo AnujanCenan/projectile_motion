@@ -1,14 +1,17 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawCannon, rotateCannon} from "./drawingFunctions"
-import cannonImg from "../images/Cannon_v1.png"
+import { drawDefaultCannon, rotateCannon } from "./drawingFunctions"
+import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
+import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+
 
 
 export default function Canvas() {
 
   const canvasRef = useRef(null);
   const cannonRef = useRef(null);
+  const holsterRef = useRef(null);
   // state variables for cannon position
 
   
@@ -36,13 +39,15 @@ export default function Canvas() {
     const ctx = canvas.getContext('2d');
 
     const cannonImage = cannonRef.current;
-    drawCannon(ctx, canvas, cannonImage);
+    const holsterImage = holsterRef.current;
 
-    ctx.save();
+    // drawHolster(ctx, canvas, holsterImage);
+    
+    // 'global' cannon position decided by the the draw cannon function
+    // const TOP_LEFT_CORNER = drawCannon(ctx, canvas, cannonImage);
+    drawDefaultCannon(ctx, canvas, cannonImage, holsterImage);
+    rotateCannon(ctx, canvas,  45, cannonImage, holsterImage);
 
-    rotateCannon(ctx, canvas, 40, cannonImage);
-
-    // console.log(canvas.width, canvas.height);
 
 
 
@@ -51,6 +56,11 @@ export default function Canvas() {
   return (
     <>
     <canvas ref={canvasRef} style={{height: 1.3 * window.innerHeight}} id="canvas">
+      <img 
+        src={holsterImg}
+        alt="holster"
+        ref={holsterRef}
+      />
       <img
         src={cannonImg}
         alt="barrel"
