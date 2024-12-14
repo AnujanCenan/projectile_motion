@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawDefaultCannon, drawRotatedCannon } from "./drawingFunctions"
+import { drawDefaultCannon, drawRotatedCannon, getCannonInfo } from "./drawingFunctions"
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 
@@ -12,11 +12,25 @@ export default function Canvas() {
   const canvasRef = useRef(null);
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
-  // state variables for cannon position
 
-  
+
+  // Cannon State Variables
+  const [
+    cannonWidth, 
+    cannonHeight, 
+    cannonScalarTopX, 
+    cannonScalarTopY, 
+    cannonPivotX, 
+    cannonPivotY,
+    shrinkingFactor,
+  ] = getCannonInfo("v2");
 
   useEffect(() => {
+
+    console.log("In canvas.js - after setting state variables:")
+    console.log(cannonWidth, cannonHeight, cannonScalarTopX, cannonScalarTopY, 
+      cannonPivotX, cannonPivotY)
+
     let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
 
@@ -45,8 +59,19 @@ export default function Canvas() {
     
     // 'global' cannon position decided by the the draw cannon function
     // const TOP_LEFT_CORNER = drawCannon(ctx, canvas, cannonImage);
-    drawDefaultCannon(ctx, canvas, cannonImage, holsterImage);
-    drawRotatedCannon(ctx, canvas,  -45, cannonImage, holsterImage);
+    drawDefaultCannon(
+      ctx, canvas, cannonImage, holsterImage,
+      cannonWidth, cannonHeight, cannonScalarTopX, cannonScalarTopY, 
+      cannonPivotX, cannonPivotY, shrinkingFactor
+
+    );
+
+    drawRotatedCannon(
+      ctx, canvas,  -45, cannonImage, holsterImage,
+      cannonWidth, cannonHeight, cannonScalarTopX, cannonScalarTopY, 
+      cannonPivotX, cannonPivotY, shrinkingFactor
+    
+    );
 
 
 
