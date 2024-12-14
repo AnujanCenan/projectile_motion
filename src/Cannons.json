@@ -1,7 +1,12 @@
 {
-  "v1": {
-    "pixel_height": 3296,
-    "pixel_width": 1494,
-    "pivot_pos": [227, 118]
+  "v2": {
+    "pixel_width": 849,
+    "pixel_height": 251,
+    "scalar_top_corner_x": 0.02,
+    "scalar_top_corner_y": 0.65,
+    "pivot_x": 227,
+    "pivot_y": 118,
+    "shrinking_factor": 0.5
+
   }
 }
