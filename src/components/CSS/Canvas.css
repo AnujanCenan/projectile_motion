@@ -10,3 +10,9 @@
 img { 
     display: inline;
 }
+
+@media (orientation: portrait) {
+    #canvas {
+        background-size: cover;
+    }
+}
