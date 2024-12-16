@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react"
 import "./CSS/Canvas.css"
 
-import { drawDefaultCannon, drawRotatedCannon, getCannonInfo } from "./drawingFunctions"
+import { drawDefaultCannon, drawRotatedCannon, getCannonInfo } from "../processingFunctions/drawingFunctions"
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+import { clickedOnCannon } from "../processingFunctions/readingPixels"
 
 export default function Canvas() {
 
-  const ctx = useRef(null);
+  const ctxRef = useRef(null);
 
   const canvasRef = useRef(null);
   const cannonRef = useRef(null);
@@ -31,15 +32,19 @@ export default function Canvas() {
       fix_dpi();
     }
   
-    ctx.current = canvas.getContext('2d');
-    drawDefaultCannon(ctx.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo);
+    ctxRef.current = canvas.getContext('2d');
+    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo);
+    drawRotatedCannon(ctxRef.current, canvasRef.current, -0, cannonRef.current, holsterRef.current, cannonInfo)
+
+    // drawRotatedCannon(ctxRef.current, canvasRef.current, -90, cannonRef.current, holsterRef.current, cannonInfo)
+
   }, [canvasRef, cannonRef, holsterRef, cannonInfo])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
   useEffect(() => {
     canvasRef.current.addEventListener("mousedown", function (e) {
-      // if mouse down is on the cannon
-      //    activate the ting  
+      clickedOnCannon(ctxRef.current, canvasRef.current, e.clientX, e.clientY, cannonInfo, 0)
+      
     });
   })
 
