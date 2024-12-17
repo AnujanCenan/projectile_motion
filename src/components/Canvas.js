@@ -34,7 +34,7 @@ export default function Canvas() {
   
     ctxRef.current = canvas.getContext('2d');
     drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo);
-    drawRotatedCannon(ctxRef.current, canvasRef.current, -0, cannonRef.current, holsterRef.current, cannonInfo)
+    drawRotatedCannon(ctxRef.current, canvasRef.current, -10, cannonRef.current, holsterRef.current, cannonInfo)
 
     // drawRotatedCannon(ctxRef.current, canvasRef.current, -90, cannonRef.current, holsterRef.current, cannonInfo)
 
@@ -43,7 +43,8 @@ export default function Canvas() {
   //////////////////////// Changing Angles Mouse Events ////////////////////////
   useEffect(() => {
     canvasRef.current.addEventListener("mousedown", function (e) {
-      clickedOnCannon(ctxRef.current, canvasRef.current, e.clientX, e.clientY, cannonInfo, 0)
+      // uses e.PageX and e.PageY not e.clientX and clientY
+      clickedOnCannon(ctxRef.current, canvasRef.current, e.pageX, e.pageY, cannonInfo, 10)
       
     });
   })

@@ -35,9 +35,6 @@ function drawImageWithRotation(
     ctx.rotate(angle * Math.PI / 180);
 
     ctx.drawImage(image, -pivot_x * growth_factor, -pivot_y * growth_factor, width * growth_factor, height * growth_factor);
-    ctx.beginPath();
-    ctx.arc( -pivot_x * growth_factor, -pivot_y * growth_factor, 3, 0, 2 * Math.PI)
-    ctx.stroke();
     ctx.rotate(-angle * Math.PI / 180);
     
     ctx.translate(-pos_x - pivot_x * growth_factor, -pos_y - pivot_y * growth_factor)
