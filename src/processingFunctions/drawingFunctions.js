@@ -8,7 +8,15 @@ export function getCannonInfo(name) {
     console.error("Error at getCannonInfo in drawingFunctions.js");
     console.error(e.message);
   }
+}
 
+export function getHolsterInfo(name) {
+  try {
+    return Cannons[name];
+  } catch (e) {
+    console.error("Error at getHolsterInfo in drawingFunctions.js");
+    console.error(e.message);
+  }
 }
 
 /**
@@ -28,7 +36,6 @@ export function getCannonInfo(name) {
 function drawImageWithRotation(
   ctx, image, pos_x, pos_y, pivot_x, pivot_y, width, height, angle, growth_factor
 ) {
-  image.onload = () => {
 
     ctx.translate(pos_x + pivot_x * growth_factor, pos_y + pivot_y * growth_factor);
     
@@ -38,21 +45,18 @@ function drawImageWithRotation(
     ctx.rotate(-angle * Math.PI / 180);
     
     ctx.translate(-pos_x - pivot_x * growth_factor, -pos_y - pivot_y * growth_factor)
-  }
+
 }
 
-function drawHolster(ctx, canvas, holsterImage) {
+function drawHolster(ctx, canvas, holsterImage, holsterInfo) {
   const TOP_LEFT_CORNER = [
-    canvas.width * 0.05,
-    canvas.height * 0.73
+    canvas.width * holsterInfo.scalar_top_corner_x,
+    canvas.height * holsterInfo.scalar_top_corner_y
   ]
 
-  const growth_factor = 0.5;
+  const growth_factor = holsterInfo.growth_factor;
 
-  holsterImage.onload = () => { 
-    // 123, 298 is the size of the image in pixels
-    ctx.drawImage(holsterImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], 123 * growth_factor, 298 * growth_factor);
-  }
+  ctx.drawImage(holsterImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], holsterInfo.pixel_width * growth_factor, holsterInfo.pixel_height * growth_factor);
 }
 
 function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo) {
@@ -70,13 +74,19 @@ function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo) {
   return TOP_LEFT_CORNER;
 }
 
-export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage, cannonInfo) {
+export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage, cannonInfo, holsterInfo) {
 
   // drawHolster(ctx, canvas, holsterImage);
+  drawHolster(ctx, canvas, holsterImage, holsterInfo)
   drawCannon(ctx, canvas, cannonImage, angle, cannonInfo);
-  drawHolster(ctx, canvas, holsterImage)
 }
 
-export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannonInfo) {
-  drawRotatedCannon(ctx, canvas, 0, cannonImage, holsterImage, cannonInfo);
+export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannonInfo, holsterInfo) {
+  holsterImage.onload = () => {
+    drawHolster(ctx, canvas, holsterImage, holsterInfo)
+  }
+
+  cannonImage.onload = () => {
+    drawCannon(ctx, canvas, cannonImage, 0, cannonInfo)
+  }
 }
