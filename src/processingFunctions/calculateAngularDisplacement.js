@@ -1,4 +1,9 @@
-export function calculateAngularDisplacement(mouse_x, mouse_y, init_mouse_x, init_mouse_y, cannonInfo, canvas_width, canvas_height, angle) {
+export function calculateAngularDisplacement(
+  mouse_x, mouse_y, init_mouse_x, init_mouse_y, clickedBehindPivot,
+  cannonInfo, 
+  canvas_width, canvas_height,
+  angle) 
+{
   
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
@@ -33,23 +38,33 @@ export function calculateAngularDisplacement(mouse_x, mouse_y, init_mouse_x, ini
     }
   // dragging down and left
   } else if (mouse_y > init_mouse_y && mouse_x <= init_mouse_x) {
-    if (dragAngle(mouse_x, mouse_y, init_mouse_x, init_mouse_y) < angle) {
+    if (180 - dragAngle(mouse_x, mouse_y, init_mouse_x, init_mouse_y) < angle) {
       sign = 1;
     } else {
-      sign = 1;
+      sign = -1;
     }
+  } else if (mouse_x < init_mouse_x) {
+    sign = 1;
+  } else if (mouse_x > init_mouse_x) {
+    sign = -1;
+  } else if (mouse_y < init_mouse_y) {
+    sign = 1;
+  } else if (mouse_y > init_mouse_y) {
+    sign = -1;
   } else {
     sign = 0;
   }
-  // if iniital click is "behind the pivot" then flip sign of angular displacement 
+  // if iniital click is "behind the pivot" then flip sign of angular displacement because the relation behind 
+  // mouse drag direction and cannon rotation direction is reversed
 
-  return sign * angularDisplacement;
+  return clickedBehindPivot * sign * angularDisplacement;
 }
 
 function distanceFormula(x1, y1, x2, y2) {
   return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
+// calculates the angle between the vector formed by a mouse drag, and the basis vecot <1, 0>
 function dragAngle(mouse_x, mouse_y, init_mouse_x, init_mouse_y) {
   const horizontalVector = [1, 0];
   const dragVector = [mouse_x - init_mouse_x, mouse_y - init_mouse_y];
