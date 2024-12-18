@@ -26,6 +26,7 @@ export default function Canvas() {
   const cannonClick = useRef(false);
   const click_x = useRef(0);
   const click_y = useRef(0);
+  const clickedBehindPivot = useRef(1);
 
   useEffect(() => {
     let dpi = window.devicePixelRatio;
@@ -76,22 +77,28 @@ export default function Canvas() {
   async function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
     console.log("Heard mouse down")
-    cannonClick.current = await clickedOnCannon(
+    console.log(`Elevation angle = ${elevationAngle}`);
+    
+    cannonClick.current  = await clickedOnCannon(
       ctxRef.current, canvasRef.current, 
       e.pageX, e.pageY,
       cannonInfo, 
-      elevationAngle
+      elevationAngle,
+      clickedBehindPivot
     )
 
     click_x.current = e.pageX;
     click_y.current = e.pageY;
-    console.log(`cannonClick val = ${cannonClick.current}`);
   }
 
   function mouseMove(e) {
     if (cannonClick.current) {
-      const angularDisplacement = calculateAngularDisplacement(e.pageX, e.pageY, click_x.current, click_y.current, cannonInfo, canvasRef.current.width, canvasRef.current.height, elevationAngle);
-      console.log(`angular displacement = ${angularDisplacement}`);
+      const angularDisplacement = calculateAngularDisplacement(
+        e.pageX, e.pageY, 
+        click_x.current, click_y.current, clickedBehindPivot.current,
+        cannonInfo, 
+        canvasRef.current.width, canvasRef.current.height, 
+        elevationAngle);
 
       click_x.current = e.pageX;
       click_y.current = e.pageY;
@@ -111,12 +118,7 @@ export default function Canvas() {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  function adjustAngle(e) {
-    console.log(e)
-    ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    setElevationAngle((elevationAngle + 10) % 100);
-  }
-  
+
   return (
     <>
       <canvas ref={canvasRef} 
@@ -136,10 +138,7 @@ export default function Canvas() {
           alt="holster"
           ref={holsterRef}
         />
-
-
       </canvas>
-
     </>
     
   )
