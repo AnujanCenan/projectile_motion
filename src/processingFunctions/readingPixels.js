@@ -1,5 +1,4 @@
-import cannonPixelColours from "./cannonV2Pixels.txt"
-export async function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot) {
+export function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot) {
 
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(ctx, canvas, cannonInfo, angle);
   mouse_x *= window.devicePixelRatio;
@@ -19,7 +18,6 @@ export async function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo,
       ((cannonInfo.pixel_width) * cannonInfo.growth_factor);
   }
 
-  console.log(`Lambda, mu = ${lambda}, ${mu}`);
   if (lambda < 0 || lambda > 1 || mu < 0 || mu > 1) {
     return false;
   }
@@ -31,26 +29,16 @@ export async function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo,
   ctx.strokeStyle = "red";
   ctx.stroke();
 
-  const rowsPassed = Math.round(mu * cannonInfo.pixel_height);
-  const columnsPassed = Math.round(lambda * cannonInfo.pixel_width);
-
+  // Transparency Check
   let transparency = false;
+  var p = ctx.getImageData(mouse_x, mouse_y, 1, 1).data;
+  if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) transparency = true;
 
-  // TODO: better way to do this is to use the ctx variable to check the pixel colour
-  await fetch(cannonPixelColours)
-  .then(r => r.text())
-  .then(text => {
-    const wholeFile = (text.split('\n'));
-
-    if (wholeFile[rowsPassed * cannonInfo.pixel_width - 1 + columnsPassed] === "0, 0, 0, 0") {
-      transparency = true;
-    }
- });
-
+  // Pivot Position Check
   clickedBehindPivot.current = 1;
- if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
-  clickedBehindPivot.current = -1;
- }
+  if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
+    clickedBehindPivot.current = -1;
+  }
 
  return !transparency;
 }

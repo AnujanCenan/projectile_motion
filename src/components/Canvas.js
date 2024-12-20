@@ -99,12 +99,12 @@ export default function Canvas() {
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
-  async function mouseDown(e) {
+  function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
     console.log("Heard mouse down")
     console.log(`Elevation angle = ${elevationAngle}`);
     
-    cannonClick.current  = await clickedOnCannon(
+    cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
       e.pageX, e.pageY,
       cannonInfo, 

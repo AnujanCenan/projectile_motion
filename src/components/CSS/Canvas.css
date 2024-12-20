@@ -19,7 +19,6 @@ img {
     padding: 15px 10px;
 
     display: inline-block;
-    
 }
 
 input {
@@ -44,6 +43,7 @@ input {
     border: blue 2px solid;
 
 }
+
 
 @media (orientation: portrait) {
     #canvas {
