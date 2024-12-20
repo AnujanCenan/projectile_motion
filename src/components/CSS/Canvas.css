@@ -11,6 +11,40 @@ img {
     display: inline;
 }
 
+#angleInput {
+    margin-left: 40%;
+    position: relative;
+    bottom: 50vh;
+    background-color: white;
+    padding: 15px 10px;
+
+    display: inline-block;
+}
+
+input {
+    padding: 10px;
+    margin-left: 6px;
+    margin-right: 3px;
+
+    outline-style: none;
+    box-shadow: none;
+    border-color: transparent;
+
+    border: black 2px solid;
+
+}
+#angleInput > input {
+    width: 60px;
+}
+
+#angleInput > input:focus {
+
+    background-color: rgb(238, 251, 255);
+    border: blue 2px solid;
+
+}
+
+
 @media (orientation: portrait) {
     #canvas {
         background-size: cover;
