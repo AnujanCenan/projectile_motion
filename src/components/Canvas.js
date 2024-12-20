@@ -16,6 +16,8 @@ export default function Canvas() {
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
 
+  const angleInputRef = useRef(null);
+
 
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
@@ -27,6 +29,8 @@ export default function Canvas() {
   const click_x = useRef(0);
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
+
+  //////////////////////// Canvas Initial Drawings ///////////////////////////////////////
 
   useEffect(() => {
     let dpi = window.devicePixelRatio;
@@ -47,14 +51,14 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo)
-
-    // drawRotatedCannon(ctxRef.current, canvasRef.current, -90, cannonRef.current, holsterRef.current, cannonInfo)
+    drawDefaultCannon(
+      ctxRef.current, canvasRef.current, 
+      cannonRef.current, holsterRef.current, 
+      cannonInfo, holsterInfo
+    );
   }, [ctxRef, cannonInfo, holsterInfo])
 
   useEffect(() => {
-    console.log("In the useEffect for drawing the cannon")
-
     ctxRef.current = canvasRef.current.getContext('2d');
     console.log(elevationAngle)
     // TODO: clear the appropriate portion of the canvas as opposed to the whole thing
@@ -67,10 +71,31 @@ export default function Canvas() {
       cannonRef.current, holsterRef.current, 
       cannonInfo, holsterInfo
     );
-
-    // drawRotatedCannon(ctxRef.current, canvasRef.current, -90, cannonRef.current, holsterRef.current, cannonInfo)
-
   })
+  ////////////////////////////////Textbox Input /////////////////////////////////////////////////////
+
+  function changeAngleWithTextBox(e) {
+    const val = e.target.value;
+    // requires some 
+    try {
+      if (val === "") {
+        setElevationAngle(0);
+      }
+      // some defensive programming
+      if (isNaN(parseFloat(val))) {
+        return;
+      } else if (parseFloat(val) < 0) {
+        setElevationAngle(0)
+      } else if (parseFloat(val) > 90) {
+        setElevationAngle(90);
+      } else {
+        setElevationAngle(parseFloat(val))
+      }
+    } catch (error) {
+      console.error(error.message)
+      return;
+    }
+  }
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -109,11 +134,11 @@ export default function Canvas() {
       } else {
         setElevationAngle(elevationAngle + angularDisplacement);
       }
-      console.log(elevationAngle)
+      angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
     }
   }
 
-  function mouseUp(e){
+  function mouseUp(){
       cannonClick.current = false;
   }
 
@@ -125,7 +150,7 @@ export default function Canvas() {
         style={{height: 1.3 * window.innerHeight}} id="canvas" 
         // onClick={(e) => adjustAngle(e)}
         onMouseDown={(e) => mouseDown(e)}
-        onMouseUp={(e) => mouseUp(e)}
+        onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
       >
         <img
@@ -139,6 +164,19 @@ export default function Canvas() {
           ref={holsterRef}
         />
       </canvas>
+
+      <div id="angleInput">
+        Angle: 
+        <input 
+          type="text" 
+          ref={angleInputRef}
+          onChange={(e) => {changeAngleWithTextBox(e)}} 
+          style={{bottom: "95px"}}
+          maxLength={6}
+        />
+        degrees
+      </div>
+
     </>
     
   )
