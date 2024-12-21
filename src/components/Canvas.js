@@ -7,7 +7,7 @@ import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { findFrontOfCannon } from "../processingFunctions/findFrontOfCannon"
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
 
 export default function Canvas() {
 
@@ -148,7 +148,7 @@ export default function Canvas() {
     console.log("firing cannon")
     try {
       if (canvasRef.current) {
-        const [x, y] = findFrontOfCannon(canvasRef.current, elevationAngle, cannonInfo)
+        const [x, y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
         console.log(x, y)
         ctxRef.current.beginPath();
         ctxRef.current.arc(x, y, 10, 0, 2 * Math.PI);
