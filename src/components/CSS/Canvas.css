@@ -44,6 +44,12 @@ input {
 
 }
 
+#fireButton {
+    width: 90px;
+    height: 60px;
+    border: black 2px solid;
+}
+
 
 @media (orientation: portrait) {
     #canvas {
