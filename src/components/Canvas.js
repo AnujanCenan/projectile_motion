@@ -7,6 +7,7 @@ import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
 
 export default function Canvas() {
 
@@ -60,7 +61,6 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    console.log(elevationAngle)
     // TODO: clear the appropriate portion of the canvas as opposed to the whole thing
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -71,6 +71,17 @@ export default function Canvas() {
       cannonRef.current, holsterRef.current, 
       cannonInfo, holsterInfo
     );
+
+    // drawing a scrappy target
+    // say i want to get a target 400 m away
+    // 1 metre = 5 pixels is my conversion rate atm
+    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+    ctxRef.current.beginPath();
+    ctxRef.current.arc(piv_x + 500 * 5, piv_y, 20, 0, 2 * Math.PI);
+    ctxRef.current.strokeStyle = "blue";
+    ctxRef.current.fillStyle = "purple"
+    ctxRef.current.stroke();
+    ctxRef.current.fill();
   })
   ////////////////////////////////Textbox Input /////////////////////////////////////////////////////
 
@@ -139,11 +150,57 @@ export default function Canvas() {
   }
 
   function mouseUp(){
-      cannonClick.current = false;
+    cannonClick.current = false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
 
+  function fireCannon() {
+    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo);
+    ctxRef.current.font = "50px Arial";
+    ctxRef.current.fillText(`length of field = ${canvasRef.current.width - piv_x}`,10,120);
+
+    try {
+      if (canvasRef.current) {
+        const [initial_x, initial_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+
+        // get the thing to move
+        const accel = 49;          // TODO: could become a state variable if we move to different planets
+        const initial_v =  350;         // TODO: becomes a state variable
+        var x = initial_x;
+        var y = initial_y;
+        var currTime = 0;
+        const angle_rad = elevationAngle * (Math.PI / 180)
+
+        function trackProjectile() {
+          if (y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2) <= initial_y) {    
+            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                             // (1)
+            y = initial_y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2);    // (2)
+            currTime += 0.05; // something to experiment with
+
+            console.log(`x, y = ${x}, ${y}`)
+      
+            // redrawing the cannon ball in a new position
+            ctxRef.current.beginPath();
+            ctxRef.current.moveTo(x, y);
+            ctxRef.current.arc(x, y, 5, 0, Math.PI * 2, false);
+            ctxRef.current.stroke();
+            ctxRef.current.strokeStyle = "red"
+            ctxRef.current.fillStyle = 'black';
+            ctxRef.current.fill();
+            ctxRef.current.closePath(); 
+          }
+          requestAnimationFrame(trackProjectile);
+        }
+        trackProjectile(); 
+      }
+
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <canvas ref={canvasRef} 
@@ -176,6 +233,9 @@ export default function Canvas() {
         />
         degrees
       </div>
+      <button id="fireButton" onClick={() => fireCannon()}>
+        Fire
+      </button>
 
     </>
     
