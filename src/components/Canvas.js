@@ -7,6 +7,7 @@ import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
+import { findFrontOfCannon } from "../processingFunctions/findFrontOfCannon"
 
 export default function Canvas() {
 
@@ -60,7 +61,6 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    console.log(elevationAngle)
     // TODO: clear the appropriate portion of the canvas as opposed to the whole thing
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -139,11 +139,28 @@ export default function Canvas() {
   }
 
   function mouseUp(){
-      cannonClick.current = false;
+    cannonClick.current = false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
 
+  function fireCannon() {
+    console.log("firing cannon")
+    try {
+      if (canvasRef.current) {
+        const [x, y] = findFrontOfCannon(canvasRef.current, elevationAngle, cannonInfo)
+        console.log(x, y)
+        ctxRef.current.beginPath();
+        ctxRef.current.arc(x, y, 10, 0, 2 * Math.PI);
+        ctxRef.current.strokeStyle = "blue"
+        ctxRef.current.stroke();
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <canvas ref={canvasRef} 
@@ -176,6 +193,9 @@ export default function Canvas() {
         />
         degrees
       </div>
+      <button id="fireButton" onClick={() => fireCannon()}>
+        Fire
+      </button>
 
     </>
     
