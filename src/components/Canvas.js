@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import "./CSS/Canvas.css"
 
 import { drawDefaultCannon, drawRotatedCannon, getCannonInfo, getHolsterInfo } from "../processingFunctions/drawingFunctions"
-// import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
@@ -19,6 +18,8 @@ export default function Canvas() {
 
   const angleInputRef = useRef(null);
 
+  const USER_ANCHOR_POINT = useRef(null);
+
 
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
@@ -30,6 +31,8 @@ export default function Canvas() {
   const click_x = useRef(0);
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
+
+  const resize = useRef(0)
 
   //////////////////////// Canvas Initial Drawings ///////////////////////////////////////
 
@@ -46,8 +49,19 @@ export default function Canvas() {
     if (canvas) {
       fix_dpi();
     }
+  }, [resize.current]);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    USER_ANCHOR_POINT.current = [canvas.width * 0.032, canvas.height * 0.70];
   }, []);
+
+  function handleCanvasResize() {
+    resize.current += 1;
+    if (resize.current == 2) {
+      resize.current = 0;
+    }
+  }
 
 
   useEffect(() => {
@@ -61,7 +75,6 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    // TODO: clear the appropriate portion of the canvas as opposed to the whole thing
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
@@ -75,7 +88,9 @@ export default function Canvas() {
     // drawing a scrappy target
     // say i want to get a target 400 m away
     // 1 metre = 5 pixels is my conversion rate atm
-    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+    const [piv_x, piv_y] = findPivotGlobalCoords(
+      canvasRef.current, elevationAngle, cannonInfo
+    )
     ctxRef.current.beginPath();
     ctxRef.current.arc(piv_x + 500 * 5, piv_y, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
@@ -156,15 +171,11 @@ export default function Canvas() {
   //////////////////////////////////////////////////////////////////////////////
 
   function fireCannon() {
-    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo);
-    ctxRef.current.font = "50px Arial";
-    ctxRef.current.fillText(`length of field = ${canvasRef.current.width - piv_x}`,10,120);
-
     try {
       if (canvasRef.current) {
-        const [initial_x, initial_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+        const [initial_x, initial_y] 
+          = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
 
-        // get the thing to move
         const accel = 49;          // TODO: could become a state variable if we move to different planets
         const initial_v =  350;         // TODO: becomes a state variable
         var x = initial_x;
@@ -173,14 +184,20 @@ export default function Canvas() {
         const angle_rad = elevationAngle * (Math.PI / 180)
 
         function trackProjectile() {
-          if (y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2) <= initial_y) {    
-            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                             // (1)
-            y = initial_y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2);    // (2)
+          if (y - (initial_v * Math.sin(angle_rad) * currTime) 
+            + (1/2 * accel * currTime**2) <= initial_y) 
+          {    
+            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                            
+            y = initial_y
+              - (initial_v * Math.sin(angle_rad) * currTime) 
+              + (1/2 * accel * currTime ** 2); 
+
             currTime += 0.05; // something to experiment with
 
             console.log(`x, y = ${x}, ${y}`)
       
             // redrawing the cannon ball in a new position
+            // TODO: write a separate function for drawing a generic ball
             ctxRef.current.beginPath();
             ctxRef.current.moveTo(x, y);
             ctxRef.current.arc(x, y, 5, 0, Math.PI * 2, false);
@@ -209,6 +226,7 @@ export default function Canvas() {
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
+        onResize={() => handleCanvasResize()}
       >
         <img
           src={cannonImg}
