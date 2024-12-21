@@ -145,16 +145,44 @@ export default function Canvas() {
   //////////////////////////////////////////////////////////////////////////////
 
   function fireCannon() {
-    console.log("firing cannon")
     try {
       if (canvasRef.current) {
-        const [x, y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
-        console.log(x, y)
-        ctxRef.current.beginPath();
-        ctxRef.current.arc(x, y, 10, 0, 2 * Math.PI);
-        ctxRef.current.strokeStyle = "blue"
-        ctxRef.current.stroke();
+        const [initial_x, initial_y] = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+
+        // get the thing to move
+        const accel = 91.4666666663;          // TODO: could become a state variable if we move to different planets
+        const initial_v = 466.666666665;         // TODO: becomes a state variable
+        var x = initial_x;
+        var y = initial_y;
+        var currTime = 0;
+        const angle_rad = elevationAngle * (Math.PI / 180)
+
+        ctxRef.current.font = "50px Arial";
+        ctxRef.current.fillText(`canvas width = ${canvasRef.current.width}`,10,80);
+
+        function trackProjectile() {
+          if (y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2) <= initial_y) {    
+            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                             // (1)
+            y = initial_y - (initial_v * Math.sin(angle_rad) * currTime) + (1/2 * accel * currTime**2);    // (2)
+            currTime += 0.1; // something to experiment with
+
+            console.log(`x, y = ${x}, ${y}`)
+      
+            // redrawing the cannon ball in a new position
+            ctxRef.current.beginPath();
+            ctxRef.current.moveTo(x, y);
+            ctxRef.current.arc(x, y, 5, 0, Math.PI * 2, false);
+            ctxRef.current.stroke();
+            ctxRef.current.strokeStyle = "red"
+            ctxRef.current.fillStyle = 'black';
+            ctxRef.current.fill();
+            ctxRef.current.closePath(); 
+          }
+          requestAnimationFrame(trackProjectile);
+        }
+        trackProjectile(); 
       }
+
     } catch (e) {
       console.error(e.message);
     }
