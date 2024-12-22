@@ -13,9 +13,11 @@ img {
 }
 
 #angleInput {
-    margin-left: 40%;
-    position: relative;
-    bottom: 50vh;
+    margin-left: 1vw;
+    margin-bottom: 1vw;
+    position: fixed;
+    bottom: 0;
+    left: 0;
     background-color: white;
     padding: 15px 10px;
 

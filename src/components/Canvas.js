@@ -20,7 +20,7 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
-  const USER_ANCHOR_POINT = useRef([0.1, 0.90])
+  const USER_ANCHOR_POINT = useRef([0.15, 0.90])
 
   const { width, height } = useWindowSize();
 
