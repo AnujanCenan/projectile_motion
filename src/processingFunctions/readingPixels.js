@@ -1,8 +1,8 @@
 export function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot) {
 
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(ctx, canvas, cannonInfo, angle);
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
 
 
   var [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_CORNER, v1[0], v1[1], v2[0], v2[1], mouse_x, mouse_y);
