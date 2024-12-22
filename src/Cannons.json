@@ -4,8 +4,7 @@
     "pixel_height": 251,
 
     "pivot_x": 227,
-    "pivot_y": 118,
-    "growth_factor": 0.5
+    "pivot_y": 118
   },
   
   "holster_v1": {
@@ -13,7 +12,6 @@
     "pixel_height": 298,
 
     "pivot_x": 65,
-    "pivot_y": 60,
-    "growth_factor": 0.5
+    "pivot_y": 60
   }
 }
