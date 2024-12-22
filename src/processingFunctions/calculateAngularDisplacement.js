@@ -5,10 +5,10 @@ export function calculateAngularDisplacement(
   angle) 
 {
   
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
-  init_mouse_x *= window.devicePixelRatio;
-  init_mouse_y *= window.devicePixelRatio;
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
+  // init_mouse_x *= window.devicePixelRatio;
+  // init_mouse_y *= window.devicePixelRatio;
   
   const global_piv_x = cannonInfo.scalar_top_corner_x * canvas_width + cannonInfo.pivot_x * cannonInfo.growth_factor;
   const global_piv_y = cannonInfo.scalar_top_corner_y * canvas_height + cannonInfo.pivot_y * cannonInfo.growth_factor;
