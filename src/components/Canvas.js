@@ -20,6 +20,8 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
+  const USER_ANCHOR_POINT = useRef([0.1, 0.90])
+
   const { width, height } = useWindowSize();
 
   const canvasRef = useRef(null);
@@ -63,9 +65,10 @@ export default function Canvas() {
     drawDefaultCannon(
       ctxRef.current, canvasRef.current, 
       cannonRef.current, holsterRef.current, 
-      cannonInfo, holsterInfo
+      cannonInfo, holsterInfo,
+      USER_ANCHOR_POINT.current
     );
-  }, [ctxRef, cannonInfo, holsterInfo])
+  }, [ctxRef, cannonInfo, holsterInfo, USER_ANCHOR_POINT])
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
@@ -76,14 +79,15 @@ export default function Canvas() {
     drawRotatedCannon(ctxRef.current, canvasRef.current, 
       -elevationAngle, 
       cannonRef.current, holsterRef.current, 
-      cannonInfo, holsterInfo
+      cannonInfo, holsterInfo,
+      USER_ANCHOR_POINT.current
     );
 
     // drawing a scrappy target
     // say i want to get a target 400 m away
     // 1 metre = 5 pixels is my conversion rate atm
     const [piv_x, piv_y] = findPivotGlobalCoords(
-      canvasRef.current, elevationAngle, cannonInfo
+      canvasRef.current, USER_ANCHOR_POINT.current
     )
 
     console.log(`available space = ${(2 * width - piv_x) * 9/10}`)
@@ -134,7 +138,8 @@ export default function Canvas() {
       e.pageX, e.pageY,
       cannonInfo, 
       elevationAngle,
-      clickedBehindPivot
+      clickedBehindPivot,
+      USER_ANCHOR_POINT.current
     )
 
     click_x.current = e.pageX;
@@ -147,8 +152,10 @@ export default function Canvas() {
         e.pageX, e.pageY, 
         click_x.current, click_y.current, clickedBehindPivot.current,
         cannonInfo, 
-        canvasRef.current.width, canvasRef.current.height, 
-        elevationAngle);
+        canvasRef.current,
+        elevationAngle,
+        USER_ANCHOR_POINT.current
+      );
 
       click_x.current = e.pageX;
       click_y.current = e.pageY;
@@ -173,7 +180,7 @@ export default function Canvas() {
     try {
       if (canvasRef.current) {
         const [initial_x, initial_y] 
-          = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
+          = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current)
 
         const availableSpace = (2 * width - initial_x) * 9/10;
         const conversionRate = availableSpace / 500;

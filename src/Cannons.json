@@ -2,8 +2,7 @@
   "v2": {
     "pixel_width": 849,
     "pixel_height": 251,
-    "scalar_top_corner_x": 0.032,
-    "scalar_top_corner_y": 0.70,
+
     "pivot_x": 227,
     "pivot_y": 118,
     "growth_factor": 0.5
@@ -12,8 +11,7 @@
   "holster_v1": {
     "pixel_width": 123,
     "pixel_height": 298,
-    "scalar_top_corner_x": 0.06,
-    "scalar_top_corner_y": 0.73,
+
     "pivot_x": 65,
     "pivot_y": 60,
     "growth_factor": 0.5
