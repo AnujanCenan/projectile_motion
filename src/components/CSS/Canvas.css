@@ -1,10 +1,11 @@
 #canvas {
     background-image: url(../../images/fillerBGImage.jpg);
-    background-size: contain;
+    background-size: cover;
     width: 200%;
+    background-repeat: repeat-x;
     
     background-color: rgb(255, 225, 225);
-    background-repeat: repeat-x;
+
 }
 
 img { 
@@ -47,12 +48,10 @@ input {
 #fireButton {
     width: 90px;
     height: 60px;
+    position: fixed;
+    left: 50%;
+    margin-left: -45px;
+    bottom: 0;
+
     border: black 2px solid;
-}
-
-
-@media (orientation: portrait) {
-    #canvas {
-        background-size: cover;
-    }
 }
