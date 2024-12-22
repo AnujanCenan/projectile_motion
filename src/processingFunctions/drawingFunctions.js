@@ -1,6 +1,5 @@
 import Cannons from "../Cannons.json"
 
-
 export function getCannonInfo(name) {
   try {
     return Cannons[name];
@@ -18,6 +17,8 @@ export function getHolsterInfo(name) {
     console.error(e.message);
   }
 }
+
+const USER_ANCHOR_POINT = [0.05, 0.90]
 
 /**
  * @param {CanvasRenderingContext2D} ctx - the context for the canvas
@@ -56,7 +57,13 @@ function drawHolster(ctx, canvas, holsterImage, holsterInfo) {
 
   const growth_factor = holsterInfo.growth_factor;
 
-  ctx.drawImage(holsterImage, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], holsterInfo.pixel_width * growth_factor, holsterInfo.pixel_height * growth_factor);
+  ctx.drawImage(
+    holsterImage, 
+    TOP_LEFT_CORNER[0], 
+    TOP_LEFT_CORNER[1], 
+    holsterInfo.pixel_width * growth_factor, 
+    holsterInfo.pixel_height * growth_factor
+  );
 }
 
 function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo) {
@@ -75,8 +82,6 @@ function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo) {
 }
 
 export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage, cannonInfo, holsterInfo) {
-
-  // drawHolster(ctx, canvas, holsterImage);
   drawHolster(ctx, canvas, holsterImage, holsterInfo)
   drawCannon(ctx, canvas, cannonImage, angle, cannonInfo);
 }
