@@ -2,9 +2,10 @@
     background-image: url(../../images/fillerBGImage.jpg);
     background-size: contain;
     width: 200%;
+    background-repeat: repeat-x;
     
     background-color: rgb(255, 225, 225);
-    background-repeat: repeat-x;
+
 }
 
 img { 
@@ -12,9 +13,11 @@ img {
 }
 
 #angleInput {
-    margin-left: 40%;
-    position: relative;
-    bottom: 50vh;
+    margin-left: 1vw;
+    margin-bottom: 1vw;
+    position: fixed;
+    bottom: 0;
+    left: 0;
     background-color: white;
     padding: 15px 10px;
 
@@ -47,12 +50,10 @@ input {
 #fireButton {
     width: 90px;
     height: 60px;
+    position: fixed;
+    left: 50%;
+    margin-left: -45px;
+    bottom: 0;
+
     border: black 2px solid;
-}
-
-
-@media (orientation: portrait) {
-    #canvas {
-        background-size: cover;
-    }
 }

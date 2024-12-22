@@ -1,8 +1,14 @@
-export function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot) {
+import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 
-  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(ctx, canvas, cannonInfo, angle);
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
+export function clickedOnCannon(
+  ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot,
+  USER_ANCHOR_POINT
+) {
+
+  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
 
 
   var [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_CORNER, v1[0], v1[1], v2[0], v2[1], mouse_x, mouse_y);
@@ -12,10 +18,10 @@ export function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle
 
   if (angle === 90) {
     mu = (mouse_x - TOP_LEFT_CORNER[0]) / 
-      ((cannonInfo.pixel_height) * cannonInfo.growth_factor)
+      ((cannonInfo.pixel_height) * calculateGrowthFactorCannon(canvas, cannonInfo))
 
     lambda = (TOP_LEFT_CORNER[1] - mouse_y) / 
-      ((cannonInfo.pixel_width) * cannonInfo.growth_factor);
+      ((cannonInfo.pixel_width) * calculateGrowthFactorCannon(canvas, cannonInfo));
   }
 
   if (lambda < 0 || lambda > 1 || mu < 0 || mu > 1) {
@@ -43,15 +49,11 @@ export function clickedOnCannon(ctx, canvas, mouse_x, mouse_y, cannonInfo, angle
  return !transparency;
 }
 
-function findCannonPointAndPlane(ctx, canvas, cannonInfo, angle) {
-  const W = canvas.width;
-  const H = canvas.height;
+function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   
-  const growthFactor = cannonInfo.growth_factor;
+  const growthFactor = calculateGrowthFactorCannon(canvas, cannonInfo)
   
-  const PIVOT_X_GLOBAL = W * cannonInfo.scalar_top_corner_x + cannonInfo.pivot_x * growthFactor;
-  const PIVOT_Y_GLOBAL = H * cannonInfo.scalar_top_corner_y + cannonInfo.pivot_y * growthFactor;
-
+  const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
   
   const angle_rad = angle * Math.PI / 180
 

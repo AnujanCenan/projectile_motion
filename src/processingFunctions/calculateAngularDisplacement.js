@@ -1,17 +1,19 @@
+import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
+
 export function calculateAngularDisplacement(
   mouse_x, mouse_y, init_mouse_x, init_mouse_y, clickedBehindPivot,
   cannonInfo, 
-  canvas_width, canvas_height,
-  angle) 
-{
+  canvas,
+  angle,
+  USER_ANCHOR_POINT
+) {
   
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
-  init_mouse_x *= window.devicePixelRatio;
-  init_mouse_y *= window.devicePixelRatio;
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
+  // init_mouse_x *= window.devicePixelRatio;
+  // init_mouse_y *= window.devicePixelRatio;
   
-  const global_piv_x = cannonInfo.scalar_top_corner_x * canvas_width + cannonInfo.pivot_x * cannonInfo.growth_factor;
-  const global_piv_y = cannonInfo.scalar_top_corner_y * canvas_height + cannonInfo.pivot_y * cannonInfo.growth_factor;
+  const [global_piv_x, global_piv_y] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT);
 
   const a = distanceFormula(global_piv_x, global_piv_y, mouse_x, mouse_y);
   const b = distanceFormula(global_piv_x, global_piv_y, init_mouse_x, init_mouse_y);
