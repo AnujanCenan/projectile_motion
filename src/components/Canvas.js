@@ -20,7 +20,7 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
-  const USER_ANCHOR_POINT = useRef([0.15, 0.90])
+  const USER_ANCHOR_POINT = useRef([0.15, 0.80])
 
   const { width, height } = useWindowSize();
 
@@ -228,7 +228,7 @@ export default function Canvas() {
   return (
     <>
       <canvas ref={canvasRef} 
-        style={{height: 2.5 * height, width: 2 * width}} id="canvas" 
+        style={{height: 1.3 * height, width: 2 * width}} id="canvas" 
         // onClick={(e) => adjustAngle(e)}
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
