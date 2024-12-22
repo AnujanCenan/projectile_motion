@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react"
+import useWindowSize from './resizingHook';
+
 import "./CSS/Canvas.css"
 
-import { drawDefaultCannon, drawRotatedCannon, getCannonInfo, getHolsterInfo } from "../processingFunctions/drawingFunctions"
+import { 
+  drawDefaultCannon, 
+  drawRotatedCannon, 
+  getCannonInfo, 
+  getHolsterInfo 
+} from "../processingFunctions/drawingFunctions"
+
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
@@ -12,14 +20,13 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
+  const { width, height } = useWindowSize();
+
   const canvasRef = useRef(null);
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
 
   const angleInputRef = useRef(null);
-
-  const USER_ANCHOR_POINT = useRef(null);
-
 
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
@@ -32,7 +39,6 @@ export default function Canvas() {
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
 
-  const resize = useRef(0)
 
   //////////////////////// Canvas Initial Drawings ///////////////////////////////////////
 
@@ -49,23 +55,11 @@ export default function Canvas() {
     if (canvas) {
       fix_dpi();
     }
-  }, [resize.current]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    USER_ANCHOR_POINT.current = [canvas.width * 0.032, canvas.height * 0.70];
-  }, []);
-
-  function handleCanvasResize() {
-    resize.current += 1;
-    if (resize.current == 2) {
-      resize.current = 0;
-    }
-  }
-
+  }, [width, height]);
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
+    ctxRef.current.scale(window.devicePixelRatio, window.devicePixelRatio);
     drawDefaultCannon(
       ctxRef.current, canvasRef.current, 
       cannonRef.current, holsterRef.current, 
@@ -91,14 +85,21 @@ export default function Canvas() {
     const [piv_x, piv_y] = findPivotGlobalCoords(
       canvasRef.current, elevationAngle, cannonInfo
     )
+
+    console.log(`available space = ${(2 * width - piv_x) * 9/10}`)
+    const availableSpace = (2 * width - piv_x) * 9/10;
+    const conversionRate = availableSpace / 500;
+    console.log(`Width = ${2 * width}; piv_x = ${piv_x}; available width space = ${availableSpace}`);
     ctxRef.current.beginPath();
-    ctxRef.current.arc(piv_x + 500 * 5, piv_y, 20, 0, 2 * Math.PI);
+    console.log(`Conversion rate = ${conversionRate}`)
+    console.log(`drawing target at coords ${piv_x + 500 * conversionRate}, ${piv_y}`)
+    ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple"
     ctxRef.current.stroke();
     ctxRef.current.fill();
   })
-  ////////////////////////////////Textbox Input /////////////////////////////////////////////////////
+  //////////////////////////////// Textbox Input ////////////////////////////////////////////////////
 
   function changeAngleWithTextBox(e) {
     const val = e.target.value;
@@ -127,8 +128,6 @@ export default function Canvas() {
 
   function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-    console.log("Heard mouse down")
-    console.log(`Elevation angle = ${elevationAngle}`);
     
     cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
@@ -176,8 +175,11 @@ export default function Canvas() {
         const [initial_x, initial_y] 
           = findPivotGlobalCoords(canvasRef.current, elevationAngle, cannonInfo)
 
-        const accel = 49;          // TODO: could become a state variable if we move to different planets
-        const initial_v =  350;         // TODO: becomes a state variable
+        const availableSpace = (2 * width - initial_x) * 9/10;
+        const conversionRate = availableSpace / 500;
+
+        const accel = 9.8 * conversionRate;          // TODO: could become a state variable if we move to different planets
+        const initial_v =  70 * conversionRate;    // TODO: becomes a state variable
         var x = initial_x;
         var y = initial_y;
         var currTime = 0;
@@ -193,8 +195,6 @@ export default function Canvas() {
               + (1/2 * accel * currTime ** 2); 
 
             currTime += 0.05; // something to experiment with
-
-            console.log(`x, y = ${x}, ${y}`)
       
             // redrawing the cannon ball in a new position
             // TODO: write a separate function for drawing a generic ball
@@ -221,12 +221,11 @@ export default function Canvas() {
   return (
     <>
       <canvas ref={canvasRef} 
-        style={{height: 1.3 * window.innerHeight}} id="canvas" 
+        style={{height: 2.5 * height, width: 2 * width}} id="canvas" 
         // onClick={(e) => adjustAngle(e)}
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
-        onResize={() => handleCanvasResize()}
       >
         <img
           src={cannonImg}
