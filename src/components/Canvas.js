@@ -7,14 +7,20 @@ import {
   drawDefaultCannon, 
   drawRotatedCannon, 
   getCannonInfo, 
-  getHolsterInfo 
+  getHolsterInfo,
+  drawDefaultVelocitySlider,
+  drawVelocitySlider
 } from "../processingFunctions/drawingFunctions"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+
+import velocityBar from "../images/velocity/velocityBar.png"
+import velocitySlider from "../images/velocity/velocitySlider.png"
+
 import { clickedOnCannon } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
+import { findCannonTopLeftGlobalCoords, findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
 
 export default function Canvas() {
 
@@ -27,6 +33,8 @@ export default function Canvas() {
   const canvasRef = useRef(null);
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
+  const velocityBarRef = useRef(null);
+  const velocitySliderRef = useRef(null);
 
   const angleInputRef = useRef(null);
 
@@ -68,6 +76,13 @@ export default function Canvas() {
       cannonInfo, holsterInfo,
       USER_ANCHOR_POINT.current
     );
+
+
+    drawDefaultVelocitySlider(
+      ctxRef.current, canvasRef.current, 
+      velocityBarRef.current, velocitySliderRef.current,
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    );
   }, [ctxRef, cannonInfo, holsterInfo, USER_ANCHOR_POINT])
 
   useEffect(() => {
@@ -83,6 +98,12 @@ export default function Canvas() {
       USER_ANCHOR_POINT.current
     );
 
+    drawVelocitySlider(
+      ctxRef.current, canvasRef.current, 
+      velocityBarRef.current, velocitySliderRef.current,
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    );
+
     // drawing a scrappy target
     // say i want to get a target 400 m away
     // 1 metre = 5 pixels is my conversion rate atm
@@ -90,13 +111,11 @@ export default function Canvas() {
       canvasRef.current, USER_ANCHOR_POINT.current
     )
 
-    console.log(`available space = ${(2 * width - piv_x) * 9/10}`)
     const availableSpace = (2 * width - piv_x) * 9/10;
     const conversionRate = availableSpace / 500;
-    console.log(`Width = ${2 * width}; piv_x = ${piv_x}; available width space = ${availableSpace}`);
+
     ctxRef.current.beginPath();
-    console.log(`Conversion rate = ${conversionRate}`)
-    console.log(`drawing target at coords ${piv_x + 500 * conversionRate}, ${piv_y}`)
+
     ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple"
@@ -243,6 +262,16 @@ export default function Canvas() {
           src={holsterImg}
           alt="holster"
           ref={holsterRef}
+        />
+        <img
+          src={velocityBar}
+          alt="velocityBar"
+          ref={velocityBarRef}
+        />
+        <img
+          src={velocitySlider}
+          alt="velocitySlider"
+          ref={velocitySliderRef}
         />
       </canvas>
 
