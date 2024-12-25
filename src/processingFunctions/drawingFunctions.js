@@ -91,3 +91,41 @@ export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannon
     drawCannon(ctx, canvas, cannonImage, 0, cannonInfo, USER_ANCHOR_POINT, growthFactor)
   }
 }
+
+// TODO
+export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, ) {
+  const pos_x = cannonPosition[0];
+  const pos_y = cannonPosition[1] + canvas.height * 0.15;
+
+  console.log(pos_x, pos_y)
+  const growthFactor = 0.5
+  drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
+
+  const sliderPosX = pos_x + 817 * growthFactor * 0.5 - 50/4 * growthFactor;
+  const sliderPosY = pos_y - 51/4 * growthFactor;
+
+  drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+
+
+}
+
+export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition) {
+  // probably should make these accessible from a separate function
+  const pos_x = cannonPosition[0];
+  const pos_y = cannonPosition[1] + canvas.height * 0.15;
+
+  console.log(pos_x, pos_y)
+  const growthFactor = 0.5
+  velocityBar.onload = () => {
+    drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
+  }
+
+  const sliderPosX = pos_x + 817 * growthFactor * 0.5 - 50/4 * growthFactor;
+  const sliderPosY = pos_y - 51/4 * growthFactor;
+
+  velocitySlider.onload = () => {
+    drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+  }
+
+
+}
