@@ -18,9 +18,11 @@ import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import velocityBar from "../images/velocity/velocityBar.png"
 import velocitySlider from "../images/velocity/velocitySlider.png"
 
-import { clickedOnCannon } from "../processingFunctions/readingPixels"
+import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findCannonTopLeftGlobalCoords, findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
+import { topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 
 export default function Canvas() {
 
@@ -38,16 +40,24 @@ export default function Canvas() {
 
   const angleInputRef = useRef(null);
 
+
+  const MAX_SPEED = 140;
+
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1");
   const [elevationAngle, setElevationAngle] = useState(0);
+  const [launchVelocity, setLaunchVelocity] = useState(MAX_SPEED / 2)
 
   // User state variables
   const cannonClick = useRef(false);
+  const sliderClick = useRef(false);
+
   const click_x = useRef(0);
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
+
+  
 
 
   //////////////////////// Canvas Initial Drawings ///////////////////////////////////////
@@ -101,7 +111,8 @@ export default function Canvas() {
     drawVelocitySlider(
       ctxRef.current, canvasRef.current, 
       velocityBarRef.current, velocitySliderRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
+      launchVelocity, MAX_SPEED
     );
 
     // drawing a scrappy target
@@ -121,7 +132,7 @@ export default function Canvas() {
     ctxRef.current.fillStyle = "purple"
     ctxRef.current.stroke();
     ctxRef.current.fill();
-  })
+  }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity])
   //////////////////////////////// Textbox Input ////////////////////////////////////////////////////
 
   function changeAngleWithTextBox(e) {
@@ -161,6 +172,14 @@ export default function Canvas() {
       USER_ANCHOR_POINT.current
     )
 
+    const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    sliderClick.current = clickedOnVelocitySlider(
+      e.pageX, e.pageY, launchVelocity, 
+      817, 25, 50, 51, 
+      topLeftConerVelocityBar(cannonTopLeft, canvasRef.current), 
+      MAX_SPEED, ctxRef.current
+    )
+
     click_x.current = e.pageX;
     click_y.current = e.pageY;
   }
@@ -186,11 +205,27 @@ export default function Canvas() {
         setElevationAngle(elevationAngle + angularDisplacement);
       }
       angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
+
+    } else if (sliderClick.current) {
+      const xDisplacement = e.pageX - click_x.current;
+      const velocityPerPixel = MAX_SPEED / (817 * calclateGrowthFactorVelocity());
+      
+      click_x.current = e.pageX;
+      click_y.current = e.pageY;
+
+      if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
+        setLaunchVelocity(MAX_SPEED)
+      } else if (launchVelocity + xDisplacement * velocityPerPixel < 0) {
+        setLaunchVelocity(0)
+      } else {
+        setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
+      }
     }
   }
 
   function mouseUp(){
     cannonClick.current = false;
+    sliderClick.current = false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -205,7 +240,7 @@ export default function Canvas() {
         const conversionRate = availableSpace / 500;
 
         const accel = 9.8 * conversionRate;          // TODO: could become a state variable if we move to different planets
-        const initial_v =  70 * conversionRate;    // TODO: becomes a state variable
+        const initial_v =  launchVelocity * conversionRate;
         var x = initial_x;
         var y = initial_y;
         var currTime = 0;
@@ -248,7 +283,6 @@ export default function Canvas() {
     <>
       <canvas ref={canvasRef} 
         style={{height: 1.3 * height, width: 2 * width}} id="canvas" 
-        // onClick={(e) => adjustAngle(e)}
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
