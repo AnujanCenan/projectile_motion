@@ -320,7 +320,7 @@ export default function Canvas() {
           <input 
             type="text"
             ref={velocityInputRef}
-            onChange={(e) => changeVelocityWithTextBox(e)} // TODO
+            onChange={(e) => changeVelocityWithTextBox(e)}
             maxLength={8}
           />
           m/s

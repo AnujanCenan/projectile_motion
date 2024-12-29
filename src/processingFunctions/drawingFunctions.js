@@ -98,7 +98,7 @@ export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, can
   const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
 
   console.log(pos_x, pos_y)
-  // TO DO: dynamic growth factor - similar to the cannon growth factor
+  // TODO: dynamic growth factor - similar to the cannon growth factor
   const growthFactor = calclateGrowthFactorVelocity();
   drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
 
