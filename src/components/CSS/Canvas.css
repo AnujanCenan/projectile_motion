@@ -12,19 +12,22 @@ img {
     display: inline;
 }
 
-#angleInput {
-    margin-left: 1vw;
-    margin-bottom: 1vw;
+#inputPanel {
     position: fixed;
     bottom: 0;
     left: 0;
+    margin-left: 1vw;
+    margin-bottom: 1vw;
     background-color: white;
-    padding: 15px 10px;
-
-    display: inline-block;
 }
 
-input {
+#inputPanel > div {
+    padding: 15px 10px;
+    display: block;
+}
+
+#inputPanel > div > input {
+    width: 50px;
     padding: 10px;
     margin-left: 6px;
     margin-right: 3px;
@@ -34,13 +37,9 @@ input {
     border-color: transparent;
 
     border: black 2px solid;
-
-}
-#angleInput > input {
-    width: 60px;
 }
 
-#angleInput > input:focus {
+#inputPanel > div > input:focus {
 
     background-color: rgb(238, 251, 255);
     border: blue 2px solid;
