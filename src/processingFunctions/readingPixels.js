@@ -1,5 +1,7 @@
-import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
+
+////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
   ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot,
@@ -7,26 +9,25 @@ export function clickedOnCannon(
 ) {
 
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
-  // mouse_x *= window.devicePixelRatio;
-  // mouse_y *= window.devicePixelRatio;
 
-
-  var [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_CORNER, v1[0], v1[1], v2[0], v2[1], mouse_x, mouse_y);
-
-  // special case: if elevation angle is 90 degrees (straight up), then the original
-  // math for calculating lambda and mu fails
-
+  var lambda, mu;
   if (angle === 90) {
-    mu = (mouse_x - TOP_LEFT_CORNER[0]) / 
-      ((cannonInfo.pixel_height) * calculateGrowthFactorCannon(canvas, cannonInfo))
-
-    lambda = (TOP_LEFT_CORNER[1] - mouse_y) / 
-      ((cannonInfo.pixel_width) * calculateGrowthFactorCannon(canvas, cannonInfo));
+    [lambda, mu] = clickedOnUprightCannon(
+        mouse_x, mouse_y, TOP_LEFT_CORNER,
+        cannonInfo.pixel_width, 
+        calculateGrowthFactorCannon(canvas, cannonInfo)
+      )
+  } else {
+    [lambda, mu] = calculateLambdaAndMu(
+        TOP_LEFT_CORNER, v1[0], v1[1], v2[0], v2[1], 
+        mouse_x, mouse_y
+      );
   }
 
-  if (lambda < 0 || lambda > 1 || mu < 0 || mu > 1) {
+  if (!evaluateLambdaAndMu(lambda, mu)) {
     return false;
   }
+
   const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
   const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
 
@@ -89,6 +90,42 @@ function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   return [TOP_LEFT_CORNER, vector1, vector2]
 }
 
+function clickedOnUprightCannon(mouse_x, mouse_y, TOP_LEFT_CORNER,
+  pixel_width, growthFactor) {
+
+  const mu = (mouse_x - TOP_LEFT_CORNER[0]) / 
+    ((pixel_width) * growthFactor);
+
+  const lambda = (TOP_LEFT_CORNER[1] - mouse_y) / 
+    ((pixel_width) * growthFactor);
+
+  return [lambda, mu]
+}
+
+///////////////////////////////// Clicked on Velocity Slider //////////////////////////////////////////////
+export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidth, velocityBarHeight, sliderWidth, sliderHeight, TOP_LEFT_BAR, MAX_SPEED, ctx) {
+  const growthFactor = calclateGrowthFactorVelocity();
+
+  const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
+  const centreY = TOP_LEFT_BAR[1] + (velocityBarHeight * growthFactor) / 2;
+  const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2];
+
+  const [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_SLIDER, sliderWidth * growthFactor, 0, 0, sliderHeight * growthFactor, mouse_x, mouse_y);
+
+  if (evaluateLambdaAndMu(lambda, mu)) {
+    ctx.beginPath();
+    ctx.arc(centreX, centreY, 5, 0, 2 * Math.PI)
+    ctx.fillStyle = "red"
+    ctx.stroke();
+    ctx.fill();
+  }
+
+  return evaluateLambdaAndMu(lambda, mu)
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y) {
 
   // TODO: move this working out to proper documentation
@@ -118,4 +155,15 @@ function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y)
 
   const lambda =  (mouse_x - TOP_LEFT_CORNER[0] -  mu * x2) / x1;
   return [lambda, mu]
+}
+
+function evaluateLambdaAndMu(lambda, mu) {
+  if (lambda < 0 || lambda > 1 || mu < 0 || mu > 1) {
+    return false;
+  } else {
+    return true;
+  }
+
+  // return !(lambda < 0 || lambda > 1 || mu < 0 || mu > 1) 
+
 }

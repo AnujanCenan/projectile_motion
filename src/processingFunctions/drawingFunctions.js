@@ -1,5 +1,6 @@
 import Cannons from "../Cannons.json"
-import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { topLeftConerVelocityBar } from "./topLeftCorners";
 
 export function getCannonInfo(name) {
   try {
@@ -90,4 +91,46 @@ export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannon
   cannonImage.onload = () => {
     drawCannon(ctx, canvas, cannonImage, 0, cannonInfo, USER_ANCHOR_POINT, growthFactor)
   }
+}
+
+export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, launchVelocity, MAX_SPEED) {
+
+  const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
+
+  console.log(pos_x, pos_y)
+  // TODO: dynamic growth factor - similar to the cannon growth factor
+  const growthFactor = calclateGrowthFactorVelocity();
+  drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
+
+  // const sliderPosX = pos_x + 817 * growthFactor * 0.5 - 50/2 * growthFactor;
+  const sliderPosY = pos_y - 51/4 * growthFactor;
+
+  const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
+  const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
+
+  drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+
+
+}
+
+export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition) {
+  // probably should make these accessible from a separate function
+  const pos_x = cannonPosition[0];
+  const pos_y = cannonPosition[1] + canvas.height * 0.15;
+
+  console.log(pos_x, pos_y)
+  const growthFactor = 0.5
+  velocityBar.onload = () => {
+    drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
+  }
+
+  const sliderPosX = pos_x + 817 * growthFactor * 0.5 - 50/2 * growthFactor;
+
+  const sliderPosY = pos_y - 51/4 * growthFactor;
+
+  velocitySlider.onload = () => {
+    drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+  }
+
+
 }
