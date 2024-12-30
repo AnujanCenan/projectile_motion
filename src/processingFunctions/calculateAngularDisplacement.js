@@ -8,10 +8,10 @@ export function calculateAngularDisplacement(
   USER_ANCHOR_POINT
 ) {
   
-  // mouse_x *= window.devicePixelRatio;
-  // mouse_y *= window.devicePixelRatio;
-  // init_mouse_x *= window.devicePixelRatio;
-  // init_mouse_y *= window.devicePixelRatio;
+  mouse_x *= window.devicePixelRatio;
+  mouse_y *= window.devicePixelRatio;
+  init_mouse_x *= window.devicePixelRatio;
+  init_mouse_y *= window.devicePixelRatio;
   
   const [global_piv_x, global_piv_y] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT);
 
