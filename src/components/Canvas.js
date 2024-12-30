@@ -7,7 +7,9 @@ import {
   drawRotatedCannon, 
   getCannonInfo, 
   getHolsterInfo,
-  drawVelocitySlider
+  drawVelocitySlider,
+  drawDefaultCannon,
+  drawDefaultVelocitySlider
 } from "../processingFunctions/drawingFunctions"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
@@ -40,7 +42,7 @@ export default function Canvas() {
   const velocityInputRef = useRef(null);
 
 
-  const MAX_SPEED = 90;
+  const MAX_SPEED = 140;
 
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
@@ -76,6 +78,12 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
+    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo, USER_ANCHOR_POINT.current)
+    drawDefaultVelocitySlider(ctxRef.current, canvasRef.current, velocityBarRef.current, velocitySliderRef.current, findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo))
+  })
+
+  useEffect(() => {
+    ctxRef.current = canvasRef.current.getContext('2d');
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
@@ -101,7 +109,7 @@ export default function Canvas() {
       canvasRef.current, USER_ANCHOR_POINT.current
     )
 
-    const availableSpace = (2 * width - piv_x) * 9/10;
+    const availableSpace = (2 * width - piv_x) * 9/10 * window.devicePixelRatio;
     const conversionRate = availableSpace / 500;
 
     ctxRef.current.beginPath();
@@ -209,12 +217,15 @@ export default function Canvas() {
       angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
 
     } else if (sliderClick.current) {
-      const xDisplacement = e.pageX - click_x.current;
+      const mouse_x = e.pageX;
+      const mouse_y = e.pageY;
+
+      const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
       // TODO: 817 is a magic number that needs to be better handled throughout the ENTIRE code base
       const velocityPerPixel = MAX_SPEED / (817 * calclateGrowthFactorVelocity());
       
-      click_x.current = e.pageX;
-      click_y.current = e.pageY;
+      click_x.current = mouse_x;
+      click_y.current = mouse_y;
 
       if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
         setLaunchVelocity(MAX_SPEED)
@@ -242,7 +253,7 @@ export default function Canvas() {
           = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current)
 
         const availableSpace = (2 * width - initial_x) * 9/10;
-        const conversionRate = availableSpace / 500;
+        const conversionRate = availableSpace / 500 * window.devicePixelRatio;
 
         const accel = 9.8 * conversionRate;          // TODO: could become a state variable if we move to different planets
         const initial_v =  launchVelocity * conversionRate;
@@ -255,10 +266,11 @@ export default function Canvas() {
           if (y - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime**2) <= initial_y) 
           {    
-            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                            
+            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
             y = initial_y
               - (initial_v * Math.sin(angle_rad) * currTime) 
               + (1/2 * accel * currTime ** 2); 
+            
 
             currTime += 0.05; // something to experiment with
       

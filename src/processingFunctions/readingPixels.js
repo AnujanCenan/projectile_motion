@@ -8,7 +8,15 @@ export function clickedOnCannon(
   USER_ANCHOR_POINT
 ) {
 
+  mouse_x *= window.devicePixelRatio;
+  mouse_y *= window.devicePixelRatio;
+
+  console.log(`mouse_x, mouse_y = ${mouse_x}, ${mouse_y}`)
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
+  console.log(`TOP LEFT = ${TOP_LEFT_CORNER[0]}, ${TOP_LEFT_CORNER[1]}`)
+  drawCircle(ctx, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], 10, "red")
+  drawCircle(ctx, TOP_LEFT_CORNER[0] + v1[0], TOP_LEFT_CORNER[1] + v1[1], 5, "blue")
+  drawCircle(ctx, TOP_LEFT_CORNER[0] + v2[0], TOP_LEFT_CORNER[1] + v2[1], 5, "blue")
 
   var lambda, mu;
   if (angle === 90) {
@@ -24,9 +32,13 @@ export function clickedOnCannon(
       );
   }
 
+  console.log(lambda, mu)
+
   if (!evaluateLambdaAndMu(lambda, mu)) {
+    console.log('didnt click')
     return false;
   }
+  console.log('evaluated well')
 
   const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
   const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
@@ -83,6 +95,7 @@ function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
     -(cannonInfo.pixel_width * growthFactor) * Math.sin(angle_rad)
   ]
 
+
   const vector2 = [
     (cannonInfo.pixel_height * growthFactor) * Math.cos(Math.PI / 2 - angle_rad),
     (cannonInfo.pixel_height * growthFactor) * Math.sin(Math.PI / 2 - angle_rad)
@@ -104,6 +117,9 @@ function clickedOnUprightCannon(mouse_x, mouse_y, TOP_LEFT_CORNER,
 
 ///////////////////////////////// Clicked on Velocity Slider //////////////////////////////////////////////
 export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidth, velocityBarHeight, sliderWidth, sliderHeight, TOP_LEFT_BAR, MAX_SPEED, ctx) {
+  mouse_x *= window.devicePixelRatio;
+  mouse_y *= window.devicePixelRatio;
+  
   const growthFactor = calclateGrowthFactorVelocity();
 
   const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
@@ -165,5 +181,12 @@ function evaluateLambdaAndMu(lambda, mu) {
   }
 
   // return !(lambda < 0 || lambda > 1 || mu < 0 || mu > 1) 
+}
+
+function drawCircle(ctx, x, y, r, colour) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = colour;
+  ctx.fill();
 
 }
