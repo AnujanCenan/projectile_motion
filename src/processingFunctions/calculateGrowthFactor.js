@@ -13,6 +13,7 @@ export function calculateGrowthFactorCannon(canvas, cannonInfo) {
   return (FRACTION_OF_CANVAS * canvas.width) / cannonInfo.pixel_width
 }
 
-export function calclateGrowthFactorVelocity() {
-  return 0.5;
+export function calclateGrowthFactorVelocity(canvas, velocityBar_pixel_width) {
+  const FRACTION_OF_CANVAS = 1/10;
+  return (FRACTION_OF_CANVAS * canvas.width) / 817
 }

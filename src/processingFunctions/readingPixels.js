@@ -11,13 +11,7 @@ export function clickedOnCannon(
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
 
-  console.log(`mouse_x, mouse_y = ${mouse_x}, ${mouse_y}`)
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
-  console.log(`TOP LEFT = ${TOP_LEFT_CORNER[0]}, ${TOP_LEFT_CORNER[1]}`)
-  drawCircle(ctx, TOP_LEFT_CORNER[0], TOP_LEFT_CORNER[1], 10, "red")
-  drawCircle(ctx, TOP_LEFT_CORNER[0] + v1[0], TOP_LEFT_CORNER[1] + v1[1], 5, "blue")
-  drawCircle(ctx, TOP_LEFT_CORNER[0] + v2[0], TOP_LEFT_CORNER[1] + v2[1], 5, "blue")
-
   var lambda, mu;
   if (angle === 90) {
     [lambda, mu] = clickedOnUprightCannon(
@@ -43,10 +37,6 @@ export function clickedOnCannon(
   const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
   const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
 
-  ctx.beginPath();
-  ctx.arc(proposedX, proposedY, 15, 0, 2 * Math.PI);
-  ctx.strokeStyle = "red";
-  ctx.stroke();
 
   // Transparency Check
   let transparency = false;
@@ -59,7 +49,13 @@ export function clickedOnCannon(
     clickedBehindPivot.current = -1;
   }
 
- return !transparency;
+  if (!transparency) {
+    ctx.beginPath();
+    ctx.arc(proposedX, proposedY, 15, 0, 2 * Math.PI);
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+  }
+  return !transparency;
 }
 
 function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
@@ -116,25 +112,15 @@ function clickedOnUprightCannon(mouse_x, mouse_y, TOP_LEFT_CORNER,
 }
 
 ///////////////////////////////// Clicked on Velocity Slider //////////////////////////////////////////////
-export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidth, velocityBarHeight, sliderWidth, sliderHeight, TOP_LEFT_BAR, MAX_SPEED, ctx) {
+export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidth, velocityBarHeight, sliderWidth, sliderHeight, TOP_LEFT_BAR, MAX_SPEED, growthFactor) {
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
   
-  const growthFactor = calclateGrowthFactorVelocity();
-
   const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
   const centreY = TOP_LEFT_BAR[1] + (velocityBarHeight * growthFactor) / 2;
   const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2];
 
   const [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_SLIDER, sliderWidth * growthFactor, 0, 0, sliderHeight * growthFactor, mouse_x, mouse_y);
-
-  if (evaluateLambdaAndMu(lambda, mu)) {
-    ctx.beginPath();
-    ctx.arc(centreX, centreY, 5, 0, 2 * Math.PI)
-    ctx.fillStyle = "red"
-    ctx.stroke();
-    ctx.fill();
-  }
 
   return evaluateLambdaAndMu(lambda, mu)
 }
@@ -188,5 +174,4 @@ function drawCircle(ctx, x, y, r, colour) {
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = colour;
   ctx.fill();
-
 }

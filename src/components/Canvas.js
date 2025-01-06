@@ -20,9 +20,11 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 
 import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { findCannonTopLeftGlobalCoords, findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
+import { findCannonTopLeftGlobalCoords, topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
 import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
+import FireButton from "./FireButton";
+import InputPanel from "./InputPanel";
 
 export default function Canvas() {
 
@@ -47,8 +49,10 @@ export default function Canvas() {
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1");
+  const velocitySliderInfo = getHolsterInfo("velocity_slider");
+  
   const [elevationAngle, setElevationAngle] = useState(0);
-  const [launchVelocity, setLaunchVelocity] = useState(0)
+  const [launchVelocity, setLaunchVelocity] = useState(10)
 
   // User state variables
   const cannonClick = useRef(false);
@@ -79,7 +83,15 @@ export default function Canvas() {
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
     drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo, USER_ANCHOR_POINT.current)
-    drawDefaultVelocitySlider(ctxRef.current, canvasRef.current, velocityBarRef.current, velocitySliderRef.current, findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo))
+    drawDefaultVelocitySlider(
+      ctxRef.current, 
+      canvasRef.current, 
+      velocityBarRef.current, 
+      velocitySliderRef.current, 
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo), 
+      MAX_SPEED, 
+      launchVelocity
+    )
   })
 
   useEffect(() => {
@@ -121,53 +133,6 @@ export default function Canvas() {
     ctxRef.current.fill();
   }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity])
 
-  //////////////////////////////// Textbox Input ////////////////////////////////////////////////////
-
-  function changeAngleWithTextBox(e) {
-    const val = e.target.value;
-    // requires some defensive programming
-    try {
-      if (val === "") {
-        setElevationAngle(0);
-      }
-      // some defensive programming
-      if (isNaN(parseFloat(val))) {
-        return;
-      } else if (parseFloat(val) < 0) {
-        setElevationAngle(0)
-      } else if (parseFloat(val) > 90) {
-        setElevationAngle(90);
-      } else {
-        setElevationAngle(parseFloat(val))
-      }
-    } catch (error) {
-      console.error("In Canvas.js | function changeAngleWithTextBox")
-      console.error(error.message)
-      return;
-    }
-  }
-
-  function changeVelocityWithTextBox(e) {
-    const val = e.target.value;
-    try {
-      if (val === "") {
-        setLaunchVelocity(0);
-      }
-      if (isNaN(parseFloat(val))) {
-        return;
-      } else if (parseFloat(val) < 0) {
-        setLaunchVelocity(0);
-      } else if (parseFloat(val) > MAX_SPEED) {
-        setLaunchVelocity(MAX_SPEED);
-      } else {
-        setLaunchVelocity(parseFloat(val));
-      }
-    } catch (error) {
-      console.error("In Canvas.js | function changeVelocityWithTextBox")
-      console.error(error.message)
-    }
-  }
-
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
   function mouseDown(e) {
@@ -185,9 +150,10 @@ export default function Canvas() {
     const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
       e.pageX, e.pageY, launchVelocity, 
-      817, 25, 50, 51, 
+      velocitySliderInfo.pixel_width, velocitySliderInfo.pixel_height, 
+      velocitySliderInfo.slider_pixel_width, velocitySliderInfo.slider_pixel_height, 
       topLeftConerVelocityBar(cannonTopLeft, canvasRef.current), 
-      MAX_SPEED, ctxRef.current
+      MAX_SPEED, calclateGrowthFactorVelocity(canvasRef.current)
     )
 
     click_x.current = e.pageX;
@@ -221,8 +187,7 @@ export default function Canvas() {
       const mouse_y = e.pageY;
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
-      // TODO: 817 is a magic number that needs to be better handled throughout the ENTIRE code base
-      const velocityPerPixel = MAX_SPEED / (817 * calclateGrowthFactorVelocity());
+      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * calclateGrowthFactorVelocity(canvasRef.current));
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
@@ -326,33 +291,15 @@ export default function Canvas() {
         />
       </canvas>
 
-      <div id="inputPanel">
-        <div id="velocityInput">
-          Velocity:
-          <input 
-            type="text"
-            ref={velocityInputRef}
-            onChange={(e) => changeVelocityWithTextBox(e)}
-            maxLength={8}
-          />
-          m/s
-        </div>
-        <div id="angleInput">
-          Angle: 
-          <input 
-            type="text" 
-            ref={angleInputRef}
-            onChange={(e) => {changeAngleWithTextBox(e)}} 
-            style={{bottom: "95px"}}
-            maxLength={6}
-          />
-          degrees
-        </div>
-      </div>
-      <button id="fireButton" onClick={() => fireCannon()}>
-        Fire
-      </button>
+      <InputPanel 
+        setElevationAngle={setElevationAngle} 
+        setLaunchVelocity={setLaunchVelocity} 
+        MAX_SPEED={MAX_SPEED} 
+        angleInputRef={angleInputRef} 
+        velocityInputRef={velocityInputRef}
+      />
 
+      <FireButton fireCannon={fireCannon} />
     </>
     
   )
