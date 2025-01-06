@@ -45,14 +45,3 @@ img {
     border: blue 2px solid;
 
 }
-
-#fireButton {
-    width: 90px;
-    height: 60px;
-    position: fixed;
-    left: 50%;
-    margin-left: -45px;
-    bottom: 0;
-
-    border: black 2px solid;
-}

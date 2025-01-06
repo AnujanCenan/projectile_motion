@@ -20,9 +20,10 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 
 import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { findCannonTopLeftGlobalCoords, findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
+import { findCannonTopLeftGlobalCoords, topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
 import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
+import FireButton from "./FireButton";
 
 export default function Canvas() {
 
@@ -47,6 +48,8 @@ export default function Canvas() {
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1");
+  const velocitySliderInfo = getHolsterInfo("velocity_slider");
+  
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
 
@@ -185,9 +188,10 @@ export default function Canvas() {
     const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
       e.pageX, e.pageY, launchVelocity, 
-      817, 25, 50, 51, 
+      velocitySliderInfo.pixel_width, velocitySliderInfo.pixel_height, 
+      velocitySliderInfo.slider_pixel_width, velocitySliderInfo.slider_pixel_height, 
       topLeftConerVelocityBar(cannonTopLeft, canvasRef.current), 
-      MAX_SPEED, ctxRef.current
+      MAX_SPEED, calclateGrowthFactorVelocity(canvasRef.current)
     )
 
     click_x.current = e.pageX;
@@ -222,7 +226,8 @@ export default function Canvas() {
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
       // TODO: 817 is a magic number that needs to be better handled throughout the ENTIRE code base
-      const velocityPerPixel = MAX_SPEED / (817 * calclateGrowthFactorVelocity());
+      // 817 refers to the width of the velocity bar in pixels
+      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * calclateGrowthFactorVelocity(canvasRef.current));
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
@@ -349,10 +354,7 @@ export default function Canvas() {
           degrees
         </div>
       </div>
-      <button id="fireButton" onClick={() => fireCannon()}>
-        Fire
-      </button>
-
+      <FireButton fireCannon={fireCannon} />
     </>
     
   )

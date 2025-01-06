@@ -20,6 +20,15 @@ export function getHolsterInfo(name) {
   }
 }
 
+export function getVelocitySliderInfo(name) {
+  try {
+    return Cannons[name];
+  } catch (e) {
+    console.error("Error at getVelocitySliderInfo in drawingFunctions.js");
+    console.error(e.message);
+  }
+}
+
 /**
  * @param {CanvasRenderingContext2D} ctx - the context for the canvas
  * @param {ImageElement} image - the image you wish to draw
@@ -97,12 +106,10 @@ export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, can
 
   const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
 
-  console.log(pos_x, pos_y)
   // TODO: dynamic growth factor - similar to the cannon growth factor
-  const growthFactor = calclateGrowthFactorVelocity();
+  const growthFactor = calclateGrowthFactorVelocity(canvas);
   drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
 
-  // const sliderPosX = pos_x + 817 * growthFactor * 0.5 - 50/2 * growthFactor;
   const sliderPosY = pos_y - 51/4 * growthFactor;
 
   const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
@@ -117,7 +124,7 @@ export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlid
   // probably should make these accessible from a separate function
   const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
 
-  const growthFactor = calclateGrowthFactorVelocity();
+  const growthFactor = calclateGrowthFactorVelocity(canvas);
 
   velocityBar.onload = () => {
     drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
