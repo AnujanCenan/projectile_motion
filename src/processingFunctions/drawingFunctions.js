@@ -120,7 +120,7 @@ export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, can
 
 }
 
-export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition) {
+export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, MAX_SPEED, launchVelocity) {
   // probably should make these accessible from a separate function
   const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
 
@@ -130,12 +130,16 @@ export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlid
     drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
   }
 
-  const sliderPosX = pos_x;
-
+  const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
+  const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
   const sliderPosY = pos_y - 51/4 * growthFactor;
 
   velocitySlider.onload = () => {
+    // TODO: This code is repeated in drawVelocitySlider – could improve code quality
+
+  
     drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+  
   }
 
 
