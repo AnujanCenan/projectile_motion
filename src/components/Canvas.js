@@ -10,7 +10,9 @@ import {
   drawVelocitySlider,
   drawDefaultCannon,
   drawDefaultVelocitySlider,
-  drawCircle
+  drawCircle,
+  drawDefaultHeightScale,
+  drawHeightScale
 } from "../processingFunctions/drawingFunctions"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
@@ -19,8 +21,8 @@ import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import velocityBar from "../images/velocity/velocityBar.png"
 import velocitySlider from "../images/velocity/velocitySlider.png"
 
-import heightScale from "../images/height/heightScale.png"
-import heightArrow from "../images/height/arrow.png"
+import heightScale from "../images/height/heightBar.png"
+import heightArrow from "../images/height/heightIndicator.png"
 
 import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
@@ -34,7 +36,7 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
-  const USER_ANCHOR_POINT = useRef([0.15, 0.8])
+  const USER_ANCHOR_POINT = useRef([0.2, 0.8])
   const GROUND_LEVEL_SCALAR = 0.8;
 
   const { width, height } = useWindowSize();
@@ -102,6 +104,14 @@ export default function Canvas() {
       MAX_SPEED, 
       launchVelocity
     )
+    drawDefaultHeightScale(
+      ctxRef.current,
+      canvasRef.current,
+      heightScaleRef.current,
+      heightArrowRef.current,
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
+      USER_ANCHOR_POINT.current[1]
+    )
   })
 
   useEffect(() => {
@@ -122,6 +132,16 @@ export default function Canvas() {
       velocityBarRef.current, velocitySliderRef.current,
       findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
       launchVelocity, MAX_SPEED
+    );
+
+
+    drawHeightScale(
+      ctxRef.current,
+      canvasRef.current,
+      heightScaleRef.current,
+      heightArrowRef.current,
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
+      USER_ANCHOR_POINT.current[1]
     );
 
     // drawing a scrappy target
@@ -271,7 +291,7 @@ export default function Canvas() {
   return (
     <>
       <canvas ref={canvasRef} 
-        style={{height: 4 * height, width: 3 * width}} id="canvas" 
+        style={{height: 1 * height, width: 2 * width}} id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}

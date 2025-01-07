@@ -14,6 +14,11 @@ export function calculateGrowthFactorCannon(cannonInfo) {
 }
 
 export function calclateGrowthFactorVelocity(canvas) {
-  const FRACTION_OF_CANVAS = 1/10;
-  return (FRACTION_OF_CANVAS * canvas.width) / 817 // 817 is the velocityBar_pixel_width
+  const FRACTION_OF_CANVAS = 2/5;
+  return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+}
+
+export function calculateGrowthFactorHeight(canvas) {
+  const FRACTION_OF_CANVAS = 7/10;
+  return (FRACTION_OF_CANVAS * canvas.height) / 866 // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
 }

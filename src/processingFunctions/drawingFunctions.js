@@ -1,6 +1,6 @@
 import Cannons from "../Cannons.json"
-import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
-import { topLeftCornerVelocityBar } from "./topLeftCorners";
+import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { topLeftCornerHeightScale, topLeftCornerVelocityBar } from "./topLeftCorners";
 
 export function getCannonInfo(name) {
   try {
@@ -121,7 +121,6 @@ export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, can
 }
 
 export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, MAX_SPEED, launchVelocity) {
-  // probably should make these accessible from a separate function
   const [pos_x, pos_y] = topLeftCornerVelocityBar(cannonPosition, canvas)
 
   const growthFactor = calclateGrowthFactorVelocity(canvas);
@@ -130,17 +129,43 @@ export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlid
     drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
   }
 
+  // TODO: This code is repeated in drawVelocitySlider – could improve code quality
   const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
   const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
   const sliderPosY = pos_y - 51/4 * growthFactor;
 
   velocitySlider.onload = () => {
-    // TODO: This code is repeated in drawVelocitySlider – could improve code quality
+    drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+  }
+}
+
+export function drawHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
+  const [pos_x, pos_y] = topLeftCornerHeightScale(cannonPosition, canvas);
+  const growthFactor = calculateGrowthFactorHeight(canvas);
+  drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
+
+  const arrowPosX = pos_x + (100) * growthFactor - 103 * growthFactor;    // 103 is the pixel width of the arrow image
+  const arrowPosY = height_scalar * canvas.height;
+  drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
+}
+
+export function drawDefaultHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
+  const [pos_x, pos_y] = topLeftCornerHeightScale(cannonPosition, canvas);
+  const growthFactor = calculateGrowthFactorHeight(canvas);
+  
+  heightScale.onload = () => {
+    console.log("height scale loaded so i am drawing the bar")
+    drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
+    
+    const arrowPosX = pos_x + (100) * growthFactor - 103 * growthFactor;
+    const arrowPosY = height_scalar * canvas.height;
+    drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
+  }
+
 
   
-    drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
-  
-  }
+
+
 }
 
 export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
