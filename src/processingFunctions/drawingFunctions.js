@@ -127,16 +127,17 @@ export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlid
 
   velocityBar.onload = () => {
     drawImageWithRotation(ctx, velocityBar, pos_x, pos_y, 0, 0, 817, 25, 0, growthFactor)
+    const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
+    const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
+    const sliderPosY = pos_y - 51/4 * growthFactor;
+  
+    velocitySlider.onload = () => {
+      drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
+    }
   }
 
   // TODO: This code is repeated in drawVelocitySlider – could improve code quality
-  const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
-  const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
-  const sliderPosY = pos_y - 51/4 * growthFactor;
 
-  velocitySlider.onload = () => {
-    drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
-  }
 }
 
 export function drawHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
