@@ -19,6 +19,9 @@ import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 import velocityBar from "../images/velocity/velocityBar.png"
 import velocitySlider from "../images/velocity/velocitySlider.png"
 
+import heightScale from "../images/height/heightScale.png"
+import heightArrow from "../images/height/arrow.png"
+
 import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
@@ -37,10 +40,15 @@ export default function Canvas() {
   const { width, height } = useWindowSize();
 
   const canvasRef = useRef(null);
+
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
+
   const velocityBarRef = useRef(null);
   const velocitySliderRef = useRef(null);
+
+  const heightScaleRef = useRef(null);
+  const heightArrowRef = useRef(null);
 
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
@@ -278,6 +286,7 @@ export default function Canvas() {
           alt="holster"
           ref={holsterRef}
         />
+
         <img
           src={velocityBar}
           alt="velocityBar"
@@ -287,6 +296,17 @@ export default function Canvas() {
           src={velocitySlider}
           alt="velocitySlider"
           ref={velocitySliderRef}
+        />
+
+        <img
+          src={heightScale}
+          alt="heightScale"
+          ref={heightScaleRef}
+        />
+        <img
+          src={heightArrow}
+          alt="heightArrow"
+          ref={heightArrowRef}
         />
       </canvas>
 
