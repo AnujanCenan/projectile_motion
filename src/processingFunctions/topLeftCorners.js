@@ -1,4 +1,4 @@
-import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "./calculateGrowthFactor";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 
 
@@ -18,7 +18,9 @@ export function topLeftCornerVelocityBar(cannonPosition, canvas) {
 }
 
 export function topLeftCornerHeightScale(cannonPosition, canvas) {
+  const growthFactor = calculateGrowthFactorHeight(canvas);
+
   const pos_x = cannonPosition[0] - 0.1 * canvas.width;
-  const pos_y = 0.1 * canvas.height;
+  const pos_y = 0.1 * canvas.height - 23 * growthFactor;
   return [pos_x, pos_y]
 }
