@@ -9,7 +9,8 @@ import {
   getHolsterInfo,
   drawVelocitySlider,
   drawDefaultCannon,
-  drawDefaultVelocitySlider
+  drawDefaultVelocitySlider,
+  drawCircle
 } from "../processingFunctions/drawingFunctions"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
@@ -21,7 +22,7 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { findCannonTopLeftGlobalCoords, topLeftConerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { findCannonTopLeftGlobalCoords, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
 import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
@@ -30,7 +31,8 @@ export default function Canvas() {
 
   const ctxRef = useRef(null);
 
-  const USER_ANCHOR_POINT = useRef([0.15, 0.80])
+  const USER_ANCHOR_POINT = useRef([0.15, 0.8])
+  const GROUND_LEVEL_SCALAR = 0.8;
 
   const { width, height } = useWindowSize();
 
@@ -128,7 +130,7 @@ export default function Canvas() {
 
     ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
-    ctxRef.current.fillStyle = "purple"
+    ctxRef.current.fillStyle = "purple";
     ctxRef.current.stroke();
     ctxRef.current.fill();
   }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity])
@@ -137,7 +139,7 @@ export default function Canvas() {
 
   function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-    
+
     cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
       e.pageX, e.pageY,
@@ -149,11 +151,16 @@ export default function Canvas() {
 
     const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
-      e.pageX, e.pageY, launchVelocity, 
-      velocitySliderInfo.pixel_width, velocitySliderInfo.pixel_height, 
-      velocitySliderInfo.slider_pixel_width, velocitySliderInfo.slider_pixel_height, 
-      topLeftConerVelocityBar(cannonTopLeft, canvasRef.current), 
-      MAX_SPEED, calclateGrowthFactorVelocity(canvasRef.current)
+      e.pageX, 
+      e.pageY, 
+      launchVelocity, 
+      velocitySliderInfo.pixel_width, 
+      velocitySliderInfo.pixel_height, 
+      velocitySliderInfo.slider_pixel_width, 
+      velocitySliderInfo.slider_pixel_height, 
+      topLeftCornerVelocityBar(cannonTopLeft, canvasRef.current), 
+      MAX_SPEED, 
+      calclateGrowthFactorVelocity(canvasRef.current)
     )
 
     click_x.current = e.pageX;
@@ -212,6 +219,7 @@ export default function Canvas() {
   //////////////////////////////////////////////////////////////////////////////
 
   function fireCannon() {
+    var requNum;
     try {
       if (canvasRef.current) {
         const [initial_x, initial_y] 
@@ -220,37 +228,28 @@ export default function Canvas() {
         const availableSpace = (2 * width - initial_x) * 9/10;
         const conversionRate = availableSpace / 500 * window.devicePixelRatio;
 
-        const accel = 9.8 * conversionRate;          // TODO: could become a state variable if we move to different planets
+        const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
         const initial_v =  launchVelocity * conversionRate;
         var x = initial_x;
         var y = initial_y;
         var currTime = 0;
         const angle_rad = elevationAngle * (Math.PI / 180)
 
-        function trackProjectile() {
-          if (y - (initial_v * Math.sin(angle_rad) * currTime) 
-            + (1/2 * accel * currTime**2) <= initial_y) 
+        function trackProjectile() {          
+          if (y <= (GROUND_LEVEL_SCALAR * canvasRef.current.height))
           {    
             x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
             y = initial_y
               - (initial_v * Math.sin(angle_rad) * currTime) 
-              + (1/2 * accel * currTime ** 2); 
-            
+              + (1/2 * accel * currTime ** 2);             
 
             currTime += 0.05; // something to experiment with
       
-            // redrawing the cannon ball in a new position
-            // TODO: write a separate function for drawing a generic ball
-            ctxRef.current.beginPath();
-            ctxRef.current.moveTo(x, y);
-            ctxRef.current.arc(x, y, 5, 0, Math.PI * 2, false);
-            ctxRef.current.stroke();
-            ctxRef.current.strokeStyle = "red"
-            ctxRef.current.fillStyle = 'black';
-            ctxRef.current.fill();
-            ctxRef.current.closePath(); 
+            drawCircle(ctxRef.current, x, y, 5, "blue", "black");
           }
-          requestAnimationFrame(trackProjectile);
+          
+
+          requNum = requestAnimationFrame(trackProjectile);
         }
         trackProjectile(); 
       }
@@ -264,7 +263,7 @@ export default function Canvas() {
   return (
     <>
       <canvas ref={canvasRef} 
-        style={{height: 1.3 * height, width: 2 * width}} id="canvas" 
+        style={{height: 4 * height, width: 3 * width}} id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}

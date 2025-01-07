@@ -1,6 +1,6 @@
 import Cannons from "../Cannons.json"
 import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
-import { topLeftConerVelocityBar } from "./topLeftCorners";
+import { topLeftCornerVelocityBar } from "./topLeftCorners";
 
 export function getCannonInfo(name) {
   try {
@@ -86,13 +86,13 @@ function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo, USER_ANCHOR_POI
 }
 
 export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage, cannonInfo, holsterInfo, USER_ANCHOR_POINT) {
-  const growthFactor = calculateGrowthFactorCannon(canvas, cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
   drawHolster(ctx, canvas, holsterImage, holsterInfo, USER_ANCHOR_POINT, growthFactor)
   drawCannon(ctx, canvas, cannonImage, angle, cannonInfo, USER_ANCHOR_POINT, growthFactor);
 }
 
 export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannonInfo, holsterInfo, USER_ANCHOR_POINT) {
-  const growthFactor = calculateGrowthFactorCannon(canvas, cannonInfo);
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo);
   holsterImage.onload = () => {
     drawHolster(ctx, canvas, holsterImage, holsterInfo, USER_ANCHOR_POINT, growthFactor)
   }
@@ -104,7 +104,7 @@ export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannon
 
 export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, launchVelocity, MAX_SPEED) {
 
-  const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
+  const [pos_x, pos_y] = topLeftCornerVelocityBar(cannonPosition, canvas)
 
   // TODO: dynamic growth factor - similar to the cannon growth factor
   const growthFactor = calclateGrowthFactorVelocity(canvas);
@@ -122,7 +122,7 @@ export function drawVelocitySlider(ctx, canvas, velocityBar, velocitySlider, can
 
 export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlider, cannonPosition, MAX_SPEED, launchVelocity) {
   // probably should make these accessible from a separate function
-  const [pos_x, pos_y] = topLeftConerVelocityBar(cannonPosition, canvas)
+  const [pos_x, pos_y] = topLeftCornerVelocityBar(cannonPosition, canvas)
 
   const growthFactor = calclateGrowthFactorVelocity(canvas);
 
@@ -141,6 +141,13 @@ export function drawDefaultVelocitySlider(ctx, canvas, velocityBar, velocitySlid
     drawImageWithRotation(ctx, velocitySlider, sliderPosX, sliderPosY, 0, 0, 50, 51, 0, growthFactor)
   
   }
+}
 
-
+export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = fillColour;
+  ctx.strokeColour = strokeColour;
+  ctx.stroke();
+  ctx.fill();
 }

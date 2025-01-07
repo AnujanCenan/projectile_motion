@@ -17,7 +17,7 @@ export function clickedOnCannon(
     [lambda, mu] = clickedOnUprightCannon(
         mouse_x, mouse_y, TOP_LEFT_CORNER,
         cannonInfo.pixel_width, 
-        calculateGrowthFactorCannon(canvas, cannonInfo)
+        calculateGrowthFactorCannon(cannonInfo)
       )
   } else {
     [lambda, mu] = calculateLambdaAndMu(
@@ -60,7 +60,7 @@ export function clickedOnCannon(
 
 function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   
-  const growthFactor = calculateGrowthFactorCannon(canvas, cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
   
   const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
   
@@ -164,14 +164,5 @@ function evaluateLambdaAndMu(lambda, mu) {
     return false;
   } else {
     return true;
-  }
-
-  // return !(lambda < 0 || lambda > 1 || mu < 0 || mu > 1) 
-}
-
-function drawCircle(ctx, x, y, r, colour) {
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.fillStyle = colour;
-  ctx.fill();
+  } 
 }
