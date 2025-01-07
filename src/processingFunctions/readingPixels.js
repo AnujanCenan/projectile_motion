@@ -1,4 +1,5 @@
 import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { drawCircle } from "./drawingFunctions";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
@@ -26,13 +27,9 @@ export function clickedOnCannon(
       );
   }
 
-  console.log(lambda, mu)
-
   if (!evaluateLambdaAndMu(lambda, mu)) {
-    console.log('didnt click')
     return false;
   }
-  console.log('evaluated well')
 
   const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
   const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
@@ -127,6 +124,33 @@ export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidt
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export function clickedOnHeightArrow(mouse_x, mouse_y, ARROW_TOP_LEFT, growthFactor, ctx) {
+  mouse_x *= window.devicePixelRatio;
+  mouse_y *= window.devicePixelRatio;
+
+  drawCircle(ctx, ARROW_TOP_LEFT[0], ARROW_TOP_LEFT[1], 5, "green", "black")
+
+  const x1 = 103 * growthFactor;
+  const y1 = 0;
+
+  const x2 = 0;
+  const y2 = 63 * growthFactor;
+
+  drawCircle(ctx, x1, y1, 5, "blue", "black")
+  drawCircle(ctx, x2, y2, 5, "blue", "black")
+
+  const [lambda, mu] = calculateLambdaAndMu(ARROW_TOP_LEFT, x1, y1, x2, y2, mouse_x, mouse_y);
+  console.log(`checking arrow - lambda, mu = ${lambda}, ${mu}`)
+  if (evaluateLambdaAndMu(lambda, mu)) {
+    console.log("CLICKED on the arrow")
+  } else {
+    console.log("Did NOT click on the arrow")
+  }
+  return evaluateLambdaAndMu(lambda, mu)
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 
 function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y) {
 

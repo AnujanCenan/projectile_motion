@@ -24,11 +24,11 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import heightScale from "../images/height/heightBar.png"
 import heightArrow from "../images/height/heightIndicator.png"
 
-import { clickedOnCannon, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
+import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { findCannonTopLeftGlobalCoords, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
-import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
+import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
 
@@ -69,6 +69,7 @@ export default function Canvas() {
   // User state variables
   const cannonClick = useRef(false);
   const sliderClick = useRef(false);
+  const heightArrowClick = useRef(false);
 
   const click_x = useRef(0);
   const click_y = useRef(0);
@@ -190,6 +191,16 @@ export default function Canvas() {
       MAX_SPEED, 
       calclateGrowthFactorVelocity(canvasRef.current)
     )
+
+    const cannonPosition = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    heightArrowClick.current = clickedOnHeightArrow(
+      e.pageX,
+      e.pageY,
+      topLeftCornerArrow(cannonPosition, canvasRef.current, USER_ANCHOR_POINT.current[1]),
+      calculateGrowthFactorHeight(canvasRef.current),
+      ctxRef.current
+    )
+
 
     click_x.current = e.pageX;
     click_y.current = e.pageY;

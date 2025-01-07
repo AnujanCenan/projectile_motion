@@ -1,6 +1,6 @@
 import Cannons from "../Cannons.json"
 import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
-import { topLeftCornerHeightScale, topLeftCornerVelocityBar } from "./topLeftCorners";
+import { topLeftCornerArrow, topLeftCornerHeightScale, topLeftCornerVelocityBar } from "./topLeftCorners";
 
 export function getCannonInfo(name) {
   try {
@@ -145,8 +145,7 @@ export function drawHeightScale(ctx, canvas, heightScale, heightArrow, cannonPos
   const growthFactor = calculateGrowthFactorHeight(canvas);
   drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
 
-  const arrowPosX = pos_x + (100) * growthFactor - 103 * growthFactor;    // 103 is the pixel width of the arrow image
-  const arrowPosY = height_scalar * canvas.height - 63 / 2 * growthFactor;
+  const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);
   drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
 }
 
@@ -157,9 +156,8 @@ export function drawDefaultHeightScale(ctx, canvas, heightScale, heightArrow, ca
   heightScale.onload = () => {
     console.log("height scale loaded so i am drawing the bar")
     drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
-    
-    const arrowPosX = pos_x + (100) * growthFactor - 103 * growthFactor;
-    const arrowPosY = height_scalar * canvas.height - 63 / 2 * growthFactor;
+    // TODO: add this code to the top left corner file
+    const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);
     drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
   }
 
