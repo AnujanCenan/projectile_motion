@@ -35,13 +35,17 @@ import { calculateConversionRate } from "../processingFunctions/calculateConvers
 
 export default function Canvas() {
 
-  const ctxRef = useRef(null);
+  // Hack to make sure the input panel loads in after the canvas is rendered
+  const [loadedCanvas, setLoadedCanvas] = useState(false);
 
-  // const USER_ANCHOR_POINT = useRef([0.2, 0.8])    // value at index 1 should always be between 0.1 and 0.8 inclusive
+  // Positioning Constants
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([0.2, 0.8])
   const GROUND_LEVEL_SCALAR = 0.8;
 
   const { width, height } = useWindowSize();
+
+  // Element References
+  const ctxRef = useRef(null);
 
   const canvasRef = useRef(null);
 
@@ -56,6 +60,7 @@ export default function Canvas() {
 
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
+  const heightInputRef = useRef(null);
 
 
   const MAX_SPEED = 140;
@@ -92,6 +97,7 @@ export default function Canvas() {
     }
     if (canvas) {
       fix_dpi();
+      setLoadedCanvas(true);
     }
   }, [width, height]);
 
@@ -150,16 +156,14 @@ export default function Canvas() {
 
     const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
 
-    // const availableSpace = (canvasRef.current.width - piv_x) * 9/10;
-    // const conversionRate = availableSpace / 500;
+
     const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
+    // Drawing a scrappy target
+
+    const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
     ctxRef.current.beginPath();
-
-    console.log(`coordinates of target = ${piv_x + 500 * conversionRate}, ${piv_y}`)
-    console.log(`Width and height of canvas = ${canvasRef.current.width}, ${canvasRef.current.height}`)
-
-    ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y, 20, 0, 2 * Math.PI);
+    ctxRef.current.arc(piv_x + 430 * conversionRate, piv_y + (metreHeight - 100) * conversionRate, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple";
     ctxRef.current.stroke();
@@ -267,6 +271,9 @@ export default function Canvas() {
         setUserAnchorPoint([0.2, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
+      const conversionRate = calculateConversionRate(canvasRef. current, USER_ANCHOR_POINT, 500);
+      const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+      heightInputRef.current.value = metreHeight;
     }
   }
 
@@ -286,7 +293,7 @@ export default function Canvas() {
           = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT)
 
         const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
-        
+
         const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
         const initial_v =  launchVelocity * conversionRate;
         var x = initial_x;
@@ -361,13 +368,20 @@ export default function Canvas() {
         />
       </canvas>
 
-      <InputPanel 
-        setElevationAngle={setElevationAngle} 
-        setLaunchVelocity={setLaunchVelocity} 
-        MAX_SPEED={MAX_SPEED} 
-        angleInputRef={angleInputRef} 
-        velocityInputRef={velocityInputRef}
-      />
+      {loadedCanvas && 
+        <InputPanel 
+          setElevationAngle={setElevationAngle} 
+          setLaunchVelocity={setLaunchVelocity} 
+          setUserAnchorPoint={setUserAnchorPoint}
+          MAX_SPEED={MAX_SPEED} 
+          angleInputRef={angleInputRef} 
+          velocityInputRef={velocityInputRef}
+          heightInputRef={heightInputRef}
+          canvas={canvasRef.current}
+          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+          MAX_HORIZONTAL_RANGE={500}
+        />
+    }
 
       <FireButton fireCannon={fireCannon} />
     </>

@@ -154,7 +154,6 @@ export function drawDefaultHeightScale(ctx, canvas, heightScale, heightArrow, ca
   const growthFactor = calculateGrowthFactorHeight(canvas);
   
   heightScale.onload = () => {
-    console.log("height scale loaded so i am drawing the bar")
     drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
     // TODO: add this code to the top left corner file
     const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);

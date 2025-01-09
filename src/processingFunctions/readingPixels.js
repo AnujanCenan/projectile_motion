@@ -128,24 +128,14 @@ export function clickedOnHeightArrow(mouse_x, mouse_y, ARROW_TOP_LEFT, growthFac
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
 
-  drawCircle(ctx, ARROW_TOP_LEFT[0], ARROW_TOP_LEFT[1], 5, "green", "black")
-
   const x1 = 103 * growthFactor;
   const y1 = 0;
 
   const x2 = 0;
   const y2 = 63 * growthFactor;
 
-  drawCircle(ctx, x1, y1, 5, "blue", "black")
-  drawCircle(ctx, x2, y2, 5, "blue", "black")
-
   const [lambda, mu] = calculateLambdaAndMu(ARROW_TOP_LEFT, x1, y1, x2, y2, mouse_x, mouse_y);
-  console.log(`checking arrow - lambda, mu = ${lambda}, ${mu}`)
-  if (evaluateLambdaAndMu(lambda, mu)) {
-    console.log("CLICKED on the arrow")
-  } else {
-    console.log("Did NOT click on the arrow")
-  }
+
   return evaluateLambdaAndMu(lambda, mu)
 }
 
