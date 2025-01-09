@@ -24,7 +24,7 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import heightScale from "../images/height/heightBar.png"
 import heightArrow from "../images/height/heightIndicator.png"
 
-import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/readingPixels"
+import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
 import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
@@ -285,6 +285,7 @@ export default function Canvas() {
 
   //////////////////////////////////////////////////////////////////////////////
 
+  // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
   function fireCannon() {
     var requNum;
     try {
