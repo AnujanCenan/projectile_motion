@@ -31,12 +31,14 @@ import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerVelocit
 import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
+import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
 
 export default function Canvas() {
 
   const ctxRef = useRef(null);
 
-  const USER_ANCHOR_POINT = useRef([0.2, 0.8])    // value at index 1 should always be between 0.1 and 0.8 inclusive
+  // const USER_ANCHOR_POINT = useRef([0.2, 0.8])    // value at index 1 should always be between 0.1 and 0.8 inclusive
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([0.2, 0.8])
   const GROUND_LEVEL_SCALAR = 0.8;
 
   const { width, height } = useWindowSize();
@@ -95,13 +97,13 @@ export default function Canvas() {
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo, USER_ANCHOR_POINT.current)
+    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo, USER_ANCHOR_POINT)
     drawDefaultVelocitySlider(
       ctxRef.current, 
       canvasRef.current, 
       velocityBarRef.current, 
       velocitySliderRef.current, 
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo), 
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo), 
       MAX_SPEED, 
       launchVelocity
     )
@@ -110,8 +112,8 @@ export default function Canvas() {
       canvasRef.current,
       heightScaleRef.current,
       heightArrowRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
-      USER_ANCHOR_POINT.current[1]
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
+      USER_ANCHOR_POINT[1]
     )
   })
 
@@ -125,13 +127,13 @@ export default function Canvas() {
       -elevationAngle, 
       cannonRef.current, holsterRef.current, 
       cannonInfo, holsterInfo,
-      USER_ANCHOR_POINT.current
+      USER_ANCHOR_POINT
     );
 
     drawVelocitySlider(
       ctxRef.current, canvasRef.current, 
       velocityBarRef.current, velocitySliderRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
       launchVelocity, MAX_SPEED
     );
 
@@ -141,28 +143,28 @@ export default function Canvas() {
       canvasRef.current,
       heightScaleRef.current,
       heightArrowRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo),
-      USER_ANCHOR_POINT.current[1]
+      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
+      USER_ANCHOR_POINT[1]
     );
 
-    // drawing a scrappy target
-    // say i want to get a target 400 m away
-    // 1 metre = 5 pixels is my conversion rate atm
-    const [piv_x, piv_y] = findPivotGlobalCoords(
-      canvasRef.current, USER_ANCHOR_POINT.current
-    )
 
-    const availableSpace = (2 * width - piv_x) * 9/10 * window.devicePixelRatio;
-    const conversionRate = availableSpace / 500;
+    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
+
+    // const availableSpace = (canvasRef.current.width - piv_x) * 9/10;
+    // const conversionRate = availableSpace / 500;
+    const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
 
     ctxRef.current.beginPath();
+
+    console.log(`coordinates of target = ${piv_x + 500 * conversionRate}, ${piv_y}`)
+    console.log(`Width and height of canvas = ${canvasRef.current.width}, ${canvasRef.current.height}`)
 
     ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple";
     ctxRef.current.stroke();
     ctxRef.current.fill();
-  }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity])
+  }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -175,10 +177,10 @@ export default function Canvas() {
       cannonInfo, 
       elevationAngle,
       clickedBehindPivot,
-      USER_ANCHOR_POINT.current
+      USER_ANCHOR_POINT
     )
 
-    const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
       e.pageX, 
       e.pageY, 
@@ -192,11 +194,11 @@ export default function Canvas() {
       calclateGrowthFactorVelocity(canvasRef.current)
     )
 
-    const cannonPosition = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current, cannonInfo)
+    const cannonPosition = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     heightArrowClick.current = clickedOnHeightArrow(
       e.pageX,
       e.pageY,
-      topLeftCornerArrow(cannonPosition, canvasRef.current, USER_ANCHOR_POINT.current[1]),
+      topLeftCornerArrow(cannonPosition, canvasRef.current, USER_ANCHOR_POINT[1]),
       calculateGrowthFactorHeight(canvasRef.current),
       ctxRef.current
     )
@@ -214,7 +216,7 @@ export default function Canvas() {
         cannonInfo, 
         canvasRef.current,
         elevationAngle,
-        USER_ANCHOR_POINT.current
+        USER_ANCHOR_POINT
       );
 
       click_x.current = e.pageX;
@@ -247,12 +249,31 @@ export default function Canvas() {
       }
 
       velocityInputRef.current.value = Math.round(launchVelocity * 1000) / 1000;
+    } 
+    else if (heightArrowClick.current) {
+      const mouse_x = e.pageX;
+      const mouse_y = e.pageY;
+
+      const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
+      
+      click_x.current = mouse_x;
+      click_y.current = mouse_y;
+
+      if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
+        setUserAnchorPoint([0.2, 0.1]);
+      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > 0.8 * canvasRef.current.height) {
+        setUserAnchorPoint([0.2, 0.8]);
+      } else {
+        setUserAnchorPoint([0.2, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
+      }
+
     }
   }
 
   function mouseUp(){
     cannonClick.current = false;
     sliderClick.current = false;
+    heightArrowClick.current = false;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -262,11 +283,10 @@ export default function Canvas() {
     try {
       if (canvasRef.current) {
         const [initial_x, initial_y] 
-          = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT.current)
+          = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT)
 
-        const availableSpace = (2 * width - initial_x) * 9/10;
-        const conversionRate = availableSpace / 500 * window.devicePixelRatio;
-
+        const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
+        
         const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
         const initial_v =  launchVelocity * conversionRate;
         var x = initial_x;
