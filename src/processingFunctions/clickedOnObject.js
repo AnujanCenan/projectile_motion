@@ -17,7 +17,7 @@ export function clickedOnCannon(
     [lambda, mu] = clickedOnUprightCannon(
         mouse_x, mouse_y, TOP_LEFT_CORNER,
         cannonInfo.pixel_width, 
-        calculateGrowthFactorCannon(canvas, cannonInfo)
+        calculateGrowthFactorCannon(cannonInfo)
       )
   } else {
     [lambda, mu] = calculateLambdaAndMu(
@@ -26,13 +26,9 @@ export function clickedOnCannon(
       );
   }
 
-  console.log(lambda, mu)
-
   if (!evaluateLambdaAndMu(lambda, mu)) {
-    console.log('didnt click')
     return false;
   }
-  console.log('evaluated well')
 
   const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
   const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
@@ -60,7 +56,7 @@ export function clickedOnCannon(
 
 function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   
-  const growthFactor = calculateGrowthFactorCannon(canvas, cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
   
   const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
   
@@ -127,7 +123,44 @@ export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidt
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export function clickedOnHeightArrow(mouse_x, mouse_y, ARROW_TOP_LEFT, growthFactor, ctx) {
+  mouse_x *= window.devicePixelRatio;
+  mouse_y *= window.devicePixelRatio;
 
+  const x1 = 103 * growthFactor;
+  const y1 = 0;
+
+  const x2 = 0;
+  const y2 = 63 * growthFactor;
+
+  const [lambda, mu] = calculateLambdaAndMu(ARROW_TOP_LEFT, x1, y1, x2, y2, mouse_x, mouse_y);
+
+  return evaluateLambdaAndMu(lambda, mu)
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * 
+ * @param {number[]} TOP_LEFT_CORNER - with size 2; the global coordinate of the top left 
+ * corner of the object you want to check
+ * @param {number} x1 - the first component of the first vector that defines the rectangular
+ * region that the object occupies 
+ * @param {number} y1 - the second component of the first vector that defines the rectangular
+ * region that the obejct occupies
+ * @param {number} x2 - the first component of the second vector that defines the rectangular
+ * region that the object occupies
+ * @param {number} y2 - the second component of the second vector that defines the rectangular
+ * region that the object occupies
+ * @param {number} mouse_x - the x coordinate of the user's click (does not account for 
+ * devicePixelRatio)
+ * @param {number} mouse_y - the y coordinate of the user's click (does not account for
+ * devicePixelRatio)
+ * @returns {number[]} of size 2; of the form [lambda, mu]; such that the vector equation:
+ *    mouse_x = TOP_LEFT_CORNER[0] + lambda * x1 + mu * x2
+ *    mouse_y = TOP_LEFT_CORNER[1] + lambda * y1 + mu * y2
+ */
 function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y) {
 
   // TODO: move this working out to proper documentation
@@ -164,14 +197,5 @@ function evaluateLambdaAndMu(lambda, mu) {
     return false;
   } else {
     return true;
-  }
-
-  // return !(lambda < 0 || lambda > 1 || mu < 0 || mu > 1) 
-}
-
-function drawCircle(ctx, x, y, r, colour) {
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.fillStyle = colour;
-  ctx.fill();
+  } 
 }
