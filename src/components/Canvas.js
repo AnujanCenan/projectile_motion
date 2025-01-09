@@ -10,7 +10,6 @@ import {
   drawVelocitySlider,
   drawDefaultCannon,
   drawDefaultVelocitySlider,
-  drawCircle,
   drawDefaultHeightScale,
   drawHeightScale
 } from "../processingFunctions/drawingFunctions"
@@ -32,6 +31,7 @@ import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../pr
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
 import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
+import { fireCannon } from "../processingFunctions/fireCannon";
 
 export default function Canvas() {
 
@@ -271,7 +271,7 @@ export default function Canvas() {
         setUserAnchorPoint([0.2, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
-      const conversionRate = calculateConversionRate(canvasRef. current, USER_ANCHOR_POINT, 500);
+      const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
       const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
       heightInputRef.current.value = metreHeight;
     }
@@ -285,47 +285,7 @@ export default function Canvas() {
 
   //////////////////////////////////////////////////////////////////////////////
 
-  // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
-  function fireCannon() {
-    var requNum;
-    try {
-      if (canvasRef.current) {
-        const [initial_x, initial_y] 
-          = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT)
-
-        const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
-
-        const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
-        const initial_v =  launchVelocity * conversionRate;
-        var x = initial_x;
-        var y = initial_y;
-        var currTime = 0;
-        const angle_rad = elevationAngle * (Math.PI / 180)
-
-        function trackProjectile() {          
-          if (y <= (GROUND_LEVEL_SCALAR * canvasRef.current.height))
-          {    
-            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
-            y = initial_y
-              - (initial_v * Math.sin(angle_rad) * currTime) 
-              + (1/2 * accel * currTime ** 2);             
-
-            currTime += 0.05; // something to experiment with
-      
-            drawCircle(ctxRef.current, x, y, 5, "blue", "black");
-          }
-          
-
-          requNum = requestAnimationFrame(trackProjectile);
-        }
-        trackProjectile(); 
-      }
-
-    } catch (e) {
-      console.error(e.message);
-    }
-  }
-
+  
   ////////////////////////////////////////////////////////////////////////////////
   return (
     <>
@@ -384,7 +344,7 @@ export default function Canvas() {
         />
     }
 
-      <FireButton fireCannon={fireCannon} />
+      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500)} />
     </>
     
   )
