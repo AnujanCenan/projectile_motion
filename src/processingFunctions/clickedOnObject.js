@@ -1,5 +1,4 @@
 import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
-import { drawCircle } from "./drawingFunctions";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
