@@ -1,4 +1,4 @@
-import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon } from "./calculateGrowthFactor";
+import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
