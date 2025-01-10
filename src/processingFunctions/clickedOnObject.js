@@ -17,7 +17,7 @@ export function clickedOnCannon(
     [lambda, mu] = clickedOnUprightCannon(
         mouse_x, mouse_y, TOP_LEFT_CORNER,
         cannonInfo.pixel_width, 
-        calculateGrowthFactorCannon(cannonInfo)
+        calculateGrowthFactorCannon(cannonInfo, canvas)
       )
   } else {
     [lambda, mu] = calculateLambdaAndMu(
@@ -44,19 +44,13 @@ export function clickedOnCannon(
   if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
     clickedBehindPivot.current = -1;
   }
-
-  if (!transparency) {
-    ctx.beginPath();
-    ctx.arc(proposedX, proposedY, 15, 0, 2 * Math.PI);
-    ctx.strokeStyle = "red";
-    ctx.stroke();
-  }
+  
   return !transparency;
 }
 
 function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   
-  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   
   const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
   

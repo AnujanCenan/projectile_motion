@@ -6,8 +6,8 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 export function findCannonTopLeftGlobalCoords(canvas, USER_ANCHOR_POINT, cannonInfo) {
   const [piv_x, piv_y] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT);
   return [
-    piv_x - cannonInfo.pivot_x * calculateGrowthFactorCannon(cannonInfo),
-    piv_y - cannonInfo.pivot_y * calculateGrowthFactorCannon(cannonInfo)
+    piv_x - cannonInfo.pivot_x * calculateGrowthFactorCannon(cannonInfo, canvas),
+    piv_y - cannonInfo.pivot_y * calculateGrowthFactorCannon(cannonInfo, canvas)
   ];
 }
 
@@ -20,7 +20,7 @@ export function topLeftCornerVelocityBar(cannonPosition, canvas) {
 export function topLeftCornerHeightScale(cannonPosition, canvas) {
   const growthFactor = calculateGrowthFactorHeight(canvas);
 
-  const pos_x = cannonPosition[0] - 0.1 * canvas.width;
+  const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
   const pos_y = 0.1 * canvas.height - 23 * growthFactor; // 23 pixels is the number of pixels that the actual start of the 
   return [pos_x, pos_y]
 }

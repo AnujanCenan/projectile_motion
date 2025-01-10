@@ -4,14 +4,9 @@ import useWindowSize from './resizingHook';
 import "./CSS/Canvas.css"
 
 import { 
-  drawRotatedCannon, 
   getCannonInfo, 
   getHolsterInfo,
-  drawVelocitySlider,
-  drawDefaultCannon,
-  drawDefaultVelocitySlider,
-  drawDefaultHeightScale,
-  drawHeightScale
+  isLandscape
 } from "../processingFunctions/drawingFunctions"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
@@ -26,21 +21,27 @@ import heightArrow from "../images/height/heightIndicator.png"
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
-import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
+import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
 import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
 import { fireCannon } from "../processingFunctions/fireCannon";
+import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes";
+import { DrawingImages } from "../OOP/DrawingImages";
 
 export default function Canvas() {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [loadedCanvas, setLoadedCanvas] = useState(false);
 
+
+
   // Positioning Constants
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([0.2, 0.8])
   const GROUND_LEVEL_SCALAR = 0.8;
+  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.2 : 0.5;
+
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
+
 
   const { width, height } = useWindowSize();
 
@@ -82,6 +83,10 @@ export default function Canvas() {
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
 
+  // For class instances
+  const positionAndSizesInterface = useRef(null);
+  const drawingInterface = useRef(null);
+
   
   //////////////////////// Canvas Drawings ///////////////////////////////////////
 
@@ -99,27 +104,31 @@ export default function Canvas() {
       fix_dpi();
       setLoadedCanvas(true);
     }
-  }, [width, height]);
+  }, [width, height, cannonInfo, holsterInfo]);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, 500);
+      drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
+    }
+  }, [cannonInfo, holsterInfo])
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
-    drawDefaultCannon(ctxRef.current, canvasRef.current, cannonRef.current, holsterRef.current, cannonInfo, holsterInfo, USER_ANCHOR_POINT)
-    drawDefaultVelocitySlider(
-      ctxRef.current, 
-      canvasRef.current, 
-      velocityBarRef.current, 
-      velocitySliderRef.current, 
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo), 
-      MAX_SPEED, 
-      launchVelocity
+
+    drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
+
+    drawingInterface.current.drawDefaultVelocitySlider(
+      velocityBarRef.current,
+      velocitySliderRef.current,
+      launchVelocity,
+      MAX_SPEED,
+      USER_ANCHOR_POINT
     )
-    drawDefaultHeightScale(
-      ctxRef.current,
-      canvasRef.current,
+    drawingInterface.current.drawDefaultHeightScale(
       heightScaleRef.current,
       heightArrowRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
-      USER_ANCHOR_POINT[1]
+      USER_ANCHOR_POINT
     )
   })
 
@@ -128,31 +137,26 @@ export default function Canvas() {
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
-
-    drawRotatedCannon(ctxRef.current, canvasRef.current, 
+    drawingInterface.current.drawRotatedCannon(
       -elevationAngle, 
-      cannonRef.current, holsterRef.current, 
-      cannonInfo, holsterInfo,
+      cannonRef.current, 
+      holsterRef.current, 
       USER_ANCHOR_POINT
     );
-
-    drawVelocitySlider(
-      ctxRef.current, canvasRef.current, 
-      velocityBarRef.current, velocitySliderRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
-      launchVelocity, MAX_SPEED
-    );
-
-
-    drawHeightScale(
-      ctxRef.current,
-      canvasRef.current,
+    
+    drawingInterface.current.drawVelocitySlider(
+      velocityBarRef.current, 
+      velocitySliderRef.current, 
+      launchVelocity, 
+      MAX_SPEED, 
+      USER_ANCHOR_POINT
+    )
+    
+    drawingInterface.current.drawHeightScale(
       heightScaleRef.current,
       heightArrowRef.current,
-      findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
-      USER_ANCHOR_POINT[1]
-    );
-
+      USER_ANCHOR_POINT
+    )
 
     const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
 
@@ -163,12 +167,12 @@ export default function Canvas() {
     const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
     ctxRef.current.beginPath();
-    ctxRef.current.arc(piv_x + 430 * conversionRate, piv_y + (metreHeight - 100) * conversionRate, 20, 0, 2 * Math.PI);
+    ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple";
     ctxRef.current.stroke();
     ctxRef.current.fill();
-  }, [cannonInfo, elevationAngle, holsterInfo, width, launchVelocity, USER_ANCHOR_POINT])
+  })
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -184,7 +188,6 @@ export default function Canvas() {
       USER_ANCHOR_POINT
     )
 
-    const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
       e.pageX, 
       e.pageY, 
@@ -193,20 +196,19 @@ export default function Canvas() {
       velocitySliderInfo.pixel_height, 
       velocitySliderInfo.slider_pixel_width, 
       velocitySliderInfo.slider_pixel_height, 
-      topLeftCornerVelocityBar(cannonTopLeft, canvasRef.current), 
+      positionAndSizesInterface.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
       MAX_SPEED, 
       calclateGrowthFactorVelocity(canvasRef.current)
     )
 
-    const cannonPosition = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     heightArrowClick.current = clickedOnHeightArrow(
       e.pageX,
       e.pageY,
-      topLeftCornerArrow(cannonPosition, canvasRef.current, USER_ANCHOR_POINT[1]),
-      calculateGrowthFactorHeight(canvasRef.current),
+
+      positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
+      positionAndSizesInterface.current.getGrowthFactorHeight(),
       ctxRef.current
     )
-
 
     click_x.current = e.pageX;
     click_y.current = e.pageY;
@@ -239,7 +241,7 @@ export default function Canvas() {
       const mouse_y = e.pageY;
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
-      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * calclateGrowthFactorVelocity(canvasRef.current));
+      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * positionAndSizesInterface.current.getGrowthFactorVelocity());
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
@@ -262,13 +264,15 @@ export default function Canvas() {
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
+      
+      window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
 
       if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
-        setUserAnchorPoint([0.2, 0.1]);
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
       } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > 0.8 * canvasRef.current.height) {
-        setUserAnchorPoint([0.2, 0.8]);
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8]);
       } else {
-        setUserAnchorPoint([0.2, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
       const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
@@ -282,9 +286,6 @@ export default function Canvas() {
     sliderClick.current = false;
     heightArrowClick.current = false;
   }
-
-  //////////////////////////////////////////////////////////////////////////////
-
   
   ////////////////////////////////////////////////////////////////////////////////
   return (
@@ -341,6 +342,7 @@ export default function Canvas() {
           canvas={canvasRef.current}
           USER_ANCHOR_PONT={USER_ANCHOR_POINT}
           MAX_HORIZONTAL_RANGE={500}
+          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
         />
     }
 
