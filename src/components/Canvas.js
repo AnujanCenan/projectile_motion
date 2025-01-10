@@ -21,7 +21,7 @@ import heightArrow from "../images/height/heightIndicator.png"
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { findCannonTopLeftGlobalCoords, topLeftCornerArrow } from "../processingFunctions/topLeftCorners";
 import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
@@ -84,6 +84,7 @@ export default function Canvas() {
   const click_y = useRef(0);
   const clickedBehindPivot = useRef(1);
 
+  // For class instances
   const positionAndSizesInterface = useRef(null);
   const drawingInterface = useRef(null);
 
@@ -130,14 +131,6 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT
     )
-    // drawDefaultHeightScale(
-    //   ctxRef.current,
-    //   canvasRef.current,
-    //   heightScaleRef.current,
-    //   heightArrowRef.current,
-    //   findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo),
-    //   USER_ANCHOR_POINT[1]
-    // )
   })
 
   useEffect(() => {
@@ -196,7 +189,6 @@ export default function Canvas() {
       USER_ANCHOR_POINT
     )
 
-    const cannonTopLeft = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     sliderClick.current = clickedOnVelocitySlider(
       e.pageX, 
       e.pageY, 
@@ -205,20 +197,19 @@ export default function Canvas() {
       velocitySliderInfo.pixel_height, 
       velocitySliderInfo.slider_pixel_width, 
       velocitySliderInfo.slider_pixel_height, 
-      topLeftCornerVelocityBar(cannonTopLeft, canvasRef.current), 
+      positionAndSizesInterface.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
       MAX_SPEED, 
       calclateGrowthFactorVelocity(canvasRef.current)
     )
 
-    const cannonPosition = findCannonTopLeftGlobalCoords(canvasRef.current, USER_ANCHOR_POINT, cannonInfo)
     heightArrowClick.current = clickedOnHeightArrow(
       e.pageX,
       e.pageY,
-      topLeftCornerArrow(cannonPosition, canvasRef.current, USER_ANCHOR_POINT[1]),
-      calculateGrowthFactorHeight(canvasRef.current),
+
+      positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
+      positionAndSizesInterface.current.getGrowthFactorHeight(),
       ctxRef.current
     )
-
 
     click_x.current = e.pageX;
     click_y.current = e.pageY;
@@ -251,7 +242,7 @@ export default function Canvas() {
       const mouse_y = e.pageY;
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
-      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * calclateGrowthFactorVelocity(canvasRef.current));
+      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * positionAndSizesInterface.current.getGrowthFactorVelocity());
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
@@ -274,9 +265,7 @@ export default function Canvas() {
       
       click_x.current = mouse_x;
       click_y.current = mouse_y;
-
-      console.log(`in mouse move - arrow moving: mouse_y = ${mouse_y}`)
-
+      
       window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
 
       if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
@@ -298,9 +287,6 @@ export default function Canvas() {
     sliderClick.current = false;
     heightArrowClick.current = false;
   }
-
-  //////////////////////////////////////////////////////////////////////////////
-
   
   ////////////////////////////////////////////////////////////////////////////////
   return (

@@ -1,7 +1,7 @@
 import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
 import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords";
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightScale, topLeftCornerVelocityBar } from "../processingFunctions/topLeftCorners";
+import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightScale } from "../processingFunctions/topLeftCorners";
 
 export class CanvasPositionAndSizes {
   #canvas;
@@ -19,7 +19,7 @@ export class CanvasPositionAndSizes {
   }
 
 
-  //////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////// Getters ///////////////////////////////////
   getCanvas() {
     return this.#canvas;
   }
@@ -52,8 +52,21 @@ export class CanvasPositionAndSizes {
     return findCannonTopLeftGlobalCoords(this.#canvas, USER_ANCHOR_POINT, this.#cannonInfo);
   }
 
+  getHolsterPosition(USER_ANCHOR_POINT) {
+    const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
+    const growthFactor = this.getGrowthFactorCannon();
+    return [
+      piv_x - growthFactor * this.#holsterInfo.pivot_x,
+      piv_y - growthFactor * this.#holsterInfo.pivot_y
+    ]
+  }
+
   getVelocityBarPosition(USER_ANCHOR_POINT) {
-    return topLeftCornerVelocityBar(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas)
+    const holster_y = this.getHolsterPosition(USER_ANCHOR_POINT)[1];
+    const cannon_x = this.getCannonOriginalTopLeft(USER_ANCHOR_POINT)[0];
+    const growthFactor = this.getGrowthFactorCannon();
+
+    return [cannon_x, holster_y + this.#holsterInfo.pixel_height * growthFactor + 20];
   }
 
   getHeightArrowPosition(USER_ANCHOR_POINT) {
@@ -63,6 +76,7 @@ export class CanvasPositionAndSizes {
   getHeightScalePosition(USER_ANCHOR_POINT) {
     return topLeftCornerHeightScale(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas);
   }
+
 
   /// GROWTH FACTOR
   getGrowthFactorCannon() {

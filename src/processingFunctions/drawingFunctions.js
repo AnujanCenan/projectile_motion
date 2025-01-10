@@ -58,29 +58,6 @@ export function drawImageWithRotation(
 
 }
 
-// moved over
-export function drawHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
-  const [pos_x, pos_y] = topLeftCornerHeightScale(cannonPosition, canvas);
-  const growthFactor = calculateGrowthFactorHeight(canvas);
-  drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
-
-  const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);
-  drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
-}
-
-// moved over
-export function drawDefaultHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
-  const [pos_x, pos_y] = topLeftCornerHeightScale(cannonPosition, canvas);
-  const growthFactor = calculateGrowthFactorHeight(canvas);
-  
-  heightScale.onload = () => {
-    drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
-    // TODO: add this code to the top left corner file
-    const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);
-    drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
-  }
-}
-
 export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);

@@ -1,8 +1,9 @@
 import { drawImageWithRotation } from "../processingFunctions/drawingFunctions";
 
 export class DrawingImages {
+  #canvasPositionAndSizes;
   constructor(canvasPositionAndSizes) {
-    this.canvasPositionAndSizes = canvasPositionAndSizes;
+    this.#canvasPositionAndSizes = canvasPositionAndSizes;
   }
 
   ////// Cannon Drawing
@@ -38,10 +39,10 @@ export class DrawingImages {
   }
 
   #drawHolster(holsterImage, USER_ANCHOR_POINT) {
-    const canvas = this.canvasPositionAndSizes.getCanvas();
-    const holsterInfo = this.canvasPositionAndSizes.getHolsterInfo();
+    const canvas = this.#canvasPositionAndSizes.getCanvas();
+    const holsterInfo = this.#canvasPositionAndSizes.getHolsterInfo();
 
-    const growthFactor = this.canvasPositionAndSizes.getGrowthFactorCannon();
+    const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
 
     const TOP_LEFT_CORNER = [
       canvas.width * USER_ANCHOR_POINT[0] - holsterInfo.pivot_x * growthFactor,
@@ -49,7 +50,7 @@ export class DrawingImages {
     ]
 
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(), 
+      this.#canvasPositionAndSizes.getCtx(), 
       holsterImage, 
       TOP_LEFT_CORNER[0], 
       TOP_LEFT_CORNER[1],
@@ -63,10 +64,10 @@ export class DrawingImages {
   }
 
   #drawCannon(cannonImage, angle, USER_ANCHOR_POINT) {
-    const canvas = this.canvasPositionAndSizes.getCanvas();
-    const cannonInfo = this.canvasPositionAndSizes.getCannonInfo();
+    const canvas = this.#canvasPositionAndSizes.getCanvas();
+    const cannonInfo = this.#canvasPositionAndSizes.getCannonInfo();
 
-    const growthFactor = this.canvasPositionAndSizes.getGrowthFactorCannon();
+    const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
 
     const TOP_LEFT_CORNER = [
       canvas.width * USER_ANCHOR_POINT[0] - cannonInfo.pivot_x * growthFactor,
@@ -74,7 +75,7 @@ export class DrawingImages {
     ]
   
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(), 
+      this.#canvasPositionAndSizes.getCtx(), 
       cannonImage, 
       TOP_LEFT_CORNER[0], 
       TOP_LEFT_CORNER[1],
@@ -90,12 +91,12 @@ export class DrawingImages {
   //// Velocity Methods
 
   drawDefaultVelocitySlider(velocityBar, velocitySlider, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT) {
-    const [pos_x, pos_y] = this.canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
-    const growthFactor = this.canvasPositionAndSizes.getGrowthFactorVelocity();
+    const [pos_x, pos_y] = this.#canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
+    const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorVelocity();
     velocityBar.onload = () => {
 
       drawImageWithRotation(
-        this.canvasPositionAndSizes.getCtx(), 
+        this.#canvasPositionAndSizes.getCtx(), 
         velocityBar, 
         pos_x, 
         pos_y, 
@@ -112,10 +113,11 @@ export class DrawingImages {
     
       velocitySlider.onload = () => {
         drawImageWithRotation(
-          this.canvasPositionAndSizes.getCtx(),  
+          this.#canvasPositionAndSizes.getCtx(),  
           velocitySlider, 
           sliderPosX, sliderPosY, 
-          0, 0, 
+          0, 
+          0, 
           50, 
           51, 
           0, 
@@ -127,11 +129,11 @@ export class DrawingImages {
 
   drawVelocitySlider(velocityBar, velocitySlider, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT) {
 
-    const [pos_x, pos_y] = this.canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
-    const growthFactor = this.canvasPositionAndSizes.getGrowthFactorVelocity();
+    const [pos_x, pos_y] = this.#canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
+    const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorVelocity();
 
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(), 
+      this.#canvasPositionAndSizes.getCtx(), 
       velocityBar, 
       pos_x, 
       pos_y, 
@@ -149,7 +151,7 @@ export class DrawingImages {
     const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
 
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(),  
+      this.#canvasPositionAndSizes.getCtx(),  
       velocitySlider, 
       sliderPosX, 
       sliderPosY, 
@@ -166,11 +168,11 @@ export class DrawingImages {
 
   drawDefaultHeightScale(heightScale, heightArrow, USER_ANCHOR_POINT) {
 
-    const [pos_x, pos_y] = this.canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
-    const growthFactor =  this.canvasPositionAndSizes.getGrowthFactorHeight();
+    const [pos_x, pos_y] = this.#canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
+    const growthFactor =  this.#canvasPositionAndSizes.getGrowthFactorHeight();
     heightScale.onload = () => {
       drawImageWithRotation(
-        this.canvasPositionAndSizes.getCtx(),
+        this.#canvasPositionAndSizes.getCtx(),
         heightScale, 
         pos_x, 
         pos_y, 
@@ -182,10 +184,10 @@ export class DrawingImages {
         growthFactor
       );
       // TODO: add this code to the top left corner file
-      const [arrowPosX, arrowPosY] = this.canvasPositionAndSizes.getHeightArrowPosition(USER_ANCHOR_POINT);
+      const [arrowPosX, arrowPosY] = this.#canvasPositionAndSizes.getHeightArrowPosition(USER_ANCHOR_POINT);
       console.log(`Arrow position: ${arrowPosX}, ${arrowPosY}`);
       drawImageWithRotation(
-        this.canvasPositionAndSizes.getCtx(), 
+        this.#canvasPositionAndSizes.getCtx(), 
         heightArrow, 
         arrowPosX, 
         arrowPosY, 
@@ -201,10 +203,10 @@ export class DrawingImages {
   }
   //// Draw Height Scale
   drawHeightScale(heightScale, heightArrow, USER_ANCHOR_POINT) {
-    const [pos_x, pos_y] = this.canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
-    const growthFactor =  this.canvasPositionAndSizes.getGrowthFactorHeight();
+    const [pos_x, pos_y] = this.#canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
+    const growthFactor =  this.#canvasPositionAndSizes.getGrowthFactorHeight();
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(), 
+      this.#canvasPositionAndSizes.getCtx(), 
       heightScale, 
       pos_x, 
       pos_y, 
@@ -216,9 +218,9 @@ export class DrawingImages {
       growthFactor
     );
 
-    const [arrowPosX, arrowPosY] = this.canvasPositionAndSizes.getHeightArrowPosition(USER_ANCHOR_POINT);
+    const [arrowPosX, arrowPosY] = this.#canvasPositionAndSizes.getHeightArrowPosition(USER_ANCHOR_POINT);
     drawImageWithRotation(
-      this.canvasPositionAndSizes.getCtx(), 
+      this.#canvasPositionAndSizes.getCtx(), 
       heightArrow, 
       arrowPosX, 
       arrowPosY, 
@@ -229,20 +231,5 @@ export class DrawingImages {
       0, 
       growthFactor
     );
-
-// export function drawDefaultHeightScale(ctx, canvas, heightScale, heightArrow, cannonPosition, height_scalar) {
-//   const [pos_x, pos_y] = topLeftCornerHeightScale(cannonPosition, canvas);
-//   const growthFactor = calculateGrowthFactorHeight(canvas);
-  
-//   heightScale.onload = () => {
-//     drawImageWithRotation(ctx, heightScale, pos_x, pos_y, 0, 0, 158, 917, 0, growthFactor);
-//     // TODO: add this code to the top left corner file
-//     const [arrowPosX, arrowPosY] = topLeftCornerArrow(cannonPosition, canvas, height_scalar);
-//     drawImageWithRotation(ctx, heightArrow, arrowPosX, arrowPosY, 0, 0, 103, 63, 0, growthFactor);
-//   }
   }
-
-
-
-
 }

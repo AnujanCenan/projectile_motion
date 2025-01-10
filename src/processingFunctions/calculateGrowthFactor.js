@@ -25,7 +25,7 @@ export function calclateGrowthFactorVelocity(canvas) {
     const FRACTION_OF_CANVAS = 2/5;
     return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
   } else {
-    const FRACTION_OF_CANVAS = 2/5;
+    const FRACTION_OF_CANVAS = 1/5;
     return (FRACTION_OF_CANVAS * canvas.width) / 817 
   }
   
