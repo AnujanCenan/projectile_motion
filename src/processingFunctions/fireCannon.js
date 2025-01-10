@@ -12,7 +12,7 @@ export function fireCannon(
     GROUND_LEVEL_SCALAR, 
     MAX_HORIZONTAL_RANGE
 ) {
-    var requNum;
+    var reqNum;
     try {
       if (canvas) {
         const [initial_x, initial_y] 
@@ -25,25 +25,31 @@ export function fireCannon(
         var x = initial_x;
         var y = initial_y;
         var currTime = 0;
-        const angle_rad = elevationAngle * (Math.PI / 180)
+        const angle_rad = elevationAngle * (Math.PI / 180);
 
-        function trackProjectile() {          
-          if (y <= (GROUND_LEVEL_SCALAR * canvas.height))
-          {    
-            x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
-            y = initial_y
-              - (initial_v * Math.sin(angle_rad) * currTime) 
-              + (1/2 * accel * currTime ** 2);             
+        function trackProjectile() {      
+          console.log("In track Projectile from requestAnimationFrame")    
 
-            currTime += 0.05; // something to experiment with
-      
-            drawCircle(ctx, x, y, 5, "blue", "black");
+          x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
+          y = initial_y
+            - (initial_v * Math.sin(angle_rad) * currTime) 
+            + (1/2 * accel * currTime ** 2);             
+
+          currTime += 0.03; // something to experiment with
+    
+          drawCircle(ctx, x, y, 5, "blue", "black");
+          console.log(`Comparing y = ${y} to GROUND_LEVEL_SCALAR * canvasHeight = ${GROUND_LEVEL_SCALAR} * ${canvas.height} = ${GROUND_LEVEL_SCALAR * canvas.height}`)
+          if (initial_y
+            - (initial_v * Math.sin(angle_rad) * currTime) 
+            + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
+            console.log("If statement is triggered")
+            reqNum = requestAnimationFrame(trackProjectile);
+          } else {
+            cancelAnimationFrame(reqNum);
           }
-          
-
-          requNum = requestAnimationFrame(trackProjectile);
         }
-        trackProjectile(); 
+        reqNum = requestAnimationFrame(trackProjectile);
+
       }
 
     } catch (e) {
