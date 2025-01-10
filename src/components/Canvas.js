@@ -38,7 +38,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.2 : 0.4;
+  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.2 : 0.5;
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
 

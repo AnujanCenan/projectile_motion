@@ -44,13 +44,7 @@ export function clickedOnCannon(
   if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
     clickedBehindPivot.current = -1;
   }
-
-  if (!transparency) {
-    ctx.beginPath();
-    ctx.arc(proposedX, proposedY, 15, 0, 2 * Math.PI);
-    ctx.strokeStyle = "red";
-    ctx.stroke();
-  }
+  
   return !transparency;
 }
 

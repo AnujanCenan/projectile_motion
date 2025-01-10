@@ -20,7 +20,7 @@ export function topLeftCornerVelocityBar(cannonPosition, canvas) {
 export function topLeftCornerHeightScale(cannonPosition, canvas) {
   const growthFactor = calculateGrowthFactorHeight(canvas);
 
-  const pos_x = cannonPosition[0] - 158 * growthFactor - 20;
+  const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
   const pos_y = 0.1 * canvas.height - 23 * growthFactor; // 23 pixels is the number of pixels that the actual start of the 
   return [pos_x, pos_y]
 }
