@@ -15,7 +15,7 @@ export function calculateGrowthFactorCannon(cannonInfo, canvas) {
   if (isLandscape()) {
     return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
   } else {
-    return (FRACTION_OF_SCREEN * 2 * canvas.width) / cannonInfo.pixel_width
+    return (1/6 * canvas.width) / cannonInfo.pixel_width
   }
 
 }

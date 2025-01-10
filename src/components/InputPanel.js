@@ -11,7 +11,8 @@ export default function InputPanel({
   heightInputRef,
   canvas,
   USER_ANCHOR_PONT,
-  MAX_HORIZONTAL_RANGE
+  MAX_HORIZONTAL_RANGE,
+  CANNON_HORIZONTAL_SCALAR
 
 }) {
 
@@ -69,7 +70,7 @@ export default function InputPanel({
     // requires some defensive programming
     try {
       if (val === "") {
-        setUserAnchorPoint([0.2, 0.8]);
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8]);
       }
       // some defensive programming
       if (isNaN(parseFloat(val))) {
@@ -79,13 +80,13 @@ export default function InputPanel({
       const anchor_point_y = 0.8 - ((val * conversionRate)/ canvas.height);
       const maxMetreHeight = Math.round(((0.8 - 0.1) * canvas.height) / conversionRate / 10) * 10; 
       if (parseFloat(val) < 0) {
-        setUserAnchorPoint([0.2, 0.8])
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8])
         heightInputRef.current.value = 0;
       } else if (anchor_point_y < 0.1) {
-        setUserAnchorPoint([0.2, 0.1])
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1])
         heightInputRef.current.value = maxMetreHeight;
       } else {
-        setUserAnchorPoint([0.2, anchor_point_y])
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, anchor_point_y])
       }
     } catch (error) {
       console.error("In Canvas.js | function changeAngleWithTextBox")
