@@ -1,6 +1,4 @@
 import Cannons from "../Cannons.json"
-import { calculateGrowthFactorHeight } from "./calculateGrowthFactor";
-import { topLeftCornerArrow, topLeftCornerHeightScale } from "./topLeftCorners";
 
 export function getCannonInfo(name) {
   try {

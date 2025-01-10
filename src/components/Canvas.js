@@ -21,8 +21,7 @@ import heightArrow from "../images/height/heightIndicator.png"
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow } from "../processingFunctions/topLeftCorners";
-import { calclateGrowthFactorVelocity, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
+import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
 import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
