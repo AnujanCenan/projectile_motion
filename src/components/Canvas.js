@@ -163,7 +163,7 @@ export default function Canvas() {
     const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
     ctxRef.current.beginPath();
-    ctxRef.current.arc(piv_x + 430 * conversionRate, piv_y + (metreHeight - 100) * conversionRate, 20, 0, 2 * Math.PI);
+    ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
     ctxRef.current.strokeStyle = "blue";
     ctxRef.current.fillStyle = "purple";
     ctxRef.current.stroke();

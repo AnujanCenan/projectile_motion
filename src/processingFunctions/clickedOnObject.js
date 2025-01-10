@@ -17,7 +17,7 @@ export function clickedOnCannon(
     [lambda, mu] = clickedOnUprightCannon(
         mouse_x, mouse_y, TOP_LEFT_CORNER,
         cannonInfo.pixel_width, 
-        calculateGrowthFactorCannon(cannonInfo)
+        calculateGrowthFactorCannon(cannonInfo, canvas)
       )
   } else {
     [lambda, mu] = calculateLambdaAndMu(
@@ -56,7 +56,7 @@ export function clickedOnCannon(
 
 function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   
-  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   
   const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
   

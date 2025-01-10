@@ -86,13 +86,13 @@ function drawCannon(ctx, canvas, cannonImage, angle, cannonInfo, USER_ANCHOR_POI
 }
 
 export function drawRotatedCannon(ctx, canvas, angle, cannonImage, holsterImage, cannonInfo, holsterInfo, USER_ANCHOR_POINT) {
-  const growthFactor = calculateGrowthFactorCannon(cannonInfo)
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   drawHolster(ctx, canvas, holsterImage, holsterInfo, USER_ANCHOR_POINT, growthFactor)
   drawCannon(ctx, canvas, cannonImage, angle, cannonInfo, USER_ANCHOR_POINT, growthFactor);
 }
 
 export function drawDefaultCannon(ctx, canvas, cannonImage, holsterImage, cannonInfo, holsterInfo, USER_ANCHOR_POINT) {
-  const growthFactor = calculateGrowthFactorCannon(cannonInfo);
+  const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas);
   holsterImage.onload = () => {
     drawHolster(ctx, canvas, holsterImage, holsterInfo, USER_ANCHOR_POINT, growthFactor)
   }

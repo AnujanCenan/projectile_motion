@@ -1,6 +1,6 @@
 import { isLandscape } from "./drawingFunctions";
 
-export function calculateGrowthFactorCannon(cannonInfo) {
+export function calculateGrowthFactorCannon(cannonInfo, canvas) {
   // LOGIC: say we want the cannon to be ~1/10 of the canvas width
   // Then get the total width of the canvas
   // get the width of the cannon
@@ -15,7 +15,7 @@ export function calculateGrowthFactorCannon(cannonInfo) {
   if (isLandscape()) {
     return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
   } else {
-    return (FRACTION_OF_SCREEN * 2 * window.innerWidth) / cannonInfo.pixel_width
+    return (FRACTION_OF_SCREEN * 2 * canvas.width) / cannonInfo.pixel_width
   }
 
 }

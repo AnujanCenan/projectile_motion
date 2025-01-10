@@ -6,8 +6,8 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
 export function findCannonTopLeftGlobalCoords(canvas, USER_ANCHOR_POINT, cannonInfo) {
   const [piv_x, piv_y] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT);
   return [
-    piv_x - cannonInfo.pivot_x * calculateGrowthFactorCannon(cannonInfo),
-    piv_y - cannonInfo.pivot_y * calculateGrowthFactorCannon(cannonInfo)
+    piv_x - cannonInfo.pivot_x * calculateGrowthFactorCannon(cannonInfo, canvas),
+    piv_y - cannonInfo.pivot_y * calculateGrowthFactorCannon(cannonInfo, canvas)
   ];
 }
 
