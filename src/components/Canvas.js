@@ -263,6 +263,10 @@ export default function Canvas() {
       click_x.current = mouse_x;
       click_y.current = mouse_y;
 
+      console.log(`in mouse move - arrow moving: mouse_y = ${mouse_y}`)
+
+      window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
+
       if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
         setUserAnchorPoint([0.2, 0.1]);
       } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > 0.8 * canvasRef.current.height) {

@@ -174,3 +174,7 @@ export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
   ctx.stroke();
   ctx.fill();
 }
+
+export function isLandscape() {
+  return window.innerWidth > window.innerHeight;
+}

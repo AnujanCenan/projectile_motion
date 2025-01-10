@@ -1,3 +1,5 @@
+import { isLandscape } from "./drawingFunctions";
+
 export function calculateGrowthFactorCannon(cannonInfo) {
   // LOGIC: say we want the cannon to be ~1/10 of the canvas width
   // Then get the total width of the canvas
@@ -10,12 +12,23 @@ export function calculateGrowthFactorCannon(cannonInfo) {
 
   const FRACTION_OF_SCREEN = 1/3;
 
-  return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
+  if (isLandscape()) {
+    return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
+  } else {
+    return (FRACTION_OF_SCREEN * 2 * window.innerWidth) / cannonInfo.pixel_width
+  }
+
 }
 
 export function calclateGrowthFactorVelocity(canvas) {
-  const FRACTION_OF_CANVAS = 2/5;
-  return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+  if (isLandscape()) {
+    const FRACTION_OF_CANVAS = 2/5;
+    return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+  } else {
+    const FRACTION_OF_CANVAS = 2/5;
+    return (FRACTION_OF_CANVAS * canvas.width) / 817 
+  }
+  
 }
 
 export function calculateGrowthFactorHeight(canvas) {
