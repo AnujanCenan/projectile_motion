@@ -66,7 +66,6 @@ export default function InputPanel({
 
   function changeHeightWithTextBox(e) {
     const val = e.target.value;
-    console.log(`in change height with text box: val = ${val}`);
     // requires some defensive programming
     try {
       if (val === "") {
@@ -76,12 +75,9 @@ export default function InputPanel({
       if (isNaN(parseFloat(val))) {
         return;
       }  
-      console.log("before");
       const conversionRate = calculateConversionRate(canvas, USER_ANCHOR_PONT, MAX_HORIZONTAL_RANGE);
-      console.log("after");
       const anchor_point_y = 0.8 - ((val * conversionRate)/ canvas.height);
       const maxMetreHeight = Math.round(((0.8 - 0.1) * canvas.height) / conversionRate / 10) * 10; 
-      console.log(`figuring out max height: canvas height = ${canvas.height}, conversionRate = ${conversionRate}; maxHeight = ${maxMetreHeight}`)
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([0.2, 0.8])
         heightInputRef.current.value = 0;

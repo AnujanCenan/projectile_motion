@@ -28,7 +28,7 @@ export function topLeftCornerHeightScale(cannonPosition, canvas) {
 export function topLeftCornerArrow(cannonPosition, canvas, height_scalar) {
   const growthFactor = calculateGrowthFactorHeight(canvas);
 
-  const [scale_pos_x, scale_pos_y] = topLeftCornerHeightScale(cannonPosition, canvas)
+  const scale_pos_x = topLeftCornerHeightScale(cannonPosition, canvas)[0]
   const arrowPosX = scale_pos_x + (100) * growthFactor - 103 * growthFactor;
   const arrowPosY = height_scalar * canvas.height - (63 / 2) * growthFactor;
 
