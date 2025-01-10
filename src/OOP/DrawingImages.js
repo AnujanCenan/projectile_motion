@@ -232,4 +232,29 @@ export class DrawingImages {
       growthFactor
     );
   }
+
+  drawHeightPlatform(USER_ANCHOR_POINT) {
+
+    const SCALAR_OF_HOLSTER_WIDTH = 3;
+
+    const width = SCALAR_OF_HOLSTER_WIDTH * (this.#canvasPositionAndSizes.getHolsterInfo().pixel_width  * this.#canvasPositionAndSizes.getGrowthFactorCannon());
+    const height = (0.8 - USER_ANCHOR_POINT[1]) * this.#canvasPositionAndSizes.getCanvas().height;
+
+    const [holster_x, holster_y] = this.#canvasPositionAndSizes.getHolsterPosition(USER_ANCHOR_POINT);
+
+
+    const platform_x = holster_x - width / 4;
+    const platform_y = holster_y + 
+      this.#canvasPositionAndSizes.getHolsterInfo().pixel_height * this.#canvasPositionAndSizes.getGrowthFactorCannon();
+
+
+    const ctx = this.#canvasPositionAndSizes.getCtx();
+
+    ctx.fillStyle = "black";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 6;
+    ctx.fillRect(platform_x, platform_y, width, height);
+    ctx.strokeRect(platform_x, platform_y, width, height);
+    ctx.stroke();
+  }
 }

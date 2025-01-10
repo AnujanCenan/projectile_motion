@@ -38,7 +38,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.2 : 0.5;
+  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.1 : 0.5;
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
 
@@ -143,6 +143,8 @@ export default function Canvas() {
       holsterRef.current, 
       USER_ANCHOR_POINT
     );
+
+    drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT);
     
     drawingInterface.current.drawVelocitySlider(
       velocityBarRef.current, 
@@ -157,6 +159,7 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT
     )
+
 
     const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
 
@@ -291,7 +294,7 @@ export default function Canvas() {
   return (
     <>
       <canvas ref={canvasRef} 
-        style={{height: 1.3 * height, width: 2 * width}} id="canvas" 
+        style={{height: 1.3 * height, width: 3 * width}} id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
