@@ -45,11 +45,11 @@ export default function Canvas() {
 
   const { width, height } = useWindowSize();
 
-  // Element References
+  //// Element References
   const ctxRef = useRef(null);
-
   const canvasRef = useRef(null);
 
+  // Image references
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
 
@@ -59,6 +59,7 @@ export default function Canvas() {
   const heightScaleRef = useRef(null);
   const heightArrowRef = useRef(null);
 
+  // Textbox references
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
   const heightInputRef = useRef(null);
@@ -292,9 +293,10 @@ export default function Canvas() {
   
   ////////////////////////////////////////////////////////////////////////////////
   return (
-    <>
+    <div id="container">
       <canvas ref={canvasRef} 
-        style={{height: 1.3 * height, width: 3 * width}} id="canvas" 
+        style={{height: 0.8 * height, width: 1 * width}} 
+        id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
@@ -331,6 +333,7 @@ export default function Canvas() {
           alt="heightArrow"
           ref={heightArrowRef}
         />
+
       </canvas>
 
       {loadedCanvas && 
@@ -347,10 +350,10 @@ export default function Canvas() {
           MAX_HORIZONTAL_RANGE={500}
           CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
         />
-    }
+      }
 
       <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500)} />
-    </>
+    </div>
     
   )
 }

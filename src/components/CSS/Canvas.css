@@ -3,8 +3,8 @@
     background-size: contain;
     width: 200%;
     background-repeat: repeat-x;
-    
-    background-color: rgb(255, 225, 225);
+    z-index: 1;
+    background-color: transparent;
 
 }
 

@@ -35,7 +35,7 @@ export function fireCannon(
             - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime ** 2);             
 
-          currTime += 0.03; // something to experiment with
+          currTime += 0.02; // something to experiment with
     
           drawCircle(ctx, x, y, 5, "blue", "black");
           console.log(`Comparing y = ${y} to GROUND_LEVEL_SCALAR * canvasHeight = ${GROUND_LEVEL_SCALAR} * ${canvas.height} = ${GROUND_LEVEL_SCALAR * canvas.height}`)
