@@ -22,14 +22,16 @@ export function calculateGrowthFactorCannon(cannonInfo, canvas) {
 }
 
 export function calclateGrowthFactorVelocity(canvas) {
-  if (isLandscape()) {
+  // if (isLandscape()) {
+  //   const FRACTION_OF_CANVAS = 2/5;
+  //   return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+  // } else {
+  //   const FRACTION_OF_CANVAS = 1/5;
+  //   return (FRACTION_OF_CANVAS * canvas.width) / 817 
+  // }
+
     const FRACTION_OF_CANVAS = 2/5;
     return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
-  } else {
-    const FRACTION_OF_CANVAS = 1/5;
-    return (FRACTION_OF_CANVAS * canvas.width) / 817 
-  }
-  
 }
 
 export function calculateGrowthFactorHeight(canvas, GROUND_LEVEL_SCALAR = 0.8) {

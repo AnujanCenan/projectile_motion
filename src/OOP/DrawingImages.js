@@ -1,4 +1,5 @@
 import { drawImageWithRotation } from "../processingFunctions/drawingFunctions";
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords";
 
 export class DrawingImages {
   #canvasPositionAndSizes;
@@ -46,10 +47,10 @@ export class DrawingImages {
     const holsterInfo = this.#canvasPositionAndSizes.getHolsterInfo();
 
     const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
-
+    const pivot_coords = findPivotGlobalCoords(this.#canvasPositionAndSizes.getCanvas(), USER_ANCHOR_POINT)
     const TOP_LEFT_CORNER = [
-      canvas.width * USER_ANCHOR_POINT[0] - holsterInfo.pivot_x * growthFactor,
-      canvas.height * USER_ANCHOR_POINT[1] - holsterInfo.pivot_y * growthFactor
+      pivot_coords[0] - holsterInfo.pivot_x * growthFactor,
+      pivot_coords[1] - holsterInfo.pivot_y * growthFactor
     ]
 
     drawImageWithRotation(
@@ -71,10 +72,10 @@ export class DrawingImages {
     const cannonInfo = this.#canvasPositionAndSizes.getCannonInfo();
 
     const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
-
+    const pivot_coords = findPivotGlobalCoords(this.#canvasPositionAndSizes.getCanvas(), USER_ANCHOR_POINT)
     const TOP_LEFT_CORNER = [
-      canvas.width * USER_ANCHOR_POINT[0] - cannonInfo.pivot_x * growthFactor,
-      canvas.height * USER_ANCHOR_POINT[1] - cannonInfo.pivot_y * growthFactor
+      pivot_coords[0] - cannonInfo.pivot_x * growthFactor,
+      pivot_coords[1] - cannonInfo.pivot_y * growthFactor
     ]
   
     drawImageWithRotation(
