@@ -18,6 +18,8 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import heightScale from "../images/height/heightBar.png"
 import heightArrow from "../images/height/heightIndicator.png"
 
+import grassImg from "../images/foregrounds/grassLarge.png"
+
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
@@ -38,18 +40,18 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.2 : 0.5;
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 * window.devicePixelRatio : 0.8 * window.devicePixelRatio);
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
 
   const { width, height } = useWindowSize();
 
-  // Element References
+  //// Element References
   const ctxRef = useRef(null);
-
   const canvasRef = useRef(null);
 
+  // Image references
   const cannonRef = useRef(null);
   const holsterRef = useRef(null);
 
@@ -59,9 +61,13 @@ export default function Canvas() {
   const heightScaleRef = useRef(null);
   const heightArrowRef = useRef(null);
 
+  // Textbox references
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
   const heightInputRef = useRef(null);
+
+  // Foreground image reference
+  const foregroundRef = useRef(null);
 
 
   const MAX_SPEED = 140;
@@ -87,7 +93,13 @@ export default function Canvas() {
   const positionAndSizesInterface = useRef(null);
   const drawingInterface = useRef(null);
 
-  
+  useEffect(() => {
+    if (isLandscape()) {
+      setCannonHorizontalScalar(0.5 * window.devicePixelRatio);
+    } else {
+      setCannonHorizontalScalar(0.8 * window.devicePixelRatio);
+    }
+  }, [width, height]);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
 
   useEffect(() => {
@@ -116,6 +128,8 @@ export default function Canvas() {
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
 
+
+
     drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawDefaultVelocitySlider(
@@ -130,32 +144,38 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT
     )
-  })
+
+  }, [USER_ANCHOR_POINT, launchVelocity])
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
+
+    drawingInterface.current.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
+
     drawingInterface.current.drawRotatedCannon(
       -elevationAngle, 
       cannonRef.current, 
       holsterRef.current, 
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     );
+
+    drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
     
     drawingInterface.current.drawVelocitySlider(
       velocityBarRef.current, 
       velocitySliderRef.current, 
       launchVelocity, 
       MAX_SPEED, 
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     )
     
     drawingInterface.current.drawHeightScale(
       heightScaleRef.current,
       heightArrowRef.current,
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     )
 
     const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
@@ -164,7 +184,7 @@ export default function Canvas() {
     const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
     // Drawing a scrappy target
 
-    const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+    const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
     ctxRef.current.beginPath();
     ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
@@ -178,10 +198,12 @@ export default function Canvas() {
 
   function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-
+    console.log(e);
+    console.log(canvasRef.current.parentNode.scrollLeft)
+    const horizScroll = canvasRef.current.parentNode.scrollLeft
     cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
-      e.pageX, e.pageY,
+      e.pageX + horizScroll, e.pageY,
       cannonInfo, 
       elevationAngle,
       clickedBehindPivot,
@@ -189,7 +211,7 @@ export default function Canvas() {
     )
 
     sliderClick.current = clickedOnVelocitySlider(
-      e.pageX, 
+      e.pageX + horizScroll, 
       e.pageY, 
       launchVelocity, 
       velocitySliderInfo.pixel_width, 
@@ -202,7 +224,7 @@ export default function Canvas() {
     )
 
     heightArrowClick.current = clickedOnHeightArrow(
-      e.pageX,
+      e.pageX + horizScroll,
       e.pageY,
 
       positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
@@ -210,14 +232,15 @@ export default function Canvas() {
       ctxRef.current
     )
 
-    click_x.current = e.pageX;
+    click_x.current = e.pageX + horizScroll;
     click_y.current = e.pageY;
   }
 
   function mouseMove(e) {
+    const horizScroll = canvasRef.current.parentNode.scrollLeft
     if (cannonClick.current) {
       const angularDisplacement = calculateAngularDisplacement(
-        e.pageX, e.pageY, 
+        e.pageX + horizScroll, e.pageY, 
         click_x.current, click_y.current, clickedBehindPivot.current,
         cannonInfo, 
         canvasRef.current,
@@ -225,7 +248,7 @@ export default function Canvas() {
         USER_ANCHOR_POINT
       );
 
-      click_x.current = e.pageX;
+      click_x.current = e.pageX + horizScroll;
       click_y.current = e.pageY;
       if (elevationAngle + angularDisplacement > 90) {
         setElevationAngle(90)
@@ -237,7 +260,7 @@ export default function Canvas() {
       angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
 
     } else if (sliderClick.current) {
-      const mouse_x = e.pageX;
+      const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
@@ -257,7 +280,7 @@ export default function Canvas() {
       velocityInputRef.current.value = Math.round(launchVelocity * 1000) / 1000;
     } 
     else if (heightArrowClick.current) {
-      const mouse_x = e.pageX;
+      const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
       const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
@@ -269,14 +292,14 @@ export default function Canvas() {
 
       if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
-      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > 0.8 * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8]);
+      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > GROUND_LEVEL_SCALAR * canvasRef.current.height) {
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
       } else {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
       const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
-      const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+      const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
       heightInputRef.current.value = metreHeight;
     }
   }
@@ -289,13 +312,19 @@ export default function Canvas() {
   
   ////////////////////////////////////////////////////////////////////////////////
   return (
-    <>
+    <div id="container">
       <canvas ref={canvasRef} 
-        style={{height: 1.3 * height, width: 2 * width}} id="canvas" 
+        id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
       >
+        <img 
+          src={grassImg}
+          alt="grass"
+          ref={foregroundRef}
+        />
+
         <img
           src={cannonImg}
           alt="barrel"
@@ -328,6 +357,7 @@ export default function Canvas() {
           alt="heightArrow"
           ref={heightArrowRef}
         />
+
       </canvas>
 
       {loadedCanvas && 
@@ -343,11 +373,12 @@ export default function Canvas() {
           USER_ANCHOR_PONT={USER_ANCHOR_POINT}
           MAX_HORIZONTAL_RANGE={500}
           CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
         />
-    }
+      }
 
-      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500)} />
-    </>
+      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+    </div>
     
   )
 }

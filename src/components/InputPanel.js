@@ -12,7 +12,8 @@ export default function InputPanel({
   canvas,
   USER_ANCHOR_PONT,
   MAX_HORIZONTAL_RANGE,
-  CANNON_HORIZONTAL_SCALAR
+  CANNON_HORIZONTAL_SCALAR,
+  GROUND_LEVEL_SCALAR = 0.8
 
 }) {
 
@@ -70,17 +71,17 @@ export default function InputPanel({
     // requires some defensive programming
     try {
       if (val === "") {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8]);
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
       }
       // some defensive programming
       if (isNaN(parseFloat(val))) {
         return;
       }  
       const conversionRate = calculateConversionRate(canvas, USER_ANCHOR_PONT, MAX_HORIZONTAL_RANGE);
-      const anchor_point_y = 0.8 - ((val * conversionRate)/ canvas.height);
-      const maxMetreHeight = Math.round(((0.8 - 0.1) * canvas.height) / conversionRate / 10) * 10; 
+      const anchor_point_y = GROUND_LEVEL_SCALAR - ((val * conversionRate)/ canvas.height);
+      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
       if (parseFloat(val) < 0) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8])
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
         heightInputRef.current.value = 0;
       } else if (anchor_point_y < 0.1) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1])
@@ -99,27 +100,29 @@ export default function InputPanel({
     <>
       <div id="inputPanel">
         <div id="heightInput">
-          Height: 
+          <span className="inputTitle">Height:</span>
           <input 
             type="text"
             ref={heightInputRef}
             onChange={(e) => changeHeightWithTextBox(e)}
             maxLength={4}
           />
-          m
+          <span className="unit">m</span>
         </div>
+        <div className="flexBreak"/>
         <div id="velocityInput">
-          Velocity:
+          <span className="inputTitle">Velocity:</span>
           <input 
             type="text"
             ref={velocityInputRef}
             onChange={(e) => changeVelocityWithTextBox(e)}
             maxLength={8}
           />
-          m/s
+          <span className="unit">m/s</span>
         </div>
+        <div className="flexBreak"/>
         <div id="angleInput">
-          Angle: 
+          <span className="inputTitle">Angle:</span>
           <input 
             type="text" 
             ref={angleInputRef}
@@ -127,7 +130,7 @@ export default function InputPanel({
             style={{bottom: "95px"}}
             maxLength={6}
           />
-          degrees
+          <span className="unit">degrees</span>
         </div>
       </div>
     </>

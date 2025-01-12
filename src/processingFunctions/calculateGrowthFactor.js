@@ -12,26 +12,29 @@ export function calculateGrowthFactorCannon(cannonInfo, canvas) {
 
   const FRACTION_OF_SCREEN = 1/3;
 
-  if (isLandscape()) {
-    return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
-  } else {
-    return (1/6 * canvas.width) / cannonInfo.pixel_width
-  }
+  // if (isLandscape()) {
+  //   return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
+  // } else {
+  //   return (1/6 * canvas.width) / cannonInfo.pixel_width
+  // }
+  return (FRACTION_OF_SCREEN * window.innerWidth) / cannonInfo.pixel_width
 
 }
 
 export function calclateGrowthFactorVelocity(canvas) {
-  if (isLandscape()) {
+  // if (isLandscape()) {
+  //   const FRACTION_OF_CANVAS = 2/5;
+  //   return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+  // } else {
+  //   const FRACTION_OF_CANVAS = 1/5;
+  //   return (FRACTION_OF_CANVAS * canvas.width) / 817 
+  // }
+
     const FRACTION_OF_CANVAS = 2/5;
     return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
-  } else {
-    const FRACTION_OF_CANVAS = 1/5;
-    return (FRACTION_OF_CANVAS * canvas.width) / 817 
-  }
-  
 }
 
-export function calculateGrowthFactorHeight(canvas) {
-  const FRACTION_OF_CANVAS = 7/10;
+export function calculateGrowthFactorHeight(canvas, GROUND_LEVEL_SCALAR = 0.8) {
+  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
   return (FRACTION_OF_CANVAS * canvas.height) / 866 // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
 }
