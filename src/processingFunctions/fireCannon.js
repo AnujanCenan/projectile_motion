@@ -30,25 +30,18 @@ export function fireCannon(
 
 
         function trackProjectile() {      
-          const old_x = x;
           x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
           y = initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime ** 2);            
-          
-          const delta_x = x - old_x;
 
           currTime += 0.04; // something to experiment with
-
-          console.log(`Canvas.parentNode.width = ${canvas.parentNode.style.width}`)
           canvas.parentNode.scrollTo({
             top: 0,
             left: (x) / window.devicePixelRatio - width / 2,
             behavior: "instant"
           });
           
-          // el.parentNode.scrollLeft = elLeft - elParentLeft;
-    
           drawCircle(ctx, x, y, 5, "blue", "black");
           if (initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
