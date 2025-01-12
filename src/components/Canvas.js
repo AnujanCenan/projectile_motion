@@ -38,7 +38,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.1 : 0.5;
+  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.15 : 0.5;
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
 
@@ -131,7 +131,7 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT
     )
-  })
+  }, [USER_ANCHOR_POINT, launchVelocity])
 
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
@@ -142,7 +142,7 @@ export default function Canvas() {
       -elevationAngle, 
       cannonRef.current, 
       holsterRef.current, 
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     );
 
     drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT);
@@ -152,13 +152,13 @@ export default function Canvas() {
       velocitySliderRef.current, 
       launchVelocity, 
       MAX_SPEED, 
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     )
     
     drawingInterface.current.drawHeightScale(
       heightScaleRef.current,
       heightArrowRef.current,
-      USER_ANCHOR_POINT
+      USER_ANCHOR_POINT,
     )
 
 
@@ -293,9 +293,12 @@ export default function Canvas() {
   
   ////////////////////////////////////////////////////////////////////////////////
   return (
-    <div id="container">
+    <div 
+      id="container"
+      style={{height: "100%", width: width, overflow: "scroll", whiteSpace: "nowrap"}}
+    >
       <canvas ref={canvasRef} 
-        style={{height: 0.8 * height, width: 1 * width}} 
+        style={{width: "3840px", height: 1.3 * height}}
         id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
@@ -352,7 +355,7 @@ export default function Canvas() {
         />
       }
 
-      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500)} />
+      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
     </div>
     
   )

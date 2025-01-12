@@ -10,7 +10,8 @@ export function fireCannon(
     launchVelocity, 
     elevationAngle, 
     GROUND_LEVEL_SCALAR, 
-    MAX_HORIZONTAL_RANGE
+    MAX_HORIZONTAL_RANGE,
+    width
 ) {
     var reqNum;
     try {
@@ -27,22 +28,31 @@ export function fireCannon(
         var currTime = 0;
         const angle_rad = elevationAngle * (Math.PI / 180);
 
-        function trackProjectile() {      
-          console.log("In track Projectile from requestAnimationFrame")    
 
+        function trackProjectile() {      
+          const old_x = x;
           x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
           y = initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
-            + (1/2 * accel * currTime ** 2);             
+            + (1/2 * accel * currTime ** 2);            
+          
+          const delta_x = x - old_x;
 
-          currTime += 0.02; // something to experiment with
+          currTime += 0.04; // something to experiment with
+
+          console.log(`Canvas.parentNode.width = ${canvas.parentNode.style.width}`)
+          canvas.parentNode.scrollTo({
+            top: 0,
+            left: (x) / window.devicePixelRatio - width / 2,
+            behavior: "instant"
+          });
+          
+          // el.parentNode.scrollLeft = elLeft - elParentLeft;
     
           drawCircle(ctx, x, y, 5, "blue", "black");
-          console.log(`Comparing y = ${y} to GROUND_LEVEL_SCALAR * canvasHeight = ${GROUND_LEVEL_SCALAR} * ${canvas.height} = ${GROUND_LEVEL_SCALAR * canvas.height}`)
           if (initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
-            console.log("If statement is triggered")
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);

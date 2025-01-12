@@ -1,7 +1,6 @@
 #canvas {
     background-image: url(../../images/fillerBGImage.jpg);
     background-size: contain;
-    width: 200%;
     background-repeat: repeat-x;
     z-index: 1;
     background-color: transparent;
