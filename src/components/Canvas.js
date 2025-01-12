@@ -40,7 +40,7 @@ export default function Canvas() {
   const GROUND_LEVEL_SCALAR = 0.8;
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.15 : 0.5;
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, 0.8])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
 
   const { width, height } = useWindowSize();
@@ -145,7 +145,7 @@ export default function Canvas() {
       USER_ANCHOR_POINT,
     );
 
-    drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT);
+    drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
     
     drawingInterface.current.drawVelocitySlider(
       velocityBarRef.current, 
@@ -168,7 +168,7 @@ export default function Canvas() {
     const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
     // Drawing a scrappy target
 
-    const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+    const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
     ctxRef.current.beginPath();
     ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
@@ -273,14 +273,14 @@ export default function Canvas() {
 
       if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
-      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > 0.8 * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.8]);
+      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > GROUND_LEVEL_SCALAR * canvasRef.current.height) {
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
       } else {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
       const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
-      const metreHeight = ((0.8 - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+      const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
       heightInputRef.current.value = metreHeight;
     }
   }
@@ -298,7 +298,7 @@ export default function Canvas() {
       style={{height: "100%", width: width, overflow: "scroll", whiteSpace: "nowrap"}}
     >
       <canvas ref={canvasRef} 
-        style={{width: "3840px", height: 1.3 * height}}
+        style={{width: "3840px", height: height}}
         id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
@@ -352,6 +352,7 @@ export default function Canvas() {
           USER_ANCHOR_PONT={USER_ANCHOR_POINT}
           MAX_HORIZONTAL_RANGE={500}
           CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
         />
       }
 

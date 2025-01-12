@@ -235,12 +235,12 @@ export class DrawingImages {
     );
   }
 
-  drawHeightPlatform(USER_ANCHOR_POINT) {
+  drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR) {
 
     const SCALAR_OF_HOLSTER_WIDTH = 3;
 
     const width = SCALAR_OF_HOLSTER_WIDTH * (this.#canvasPositionAndSizes.getHolsterInfo().pixel_width  * this.#canvasPositionAndSizes.getGrowthFactorCannon());
-    const height = (0.8 - USER_ANCHOR_POINT[1]) * this.#canvasPositionAndSizes.getCanvas().height;
+    const height = (GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * this.#canvasPositionAndSizes.getCanvas().height;
 
     const [holster_x, holster_y] = this.#canvasPositionAndSizes.getHolsterPosition(USER_ANCHOR_POINT);
 
