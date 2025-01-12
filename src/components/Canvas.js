@@ -38,7 +38,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = 0.5 * window.devicePixelRatio;
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 * window.devicePixelRatio : 0.8 * window.devicePixelRatio);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -88,7 +88,13 @@ export default function Canvas() {
   const positionAndSizesInterface = useRef(null);
   const drawingInterface = useRef(null);
 
-  
+  useEffect(() => {
+    if (isLandscape()) {
+      setCannonHorizontalScalar(0.5 * window.devicePixelRatio);
+    } else {
+      setCannonHorizontalScalar(0.8 * window.devicePixelRatio);
+    }
+  }, [width, height]);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
 
   useEffect(() => {
@@ -182,10 +188,12 @@ export default function Canvas() {
 
   function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-
+    console.log(e);
+    console.log(canvasRef.current.parentNode.scrollLeft)
+    const horizScroll = canvasRef.current.parentNode.scrollLeft
     cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
-      e.pageX, e.pageY,
+      e.pageX + horizScroll, e.pageY,
       cannonInfo, 
       elevationAngle,
       clickedBehindPivot,
@@ -193,7 +201,7 @@ export default function Canvas() {
     )
 
     sliderClick.current = clickedOnVelocitySlider(
-      e.pageX, 
+      e.pageX + horizScroll, 
       e.pageY, 
       launchVelocity, 
       velocitySliderInfo.pixel_width, 
@@ -206,7 +214,7 @@ export default function Canvas() {
     )
 
     heightArrowClick.current = clickedOnHeightArrow(
-      e.pageX,
+      e.pageX + horizScroll,
       e.pageY,
 
       positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
@@ -214,14 +222,15 @@ export default function Canvas() {
       ctxRef.current
     )
 
-    click_x.current = e.pageX;
+    click_x.current = e.pageX + horizScroll;
     click_y.current = e.pageY;
   }
 
   function mouseMove(e) {
+    const horizScroll = canvasRef.current.parentNode.scrollLeft
     if (cannonClick.current) {
       const angularDisplacement = calculateAngularDisplacement(
-        e.pageX, e.pageY, 
+        e.pageX + horizScroll, e.pageY, 
         click_x.current, click_y.current, clickedBehindPivot.current,
         cannonInfo, 
         canvasRef.current,
@@ -229,7 +238,7 @@ export default function Canvas() {
         USER_ANCHOR_POINT
       );
 
-      click_x.current = e.pageX;
+      click_x.current = e.pageX + horizScroll;
       click_y.current = e.pageY;
       if (elevationAngle + angularDisplacement > 90) {
         setElevationAngle(90)
@@ -241,7 +250,7 @@ export default function Canvas() {
       angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
 
     } else if (sliderClick.current) {
-      const mouse_x = e.pageX;
+      const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
       const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
@@ -261,7 +270,7 @@ export default function Canvas() {
       velocityInputRef.current.value = Math.round(launchVelocity * 1000) / 1000;
     } 
     else if (heightArrowClick.current) {
-      const mouse_x = e.pageX;
+      const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
       const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
