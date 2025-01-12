@@ -295,7 +295,6 @@ export default function Canvas() {
   return (
     <div id="container">
       <canvas ref={canvasRef} 
-        style={{width: "3840px", height: "100%"}}
         id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}
