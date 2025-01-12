@@ -109,6 +109,7 @@ export default function InputPanel({
           />
           m
         </div>
+        <div className="flexBreak"/>
         <div id="velocityInput">
           Velocity:
           <input 
@@ -119,6 +120,7 @@ export default function InputPanel({
           />
           m/s
         </div>
+        <div className="flexBreak"/>
         <div id="angleInput">
           Angle: 
           <input 

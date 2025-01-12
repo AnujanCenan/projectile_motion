@@ -38,7 +38,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.15 : 0.5;
+  const CANNON_HORIZONTAL_SCALAR = 0.5 * window.devicePixelRatio;
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -293,12 +293,9 @@ export default function Canvas() {
   
   ////////////////////////////////////////////////////////////////////////////////
   return (
-    <div 
-      id="container"
-      style={{height: "100%", width: width, overflow: "scroll", whiteSpace: "nowrap"}}
-    >
+    <div id="container">
       <canvas ref={canvasRef} 
-        style={{width: "3840px", height: height}}
+        style={{width: "3840px", height: "100%"}}
         id="canvas" 
         onMouseDown={(e) => mouseDown(e)}
         onMouseUp={() => mouseUp()}

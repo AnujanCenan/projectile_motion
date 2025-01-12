@@ -1,10 +1,31 @@
+body {
+    overflow-y: hidden;
+}
+#container {
+    max-height: 100%;
+    height: 100vh;
+    width: 100%; 
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    white-space: nowrap;
+
+
+    scrollbar-color: black rgb(145, 145, 189);
+    scrollbar-width: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  }
+
 #canvas {
     background-image: url(../../images/fillerBGImage.jpg);
     background-size: contain;
     background-repeat: repeat-x;
     z-index: 1;
     background-color: transparent;
-
 }
 
 img { 
