@@ -91,6 +91,10 @@ export class CanvasPositionAndSizes {
     return calculateGrowthFactorHeight(this.#canvas);
   }
 
+  getGrowthFactorForeground() {
+    return this.#canvas.width / 1000; // 1000 is the width of the grass image atm
+  }
+
   /// CONVERSION RATE
   calculateConversionRate(USER_ANCHOR_POINT) {
     return calculateConversionRate(this.#canvas, USER_ANCHOR_POINT, this.#MAX_HORIZONTAL_RANGE)

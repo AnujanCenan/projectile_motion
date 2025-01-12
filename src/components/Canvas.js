@@ -18,6 +18,8 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import heightScale from "../images/height/heightBar.png"
 import heightArrow from "../images/height/heightIndicator.png"
 
+import grassImg from "../images/foregrounds/grassLarge.png"
+
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
@@ -63,6 +65,9 @@ export default function Canvas() {
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
   const heightInputRef = useRef(null);
+
+  // Foreground image reference
+  const foregroundRef = useRef(null);
 
 
   const MAX_SPEED = 140;
@@ -123,6 +128,8 @@ export default function Canvas() {
   useEffect(() => {
     ctxRef.current = canvasRef.current.getContext('2d');
 
+
+
     drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawDefaultVelocitySlider(
@@ -137,6 +144,7 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT
     )
+
   }, [USER_ANCHOR_POINT, launchVelocity])
 
   useEffect(() => {
@@ -144,6 +152,9 @@ export default function Canvas() {
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
+
+    drawingInterface.current.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
+
     drawingInterface.current.drawRotatedCannon(
       -elevationAngle, 
       cannonRef.current, 
@@ -166,7 +177,6 @@ export default function Canvas() {
       heightArrowRef.current,
       USER_ANCHOR_POINT,
     )
-
 
     const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
 
@@ -309,6 +319,12 @@ export default function Canvas() {
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
       >
+        <img 
+          src={grassImg}
+          alt="grass"
+          ref={foregroundRef}
+        />
+
         <img
           src={cannonImg}
           alt="barrel"
