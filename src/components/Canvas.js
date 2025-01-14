@@ -198,8 +198,6 @@ export default function Canvas() {
 
   function mouseDown(e) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-    console.log(e);
-    console.log(canvasRef.current.parentNode.scrollLeft)
     const horizScroll = canvasRef.current.parentNode.scrollLeft
     cannonClick.current = clickedOnCannon(
       ctxRef.current, canvasRef.current, 
