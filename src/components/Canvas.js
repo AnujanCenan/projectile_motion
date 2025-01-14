@@ -40,7 +40,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 * window.devicePixelRatio : 0.8 * window.devicePixelRatio);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 : 0.8);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -95,9 +95,9 @@ export default function Canvas() {
 
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(0.5 * window.devicePixelRatio);
+      setCannonHorizontalScalar(0.5);
     } else {
-      setCannonHorizontalScalar(0.8 * window.devicePixelRatio);
+      setCannonHorizontalScalar(0.8);
     }
   }, [width, height]);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
