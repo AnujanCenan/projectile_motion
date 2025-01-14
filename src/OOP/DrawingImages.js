@@ -261,26 +261,6 @@ export class DrawingImages {
     ctx.stroke();
   }
 
-  drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foreground) {
-    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - 100;
-    foreground.onload = () => {
-      drawImageWithRotation(
-        this.#canvasPositionAndSizes.getCtx(),
-        foreground,
-        0,
-        y_pos,
-        0,
-        0,
-        1000,
-        302,
-        0,
-        this.#canvasPositionAndSizes.getGrowthFactorForeground()
-      )
-
-    }
-
-  }
-
   drawForeground(GROUND_LEVEL_SCALAR, foreground) {
     console.log(`GROUND_LEVEL_SCALAR = ${GROUND_LEVEL_SCALAR[0]}, ${GROUND_LEVEL_SCALAR[1]}`)
     const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - 100;
