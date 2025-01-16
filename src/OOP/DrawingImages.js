@@ -262,9 +262,7 @@ export class DrawingImages {
   }
 
   drawForeground(GROUND_LEVEL_SCALAR, foreground) {
-    console.log(`GROUND_LEVEL_SCALAR = ${GROUND_LEVEL_SCALAR[0]}, ${GROUND_LEVEL_SCALAR[1]}`)
     const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - 100;
-    console.log(`drawingForeground: y_pos = ${y_pos}`)
     drawImageWithRotation(
       this.#canvasPositionAndSizes.getCtx(),
       foreground,
