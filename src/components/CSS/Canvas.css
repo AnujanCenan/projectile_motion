@@ -15,8 +15,10 @@ body {
 }
 
 #canvas {
-    background-size: contain;
-    background-repeat: repeat-x;
+    background-image: url(../../images/backgrounds/homseBaseSimplified2.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     z-index: 1;
     background-color: transparent;
     aspect-ratio: 32/9;
