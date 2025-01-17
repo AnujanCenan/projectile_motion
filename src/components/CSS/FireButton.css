@@ -1,9 +1,24 @@
+:root {
+    /* screen margin matches the input panel margin */
+    --screenMargin: 1vw;
+
+}
 #fireButton {
     width: 90px;
     height: 60px;
     position: fixed;
     right: 0;
-    bottom: 0;
+
 
     border: black 2px solid;
+}
+
+@media (orientation: landscape) {
+    #fireButton {
+        left: 0;
+        bottom: 0;
+
+        margin-bottom: var(--screenMargin);
+        margin-left: var(--screenMargin);
+    }
 }

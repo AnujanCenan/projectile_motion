@@ -40,7 +40,7 @@ export default function Canvas() {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 : 0.8);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 1 : 1.5);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -95,9 +95,9 @@ export default function Canvas() {
 
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(0.5);
+      setCannonHorizontalScalar(1);
     } else {
-      setCannonHorizontalScalar(0.8);
+      setCannonHorizontalScalar(1.5);
     }
   }, []);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
@@ -358,24 +358,26 @@ export default function Canvas() {
 
       </canvas>
 
-      {loadedCanvas && 
-        <InputPanel 
-          setElevationAngle={setElevationAngle} 
-          setLaunchVelocity={setLaunchVelocity} 
-          setUserAnchorPoint={setUserAnchorPoint}
-          MAX_SPEED={MAX_SPEED} 
-          angleInputRef={angleInputRef} 
-          velocityInputRef={velocityInputRef}
-          heightInputRef={heightInputRef}
-          canvas={canvasRef.current}
-          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-          MAX_HORIZONTAL_RANGE={500}
-          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
-          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
-        />
-      }
+      <div className="Canvas_BillyGoat">
+        {loadedCanvas && 
+          <InputPanel 
+            setElevationAngle={setElevationAngle} 
+            setLaunchVelocity={setLaunchVelocity} 
+            setUserAnchorPoint={setUserAnchorPoint}
+            MAX_SPEED={MAX_SPEED} 
+            angleInputRef={angleInputRef} 
+            velocityInputRef={velocityInputRef}
+            heightInputRef={heightInputRef}
+            canvas={canvasRef.current}
+            USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+            MAX_HORIZONTAL_RANGE={500}
+            CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+            GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
+          />
+        }
 
-      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+        <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+      </div>
     </div>
     
   )

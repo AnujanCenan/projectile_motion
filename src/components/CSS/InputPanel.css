@@ -1,16 +1,19 @@
+/* variables in CSS: decalred under the :root section */
+:root {
+    --fireButtonHeight: 60px;
+}
 
 #inputPanel {
     position: fixed;
-    bottom: 0;
-    left: 0;
+
     margin-left: 1vw;
     margin-bottom: 1vw;
     background-color: white;
     display: flex;
     flex-wrap: wrap;
     max-width: 20vw;
-    justify-content: center;
-
+    border: 3px solid blue;
+    border-radius: 10px;
 }
 
 .flexBreak {
@@ -54,8 +57,26 @@
     border: blue 2px solid;
 }
 
+@media (orientation: landscape) {
+
+    
+
+    #inputPanel {
+        bottom: calc(var(--fireButtonHeight));
+        left: 0;
+
+
+    }
+}
 @media (orientation: portrait) {
 
+
+    #inputPanel {
+        max-width: 40vw;
+        top: 0;
+        right: 0;
+
+    }
     #inputPanel > div {
         padding-top: 6px;
         padding-bottom: 6px;

@@ -97,43 +97,41 @@ export default function InputPanel({
   }
 
   return (
-    <>
-      <div id="inputPanel">
-        <div id="heightInput">
-          <span className="inputTitle">Height:</span>
-          <input 
-            type="text"
-            ref={heightInputRef}
-            onChange={(e) => changeHeightWithTextBox(e)}
-            maxLength={4}
-          />
-          <span className="unit">m</span>
-        </div>
-        <div className="flexBreak"/>
-        <div id="velocityInput">
-          <span className="inputTitle">Velocity:</span>
-          <input 
-            type="text"
-            ref={velocityInputRef}
-            onChange={(e) => changeVelocityWithTextBox(e)}
-            maxLength={8}
-          />
-          <span className="unit">m/s</span>
-        </div>
-        <div className="flexBreak"/>
-        <div id="angleInput">
-          <span className="inputTitle">Angle:</span>
-          <input 
-            type="text" 
-            ref={angleInputRef}
-            onChange={(e) => {changeAngleWithTextBox(e)}} 
-            style={{bottom: "95px"}}
-            maxLength={6}
-          />
-          <span className="unit">degrees</span>
-        </div>
+    <div id="inputPanel">
+      <div id="heightInput">
+        <span className="inputTitle">Height:</span>
+        <input 
+          type="text"
+          ref={heightInputRef}
+          onChange={(e) => changeHeightWithTextBox(e)}
+          maxLength={4}
+        />
+        <span className="unit">m</span>
       </div>
-    </>
+      <div className="flexBreak"/>
+      <div id="velocityInput">
+        <span className="inputTitle">Velocity:</span>
+        <input 
+          type="text"
+          ref={velocityInputRef}
+          onChange={(e) => changeVelocityWithTextBox(e)}
+          maxLength={8}
+        />
+        <span className="unit">m/s</span>
+      </div>
+      <div className="flexBreak"/>
+      <div id="angleInput">
+        <span className="inputTitle">Angle:</span>
+        <input 
+          type="text" 
+          ref={angleInputRef}
+          onChange={(e) => {changeAngleWithTextBox(e)}} 
+          style={{bottom: "95px"}}
+          maxLength={6}
+        />
+        <span className="unit">degrees</span>
+      </div>
+    </div>
   )
   
 }
