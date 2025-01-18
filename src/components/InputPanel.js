@@ -98,6 +98,8 @@ export default function InputPanel({
 
   return (
     <div id="inputPanel">
+      <div id="inputPanel_title">Input Panel</div>
+
       <div id="heightInput">
         <span className="inputTitle">Height:</span>
         <input 
