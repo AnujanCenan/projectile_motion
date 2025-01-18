@@ -1,16 +1,19 @@
 :root {
     /* screen margin matches the input panel margin */
     --screenMargin: 1vw;
+    /* input panel height can be found in InputPanel.css. Includes box height + (2 * border width) */
+    --inputPanelHeightLandscape: calc(50vh + 9px);
+    --inputPanelHeightPortrait: calc(40vh + 9px);
 
 }
 #fireButton {
     width: 90px;
     height: 60px;
     position: fixed;
-    right: 0;
-
 
     border: black 2px solid;
+    margin-bottom: var(--screenMargin);
+    margin-left: var(--screenMargin);
 }
 
 @media (orientation: landscape) {
@@ -18,7 +21,15 @@
         left: 0;
         bottom: 0;
 
-        margin-bottom: var(--screenMargin);
-        margin-left: var(--screenMargin);
+    }
+}
+
+@media (orientation: portrait) {
+    #fireButton {
+        right: 0;
+        top: var(--inputPanelHeightPortrait);
+
+        width: 90px;
+        height: 30px;
     }
 }
