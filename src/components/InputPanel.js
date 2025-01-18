@@ -100,7 +100,7 @@ export default function InputPanel({
     <div id="inputPanel">
       <div id="inputPanel_title">Input Panel</div>
 
-      <div id="heightInput">
+      <div id="heightInput" className="singleInputContainer">
         <span className="inputTitle">Height:</span>
         <input 
           type="text"
@@ -111,7 +111,7 @@ export default function InputPanel({
         <span className="unit">m</span>
       </div>
       <div className="flexBreak"/>
-      <div id="velocityInput">
+      <div id="velocityInput" className="singleInputContainer">
         <span className="inputTitle">Velocity:</span>
         <input 
           type="text"
@@ -122,7 +122,7 @@ export default function InputPanel({
         <span className="unit">m/s</span>
       </div>
       <div className="flexBreak"/>
-      <div id="angleInput">
+      <div id="angleInput" className="singleInputContainer">
         <span className="inputTitle">Angle:</span>
         <input 
           type="text" 
