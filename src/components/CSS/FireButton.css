@@ -2,23 +2,28 @@
     /* screen margin matches the input panel margin */
     --screenMargin: 1vw;
     /* input panel height can be found in InputPanel.css. Includes box height + (2 * border width) */
-    --inputPanelHeightLandscape: calc(50vh + 9px);
-    --inputPanelHeightPortrait: calc(40vh + 9px);
+    --inputPanelHeightLandscape: calc(40vh);
+    --inputPanelHeightPortrait: calc(40vh);
+
+    --inputPanelWidthLandscape: calc(24vw);
+    --inputPanelWidthPortrait: calc(40vw);
+
+    --inputPanelBorder: 5px;
 
 }
 #fireButton {
-    width: 90px;
-    height: 60px;
+    width: 10vw;
+    height: 7vh;
     position: fixed;
 
-    border: black 2px solid;
+    border: blue 2px solid;
     margin-bottom: var(--screenMargin);
     margin-left: var(--screenMargin);
 }
 
 @media (orientation: landscape) {
     #fireButton {
-        left: 0;
+        left: calc(var(--inputPanelWidthLandscape)/2 - 10vw / 2 + var(--inputPanelBorder));
         bottom: 0;
 
     }
@@ -26,10 +31,8 @@
 
 @media (orientation: portrait) {
     #fireButton {
-        right: 0;
-        top: var(--inputPanelHeightPortrait);
-
-        width: 90px;
-        height: 30px;
+        right: calc(var(--inputPanelWidthPortrait) / 2 - 10vw / 2 + var(--inputPanelBorder));
+        top: calc(var(--inputPanelHeightPortrait) + 10px - 1px);
+        height: 7vh;
     }
 }
