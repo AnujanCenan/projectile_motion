@@ -36,11 +36,9 @@ export default function Canvas() {
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [loadedCanvas, setLoadedCanvas] = useState(false);
 
-
-
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 1 : 1.5);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.6 * window.devicePixelRatio: 0.3 * window.devicePixelRatio);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -92,12 +90,12 @@ export default function Canvas() {
   // For class instances
   const positionAndSizesInterface = useRef(null);
   const drawingInterface = useRef(null);
-
+  // 0.5 * window.devicePixelRatio: 0.8 * window.devicePixelRatio
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(1);
+      setCannonHorizontalScalar(0.6 * window.devicePixelRatio);
     } else {
-      setCannonHorizontalScalar(1.5);
+      setCannonHorizontalScalar(0.3 * window.devicePixelRatio);
     }
   }, []);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
