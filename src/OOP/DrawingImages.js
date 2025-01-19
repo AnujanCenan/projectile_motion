@@ -276,4 +276,41 @@ export class DrawingImages {
       this.#canvasPositionAndSizes.getGrowthFactorForeground()
     )
   }
+
+  drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foreground) {
+    foreground.onload = () => {
+      this.drawForeground(GROUND_LEVEL_SCALAR, foreground);
+    }
+  }
+
+  drawTargetOnLoad(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR=0.8, target, range, altitude) {
+    target.onload = () => {
+      this.drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR=0.8, target, range, altitude)
+    }
+  }
+
+  drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR=0.8, target, range, altitude) {
+    const conversionRate = this.#canvasPositionAndSizes.calculateConversionRate(USER_ANCHOR_POINT);
+    const growthFactor = 0.5;
+
+
+    const anchor_x = this.#canvasPositionAndSizes.getPivotPosition(USER_ANCHOR_POINT)[0]
+
+    // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
+    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - altitude * conversionRate - 356 * growthFactor;
+    const x_pos = anchor_x + range * conversionRate - 152 * growthFactor;
+
+    drawImageWithRotation(
+      this.#canvasPositionAndSizes.getCtx(),
+      target,
+      x_pos,
+      y_pos,
+      0,
+      0,
+      505,
+      701,
+      0,
+      growthFactor
+    )
+  }
 }

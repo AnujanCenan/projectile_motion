@@ -10,7 +10,7 @@ import GeneralPaddy_happy from "./images/characters/GeneralPaddy/GeneralPaddy_ha
 function App() {
   return (
     <div>
-    <Canvas />
+    <Canvas MAX_RANGE={500} target_range={500} target_altitude={0}/>
     {/* <Dialogue
       name="General Paddy"
       speeches={[
