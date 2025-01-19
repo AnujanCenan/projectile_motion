@@ -47,6 +47,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
   const { width, height } = useWindowSize();
 
+
   //// Element References
   const ctxRef = useRef(null);
   const canvasRef = useRef(null);
@@ -127,18 +128,34 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
       ctxRef.current = canvasRef.current.getContext('2d');
       positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
+      console.log("Drawing on load environment:")
+      // drawingInterface.current.drawEnvironmentOnLoad(
+      //   GROUND_LEVEL_SCALAR, 
+      //   USER_ANCHOR_POINT,
+      //   MAX_SPEED,
+      //   launchVelocity,
+      //   target_range,
+      //   target_altitude,
+      //   foregroundRef, 
+      //   holsterRef, 
+      //   cannonRef, 
+      //   velocityBarRef, 
+      //   velocitySliderRef, 
+      //   heightScaleRef, 
+      //   heightArrowRef,
+      //   targetRef
+      // )
+      console.log("Completed on load environment")
     }
-  }, [cannonInfo, holsterInfo])
+  }, [cannonInfo, holsterInfo, MAX_RANGE])
 
-  useEffect(() => {
-    ctxRef.current = canvasRef.current.getContext('2d');
-
-
-    drawingInterface.current.drawEnvironmentOnLoad(
+  window.onload = () => {
+    drawingInterface.current.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
       MAX_SPEED,
       launchVelocity,
+      elevationAngle,
       target_range,
       target_altitude,
       foregroundRef, 
@@ -150,7 +167,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
       heightArrowRef,
       targetRef
     )
-  }, [USER_ANCHOR_POINT, launchVelocity])
+  }
 
   useEffect(() => {
     drawingInterface.current.drawEnvironment(
@@ -170,9 +187,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
       heightArrowRef,
       targetRef
     )
-
-    
-  })
+  }, [MAX_SPEED, USER_ANCHOR_POINT, elevationAngle, launchVelocity, target_altitude, target_range, width, height])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 

@@ -12,15 +12,12 @@ export class DrawingImages {
     holsterImage.onload = () => {
       this.drawHolster(holsterImage, USER_ANCHOR_POINT);
     }
-    console.log("Completed holster on load")
   }
 
   drawCannonOnLoad(cannonImage, USER_ANCHOR_POINT) {
     cannonImage.onload = () => {
       this.drawCannon(cannonImage, 0, USER_ANCHOR_POINT);
     }
-
-    console.log("Completed cannon on load")
   }
 
   drawHolster(holsterImage, USER_ANCHOR_POINT) {
@@ -94,8 +91,6 @@ export class DrawingImages {
     velocityBar.onload = () => {
       this.drawVelocityBar(velocityBar, USER_ANCHOR_POINT)
     }
-
-    console.log("Completed vel bar on load")
   }
 
   drawVelocitySlider(velocitySlider, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT) {
@@ -117,14 +112,14 @@ export class DrawingImages {
       0, 
       growthFactor
     )
+
+    
   }
 
   drawVelocitySliderOnLoad(velocitySlider, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT) {
     velocitySlider.onload = () => {
       this.drawVelocitySlider(velocitySlider, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT)
     }
-
-    console.log("Completed vel slider on load")
   }
 
   drawHeightScale(heightScale, USER_ANCHOR_POINT) {
@@ -148,8 +143,6 @@ export class DrawingImages {
     heightScale.onload = () => {
       this.drawHeightScale(heightScale, USER_ANCHOR_POINT);
     }
-
-    console.log("Completed height scale on load")
   }
 
   drawHeightArrow(heightArrow, USER_ANCHOR_POINT) {
@@ -175,8 +168,6 @@ export class DrawingImages {
     heightArrow.onload = () => {
       this.drawHeightArrow(heightArrow, USER_ANCHOR_POINT);
     }
-
-    console.log("Completed height arrow on load")
   }
 
   drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR) {
@@ -217,22 +208,19 @@ export class DrawingImages {
       302,
       0,
       this.#canvasPositionAndSizes.getGrowthFactorForeground()
-    )
+    ) 
   }
 
   drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foreground) {
     foreground.onload = () => {
       this.drawForeground(GROUND_LEVEL_SCALAR, foreground);
     }
-    console.log("Completed foreground on load")
   }
 
   drawTargetOnLoad(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, target, range, altitude) {
     target.onload = () => {
       this.drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, target, range, altitude)
     }
-
-    console.log("Completed target on load")
   }
 
   drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, target, range, altitude) {
@@ -274,9 +262,8 @@ export class DrawingImages {
     velocitySliderRef, 
     heightScaleRef, 
     heightArrowRef,
-    targetRef
+    targetRef,
   ) {
-
 
     this.drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foregroundRef.current);
     
@@ -297,9 +284,6 @@ export class DrawingImages {
       target_range, 
       target_altitude
     )
-
-    console.log("completed environment on load")
-
   }
 
   drawEnvironment(
@@ -319,10 +303,11 @@ export class DrawingImages {
     heightArrowRef,
     targetRef
   ) {
+    
     const canvas = this.#canvasPositionAndSizes.getCanvas();
     const ctx = canvas.getContext('2d');
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 
     this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
 
@@ -344,8 +329,5 @@ export class DrawingImages {
       target_range, 
       target_altitude
     )
-
-    // console.log("Completed environment (not on load)")
-
   }
 }
