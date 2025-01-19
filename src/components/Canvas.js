@@ -20,6 +20,8 @@ import heightArrow from "../images/height/heightIndicator.png"
 
 import grassImg from "../images/foregrounds/grassLarge.png"
 
+import target from "../images/targets/trainingTarget.png"
+
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
@@ -59,14 +61,17 @@ export default function Canvas() {
   const heightScaleRef = useRef(null);
   const heightArrowRef = useRef(null);
 
+
+  // Foreground image reference
+  const foregroundRef = useRef(null);
+  
+  // Target image reference
+  const targetRef = useRef(null);
+
   // Textbox references
   const angleInputRef = useRef(null);
   const velocityInputRef = useRef(null);
   const heightInputRef = useRef(null);
-
-  // Foreground image reference
-  const foregroundRef = useRef(null);
-
 
   const MAX_SPEED = 140;
 
@@ -184,12 +189,14 @@ export default function Canvas() {
 
     const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
 
-    ctxRef.current.beginPath();
-    ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
-    ctxRef.current.strokeStyle = "blue";
-    ctxRef.current.fillStyle = "purple";
-    ctxRef.current.stroke();
-    ctxRef.current.fill();
+    // ctxRef.current.beginPath();
+    // ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
+    // ctxRef.current.strokeStyle = "blue";
+    // ctxRef.current.fillStyle = "purple";
+    // ctxRef.current.stroke();
+    // ctxRef.current.fill();
+
+    drawingInterface.current.drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, targetRef.current, 500, 0)
   })
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
@@ -352,6 +359,12 @@ export default function Canvas() {
           src={heightArrow}
           alt="heightArrow"
           ref={heightArrowRef}
+        />
+
+        <img
+          src={target}
+          alt="target"
+          ref={targetRef}
         />
 
       </canvas>

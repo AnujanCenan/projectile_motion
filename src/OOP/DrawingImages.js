@@ -276,4 +276,28 @@ export class DrawingImages {
       this.#canvasPositionAndSizes.getGrowthFactorForeground()
     )
   }
+
+  drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR=0.8, target, range, altitude) {
+    const conversionRate = this.#canvasPositionAndSizes.calculateConversionRate(USER_ANCHOR_POINT);
+    const growthFactor = 0.5;
+
+
+    const anchor_x = this.#canvasPositionAndSizes.getPivotPosition(USER_ANCHOR_POINT)[0]
+
+    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - altitude * conversionRate - 356 * growthFactor;
+    const x_pos = anchor_x + range * conversionRate - 152 * growthFactor;
+
+    drawImageWithRotation(
+      this.#canvasPositionAndSizes.getCtx(),
+      target,
+      x_pos,
+      y_pos,
+      0,
+      0,
+      505,
+      701,
+      0,
+      growthFactor
+    )
+  }
 }
