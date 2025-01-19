@@ -307,7 +307,6 @@ export class DrawingImages {
     USER_ANCHOR_POINT,
     MAX_SPEED,
     launchVelocity,
-    
     elevationAngle,
     target_range,
     target_altitude,
