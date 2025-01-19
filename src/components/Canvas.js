@@ -36,11 +36,9 @@ export default function Canvas() {
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [loadedCanvas, setLoadedCanvas] = useState(false);
 
-
-
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5 : 0.8);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.6 * window.devicePixelRatio: 0.3 * window.devicePixelRatio);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
@@ -78,7 +76,7 @@ export default function Canvas() {
   const velocitySliderInfo = getHolsterInfo("velocity_slider");
   
   const [elevationAngle, setElevationAngle] = useState(0);
-  const [launchVelocity, setLaunchVelocity] = useState(10)
+  const [launchVelocity, setLaunchVelocity] = useState(0)
 
   // User state variables
   const cannonClick = useRef(false);
@@ -92,12 +90,12 @@ export default function Canvas() {
   // For class instances
   const positionAndSizesInterface = useRef(null);
   const drawingInterface = useRef(null);
-
+  // 0.5 * window.devicePixelRatio: 0.8 * window.devicePixelRatio
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(0.5);
+      setCannonHorizontalScalar(0.6 * window.devicePixelRatio);
     } else {
-      setCannonHorizontalScalar(0.8);
+      setCannonHorizontalScalar(0.3 * window.devicePixelRatio);
     }
   }, []);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
@@ -358,24 +356,26 @@ export default function Canvas() {
 
       </canvas>
 
-      {loadedCanvas && 
-        <InputPanel 
-          setElevationAngle={setElevationAngle} 
-          setLaunchVelocity={setLaunchVelocity} 
-          setUserAnchorPoint={setUserAnchorPoint}
-          MAX_SPEED={MAX_SPEED} 
-          angleInputRef={angleInputRef} 
-          velocityInputRef={velocityInputRef}
-          heightInputRef={heightInputRef}
-          canvas={canvasRef.current}
-          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-          MAX_HORIZONTAL_RANGE={500}
-          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
-          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
-        />
-      }
+      <div className="Canvas_BillyGoat">
+        {loadedCanvas && 
+          <InputPanel 
+            setElevationAngle={setElevationAngle} 
+            setLaunchVelocity={setLaunchVelocity} 
+            setUserAnchorPoint={setUserAnchorPoint}
+            MAX_SPEED={MAX_SPEED} 
+            angleInputRef={angleInputRef} 
+            velocityInputRef={velocityInputRef}
+            heightInputRef={heightInputRef}
+            canvas={canvasRef.current}
+            USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+            MAX_HORIZONTAL_RANGE={500}
+            CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+            GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
+          />
+        }
 
-      <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+        <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+      </div>
     </div>
     
   )

@@ -7,28 +7,11 @@ import GeneralPaddy_neutral from "./images/characters/GeneralPaddy/GeneralPaddy_
 import GeneralPaddy_angry from "./images/characters/GeneralPaddy/GeneralPaddy_angry.png"
 import GeneralPaddy_happy from "./images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 
-
 function App() {
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-    <>
+    <div>
     <Canvas />
-    <Dialogue
+    {/* <Dialogue
       name="General Paddy"
       speeches={[
         "ATTENTION!",
@@ -45,8 +28,8 @@ function App() {
       orderOfExpressions={[
         2, 0, 2, 0, 1
       ]}
-    />
-    </>
+    /> */}
+    </div>
   );
 }
 

@@ -1,15 +1,32 @@
+@font-face {
+    font-family: do-futuristic;
+    src: url(../../fonts/do-futuristic-font/DoFuturistic-JRwaB.ttf);
+}
+
+@font-face {
+    font-family: futuristic;
+    src: url(../../fonts/futuristic-font/FuturisticStandard-vmVED.ttf);
+}
+
+/* variables in CSS: decalred under the :root section */
+:root {
+    --fireButtonHeight: 7vh;
+}
 
 #inputPanel {
     position: fixed;
-    bottom: 0;
-    left: 0;
     margin-left: 1vw;
     margin-bottom: 1vw;
-    background-color: white;
+    background-color: rgb(242, 242, 242);
     display: flex;
     flex-wrap: wrap;
-    max-width: 20vw;
     justify-content: center;
+    width: 24vw;
+    height: 40vh;
+    border: 5px solid black;
+    font-family: futuristic;
+    font-size: calc(0.8vw + 0.6vh);
+
 
 }
 
@@ -18,10 +35,23 @@
     height: 0;
 }
 
-#inputPanel > div {
+#inputPanel > .singleInputContainer {
     padding-top: 10px;
     padding-bottom: 10px;
-    font-size: calc(0.8vw + 0.4vh)
+    height: 5vh;
+}
+
+#inputPanel_title {
+
+    width: 100%;
+    font-size: calc(1vw + 0.8vh);
+    text-align: center;
+
+    background-color: rgb(6, 0, 191);
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #inputPanel > div > .inputTitle {
@@ -37,6 +67,7 @@
 
 #inputPanel > div > input {
     width: 6vw;
+    height: 0.1vh;
     padding: 10px;
     margin-left: 6px;
     margin-right: 3px;
@@ -45,8 +76,6 @@
     box-shadow: none;
     border-color: transparent;
     border: black 2px solid;
-
-    font-size: calc(0.8vw + 0.4vh);
 }
 
 #inputPanel > div > input:focus {
@@ -54,19 +83,57 @@
     border: blue 2px solid;
 }
 
+@media (orientation: landscape) {
+
+    
+    #inputPanel {
+        bottom: calc(var(--fireButtonHeight));
+        left: 0;
+
+
+    }
+}
 @media (orientation: portrait) {
+
+
+    #inputPanel {
+        width: 40vw;
+        height: 40vh;
+        top: 0;
+        right: 0;
+        font-size: calc(1.2vh + 0.6vw);
+        margin-bottom: 0;
+
+    }
+
+    #inputPanel > .singleInputContainer {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        height: 5vh;
+    }
+
+    #inputPanel_title {
+        border-bottom: 1px solid grey;
+        width: 100%;
+        font-size: calc(1.2vh + 1vw);
+    }
 
     #inputPanel > div {
         padding-top: 6px;
         padding-bottom: 6px;
         display: block;
-        font-size: calc(1.2vh + 0.4vw)
+        
     }
 
     #inputPanel > div > .inputTitle {
         display: inline-block;
         width: 14vw;
     }
+
+    #inputPanel > div > input {
+        font-size: calc(1.2vh + 0.6vw)
+    }
+
 
 
 }

@@ -13,6 +13,8 @@ export function fireCannon(
     MAX_HORIZONTAL_RANGE,
     width
 ) {
+
+
     var reqNum;
     try {
       if (canvas) {
