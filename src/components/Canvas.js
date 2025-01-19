@@ -40,12 +40,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.6 * window.devicePixelRatio: 0.3 * window.devicePixelRatio);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
 
 
   const { width, height } = useWindowSize();
+
 
   //// Element References
   const ctxRef = useRef(null);
@@ -99,9 +100,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
   // 0.5 * window.devicePixelRatio: 0.8 * window.devicePixelRatio
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(0.6 * window.devicePixelRatio);
+      setCannonHorizontalScalar(0.5);
     } else {
-      setCannonHorizontalScalar(0.3 * window.devicePixelRatio);
+      setCannonHorizontalScalar(0.5);
     }
   }, []);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
@@ -124,81 +125,69 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
   useEffect(() => {
     if (canvasRef.current) {
+      ctxRef.current = canvasRef.current.getContext('2d');
       positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
+      console.log("Drawing on load environment:")
+      // drawingInterface.current.drawEnvironmentOnLoad(
+      //   GROUND_LEVEL_SCALAR, 
+      //   USER_ANCHOR_POINT,
+      //   MAX_SPEED,
+      //   launchVelocity,
+      //   target_range,
+      //   target_altitude,
+      //   foregroundRef, 
+      //   holsterRef, 
+      //   cannonRef, 
+      //   velocityBarRef, 
+      //   velocitySliderRef, 
+      //   heightScaleRef, 
+      //   heightArrowRef,
+      //   targetRef
+      // )
+      console.log("Completed on load environment")
     }
-  }, [cannonInfo, holsterInfo])
+  }, [cannonInfo, holsterInfo, MAX_RANGE])
 
-  useEffect(() => {
-    ctxRef.current = canvasRef.current.getContext('2d');
-
-
-    drawingInterface.current.drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foregroundRef.current);
-    
-    drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
-
-    drawingInterface.current.drawDefaultVelocitySlider(
-      velocityBarRef.current,
-      velocitySliderRef.current,
-      launchVelocity,
+  window.onload = () => {
+    drawingInterface.current.drawEnvironment(
+      GROUND_LEVEL_SCALAR, 
+      USER_ANCHOR_POINT,
       MAX_SPEED,
-      USER_ANCHOR_POINT
+      launchVelocity,
+      elevationAngle,
+      target_range,
+      target_altitude,
+      foregroundRef, 
+      holsterRef, 
+      cannonRef, 
+      velocityBarRef, 
+      velocitySliderRef, 
+      heightScaleRef, 
+      heightArrowRef,
+      targetRef
     )
-    drawingInterface.current.drawDefaultHeightScale(
-      heightScaleRef.current,
-      heightArrowRef.current,
-      USER_ANCHOR_POINT
-    )
-
-    drawingInterface.current.drawTargetOnLoad(
-      USER_ANCHOR_POINT, 
-      GROUND_LEVEL_SCALAR, 
-      targetRef.current, 
-      target_range, 
-      target_altitude
-    )
-
-  }, [USER_ANCHOR_POINT, launchVelocity])
+  }
 
   useEffect(() => {
-    ctxRef.current = canvasRef.current.getContext('2d');
-    if (ctxRef && ctxRef.current) {
-      ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    }
-
-    drawingInterface.current.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
-
-    drawingInterface.current.drawRotatedCannon(
-      -elevationAngle, 
-      cannonRef.current, 
-      holsterRef.current, 
-      USER_ANCHOR_POINT,
-    );
-
-    drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
-    
-    drawingInterface.current.drawVelocitySlider(
-      velocityBarRef.current, 
-      velocitySliderRef.current, 
-      launchVelocity, 
-      MAX_SPEED, 
-      USER_ANCHOR_POINT,
-    )
-    
-    drawingInterface.current.drawHeightScale(
-      heightScaleRef.current,
-      heightArrowRef.current,
-      USER_ANCHOR_POINT,
-    )
-
-    drawingInterface.current.drawTarget(
-      USER_ANCHOR_POINT, 
+    drawingInterface.current.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
-      targetRef.current, 
-      target_range, 
-      target_altitude
+      USER_ANCHOR_POINT,
+      MAX_SPEED,
+      launchVelocity,
+      elevationAngle,
+      target_range,
+      target_altitude,
+      foregroundRef, 
+      holsterRef, 
+      cannonRef, 
+      velocityBarRef, 
+      velocitySliderRef, 
+      heightScaleRef, 
+      heightArrowRef,
+      targetRef
     )
-  })
+  }, [MAX_SPEED, USER_ANCHOR_POINT, elevationAngle, launchVelocity, target_altitude, target_range, width, height])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -370,37 +359,36 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
       </canvas>
 
-      <div className="Canvas_BillyGoat">
-        {loadedCanvas && 
-          <InputPanel 
-            setElevationAngle={setElevationAngle} 
-            setLaunchVelocity={setLaunchVelocity} 
-            setUserAnchorPoint={setUserAnchorPoint}
-            MAX_SPEED={MAX_SPEED} 
-            angleInputRef={angleInputRef} 
-            velocityInputRef={velocityInputRef}
-            heightInputRef={heightInputRef}
-            canvas={canvasRef.current}
-            USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-            MAX_HORIZONTAL_RANGE={MAX_RANGE}
-            CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
-            GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
-          />
-        }
-
-        <FireButton 
-          fireCannon={() => fireCannon(
-            ctxRef.current, 
-            canvasRef.current, 
-            USER_ANCHOR_POINT, 
-            launchVelocity, 
-            elevationAngle, 
-            GROUND_LEVEL_SCALAR, 
-            MAX_RANGE, 
-            width
-          )} 
+      {loadedCanvas && 
+        <InputPanel 
+          setElevationAngle={setElevationAngle} 
+          setLaunchVelocity={setLaunchVelocity} 
+          setUserAnchorPoint={setUserAnchorPoint}
+          MAX_SPEED={MAX_SPEED} 
+          angleInputRef={angleInputRef} 
+          velocityInputRef={velocityInputRef}
+          heightInputRef={heightInputRef}
+          canvas={canvasRef.current}
+          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+          MAX_HORIZONTAL_RANGE={MAX_RANGE}
+          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
         />
-      </div>
+      }
+
+      <FireButton 
+        fireCannon={() => fireCannon(
+          ctxRef.current, 
+          canvasRef.current, 
+          USER_ANCHOR_POINT, 
+          launchVelocity, 
+          elevationAngle, 
+          GROUND_LEVEL_SCALAR, 
+          MAX_RANGE, 
+          width
+        )} 
+      />
+
     </div>
     
   )
