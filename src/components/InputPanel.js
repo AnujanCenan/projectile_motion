@@ -103,10 +103,11 @@ export default function InputPanel({
       <div id="heightInput" className="singleInputContainer">
         <span className="inputTitle">Height:</span>
         <input 
-          type="text"
-          ref={heightInputRef}
-          onChange={(e) => changeHeightWithTextBox(e)}
           maxLength={4}
+          onChange={(e) => changeHeightWithTextBox(e)}
+          placeholder={0}
+          ref={heightInputRef}
+          type="text"
         />
         <span className="unit">m</span>
       </div>
@@ -114,10 +115,11 @@ export default function InputPanel({
       <div id="velocityInput" className="singleInputContainer">
         <span className="inputTitle">Velocity:</span>
         <input 
-          type="text"
-          ref={velocityInputRef}
-          onChange={(e) => changeVelocityWithTextBox(e)}
           maxLength={8}
+          onChange={(e) => changeVelocityWithTextBox(e)}
+          placeholder={0}
+          ref={velocityInputRef}
+          type="text"
         />
         <span className="unit">m/s</span>
       </div>
@@ -125,11 +127,12 @@ export default function InputPanel({
       <div id="angleInput" className="singleInputContainer">
         <span className="inputTitle">Angle:</span>
         <input 
-          type="text" 
-          ref={angleInputRef}
-          onChange={(e) => {changeAngleWithTextBox(e)}} 
-          style={{bottom: "95px"}}
           maxLength={6}
+          onChange={(e) => {changeAngleWithTextBox(e)}} 
+          placeholder={0}
+          ref={angleInputRef}
+          style={{bottom: "95px"}}
+          type="text" 
         />
         <span className="unit">degrees</span>
       </div>
