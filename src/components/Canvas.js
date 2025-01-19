@@ -24,7 +24,6 @@ import target from "../images/targets/trainingTarget.png"
 
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords"
 import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 import FireButton from "./FireButton";
 import InputPanel from "./InputPanel";
@@ -33,7 +32,8 @@ import { fireCannon } from "../processingFunctions/fireCannon";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes";
 import { DrawingImages } from "../OOP/DrawingImages";
 
-export default function Canvas() {
+// TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
+export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [loadedCanvas, setLoadedCanvas] = useState(false);
@@ -73,7 +73,8 @@ export default function Canvas() {
   const velocityInputRef = useRef(null);
   const heightInputRef = useRef(null);
 
-  const MAX_SPEED = 140;
+  // const MAX_SPEED = 140;
+  const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
@@ -123,7 +124,7 @@ export default function Canvas() {
 
   useEffect(() => {
     if (canvasRef.current) {
-      positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, 500);
+      positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
     }
   }, [cannonInfo, holsterInfo])
@@ -132,7 +133,8 @@ export default function Canvas() {
     ctxRef.current = canvasRef.current.getContext('2d');
 
 
-
+    drawingInterface.current.drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foregroundRef.current);
+    
     drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawDefaultVelocitySlider(
@@ -146,6 +148,14 @@ export default function Canvas() {
       heightScaleRef.current,
       heightArrowRef.current,
       USER_ANCHOR_POINT
+    )
+
+    drawingInterface.current.drawTargetOnLoad(
+      USER_ANCHOR_POINT, 
+      GROUND_LEVEL_SCALAR, 
+      targetRef.current, 
+      target_range, 
+      target_altitude
     )
 
   }, [USER_ANCHOR_POINT, launchVelocity])
@@ -181,22 +191,13 @@ export default function Canvas() {
       USER_ANCHOR_POINT,
     )
 
-    const [piv_x, piv_y] = findPivotGlobalCoords(canvasRef.current, USER_ANCHOR_POINT);
-
-
-    const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
-    // Drawing a scrappy target
-
-    const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
-
-    // ctxRef.current.beginPath();
-    // ctxRef.current.arc(piv_x + 500 * conversionRate, piv_y + (metreHeight - 0) * conversionRate, 20, 0, 2 * Math.PI);
-    // ctxRef.current.strokeStyle = "blue";
-    // ctxRef.current.fillStyle = "purple";
-    // ctxRef.current.stroke();
-    // ctxRef.current.fill();
-
-    drawingInterface.current.drawTarget(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, targetRef.current, 500, 0)
+    drawingInterface.current.drawTarget(
+      USER_ANCHOR_POINT, 
+      GROUND_LEVEL_SCALAR, 
+      targetRef.current, 
+      target_range, 
+      target_altitude
+    )
   })
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
@@ -301,7 +302,7 @@ export default function Canvas() {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
       }
 
-      const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, 500);
+      const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, MAX_RANGE);
       const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
       heightInputRef.current.value = metreHeight;
     }
@@ -381,13 +382,24 @@ export default function Canvas() {
             heightInputRef={heightInputRef}
             canvas={canvasRef.current}
             USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-            MAX_HORIZONTAL_RANGE={500}
+            MAX_HORIZONTAL_RANGE={MAX_RANGE}
             CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
             GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
           />
         }
 
-        <FireButton fireCannon={() => fireCannon(ctxRef.current, canvasRef.current, USER_ANCHOR_POINT, launchVelocity, elevationAngle, GROUND_LEVEL_SCALAR, 500, width)} />
+        <FireButton 
+          fireCannon={() => fireCannon(
+            ctxRef.current, 
+            canvasRef.current, 
+            USER_ANCHOR_POINT, 
+            launchVelocity, 
+            elevationAngle, 
+            GROUND_LEVEL_SCALAR, 
+            MAX_RANGE, 
+            width
+          )} 
+        />
       </div>
     </div>
     
