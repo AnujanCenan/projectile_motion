@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
-import Canvas from './components/Canvas';
+import Canvas from './components/Canvas.tsx';
 import Dialogue from './components/dialogue/Dialogue';
 
 import GeneralPaddy_neutral from "./images/characters/GeneralPaddy/GeneralPaddy_neutral.png"

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react"
-import useWindowSize from './resizingHook';
+import useWindowSize from "./resizingHook.tsx"
 
 import "./CSS/Canvas.css"
 
 import { 
   getCannonInfo, 
   getHolsterInfo,
+  getVelocitySliderInfo,
   isLandscape
-} from "../processingFunctions/drawingFunctions"
+} from "../processingFunctions/drawingFunctions.tsx"
 
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
@@ -18,22 +19,29 @@ import velocitySlider from "../images/velocity/velocitySlider.png"
 import heightScale from "../images/height/heightBar.png"
 import heightArrow from "../images/height/heightIndicator.png"
 
+
 import grassImg from "../images/foregrounds/grassLarge.png"
 
 import target from "../images/targets/trainingTarget.png"
 
-import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject"
-import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement"
-import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
-import FireButton from "./FireButton";
-import InputPanel from "./InputPanel";
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
-import { fireCannon } from "../processingFunctions/fireCannon";
-import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes";
-import { DrawingImages } from "../OOP/DrawingImages";
+import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject.tsx"
+import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement.tsx"
+import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor.tsx";
+import FireButton from "./FireButton.tsx";
+import InputPanel from "./InputPanel.tsx";
+import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
+import { fireCannon } from "../processingFunctions/fireCannon.tsx";
+import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
+import { DrawingImages } from "../OOP/DrawingImages.tsx"
 
+
+interface CanvasProps {
+  MAX_RANGE: number,
+  target_range: number,
+  target_altitude: number
+}
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [loadedCanvas, setLoadedCanvas] = useState(false);
@@ -42,7 +50,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
   const GROUND_LEVEL_SCALAR = 0.8;
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as [number, number])
 
 
   const { width, height } = useWindowSize();
@@ -80,7 +88,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
   // Cannon State Variables
   const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1");
-  const velocitySliderInfo = getHolsterInfo("velocity_slider");
+  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
   
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
@@ -150,43 +158,50 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
   }, [cannonInfo, holsterInfo, MAX_RANGE])
 
   window.onload = () => {
-    drawingInterface.current.drawEnvironment(
-      GROUND_LEVEL_SCALAR, 
-      USER_ANCHOR_POINT,
-      MAX_SPEED,
-      launchVelocity,
-      elevationAngle,
-      target_range,
-      target_altitude,
-      foregroundRef, 
-      holsterRef, 
-      cannonRef, 
-      velocityBarRef, 
-      velocitySliderRef, 
-      heightScaleRef, 
-      heightArrowRef,
-      targetRef
-    )
+    if (drawingInterface.current) {
+      console.log("Window loaded gonna get got")
+
+      drawingInterface.current.drawEnvironment(
+        GROUND_LEVEL_SCALAR, 
+        USER_ANCHOR_POINT,
+        MAX_SPEED,
+        launchVelocity,
+        elevationAngle,
+        target_range,
+        target_altitude,
+        foregroundRef, 
+        holsterRef, 
+        cannonRef, 
+        velocityBarRef, 
+        velocitySliderRef, 
+        heightScaleRef, 
+        heightArrowRef,
+        targetRef
+      )
+    }
   }
 
   useEffect(() => {
-    drawingInterface.current.drawEnvironment(
-      GROUND_LEVEL_SCALAR, 
-      USER_ANCHOR_POINT,
-      MAX_SPEED,
-      launchVelocity,
-      elevationAngle,
-      target_range,
-      target_altitude,
-      foregroundRef, 
-      holsterRef, 
-      cannonRef, 
-      velocityBarRef, 
-      velocitySliderRef, 
-      heightScaleRef, 
-      heightArrowRef,
-      targetRef
-    )
+    if (drawingInterface.current) {
+      console.log("Boutta start a redraw")
+      drawingInterface.current.drawEnvironment(
+        GROUND_LEVEL_SCALAR, 
+        USER_ANCHOR_POINT,
+        MAX_SPEED,
+        launchVelocity,
+        elevationAngle,
+        target_range,
+        target_altitude,
+        foregroundRef, 
+        holsterRef, 
+        cannonRef, 
+        velocityBarRef, 
+        velocitySliderRef, 
+        heightScaleRef, 
+        heightArrowRef,
+        targetRef
+      )
+    }
   }, [MAX_SPEED, USER_ANCHOR_POINT, elevationAngle, launchVelocity, target_altitude, target_range, width, height])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////

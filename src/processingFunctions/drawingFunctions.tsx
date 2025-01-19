@@ -1,27 +1,27 @@
 import Cannons from "../Cannons.json"
 
-export function getCannonInfo(name) {
+export function getCannonInfo(name: "v2") {
   try {
     return Cannons[name];
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error at getCannonInfo in drawingFunctions.js");
     console.error(e.message);
   }
 }
 
-export function getHolsterInfo(name) {
+export function getHolsterInfo(name: "holster_v1") {
   try {
     return Cannons[name];
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error at getHolsterInfo in drawingFunctions.js");
     console.error(e.message);
   }
 }
 
-export function getVelocitySliderInfo(name) {
+export function getVelocitySliderInfo(name: "velocity_slider") {
   try {
     return Cannons[name];
-  } catch (e) {
+  } catch (e: any) {
     console.error("Error at getVelocitySliderInfo in drawingFunctions.js");
     console.error(e.message);
   }
@@ -42,7 +42,16 @@ export function getVelocitySliderInfo(name) {
  *  the image)
  */
 export function drawImageWithRotation(
-  ctx, image, pos_x, pos_y, pivot_x, pivot_y, width, height, angle, growthFactor
+  ctx: any, 
+  image: any, 
+  pos_x: number, 
+  pos_y: number, 
+  pivot_x: number, 
+  pivot_y: number, 
+  width: number, 
+  height: number, 
+  angle: number, 
+  growthFactor: number
 ) {
 
     ctx.translate(pos_x + pivot_x * growthFactor, pos_y + pivot_y * growthFactor);
@@ -56,7 +65,14 @@ export function drawImageWithRotation(
 
 }
 
-export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
+export function drawCircle(
+  ctx: any, 
+  x: number, 
+  y: number, 
+  r: number, 
+  fillColour: string, 
+  strokeColour: string
+) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = fillColour;

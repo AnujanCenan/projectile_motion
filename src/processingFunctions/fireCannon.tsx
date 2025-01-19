@@ -1,21 +1,21 @@
-import { calculateConversionRate } from "./calculateConversionRate";
-import { drawCircle } from "./drawingFunctions";
-import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
+import { calculateConversionRate } from "./calculateConversionRate.tsx";
+import { drawCircle } from "./drawingFunctions.tsx";
+import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
-    ctx,
-    canvas, 
-    USER_ANCHOR_POINT, 
-    launchVelocity, 
-    elevationAngle, 
-    GROUND_LEVEL_SCALAR, 
-    MAX_HORIZONTAL_RANGE,
-    width
+    ctx: any,
+    canvas: any, 
+    USER_ANCHOR_POINT: number[], 
+    launchVelocity: number, 
+    elevationAngle: number, 
+    GROUND_LEVEL_SCALAR: number, 
+    MAX_HORIZONTAL_RANGE: number,
+    width: number
 ) {
 
 
-    var reqNum;
+    var reqNum: number;
     try {
       if (canvas) {
         const [initial_x, initial_y] 
@@ -57,7 +57,9 @@ export function fireCannon(
 
       }
 
-    } catch (e) {
-      console.error(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
     }
   }

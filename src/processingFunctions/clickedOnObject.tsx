@@ -1,13 +1,22 @@
-import { calculateGrowthFactorCannon } from "./calculateGrowthFactor";
-import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
+import { Ref } from "react";
+import { calculateGrowthFactorCannon } from "./calculateGrowthFactor.tsx";
+import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
-  ctx, canvas, mouse_x, mouse_y, cannonInfo, angle, clickedBehindPivot,
-  USER_ANCHOR_POINT
+  ctx: any, 
+  canvas: any, 
+  mouse_x: number, 
+  mouse_y: number, 
+  cannonInfo: any, 
+  angle: number, 
+  clickedBehindPivot: Ref<HTMLInputElement>,
+  USER_ANCHOR_POINT: [number, number]
 ) {
-
+  if (!clickedBehindPivot) {
+    return false;
+  }
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
 
@@ -48,7 +57,7 @@ export function clickedOnCannon(
   return !transparency;
 }
 
-function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
+function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, USER_ANCHOR_POINT: [number, number]): [[number, number], number[], number[]] {
   
   const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   
@@ -72,7 +81,7 @@ function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   const TOP_LEFT_CORNER = [
     PIVOT_X_GLOBAL + X_DISPLACEMENT_FROM_PIVOT, 
     PIVOT_Y_GLOBAL - Y_DISPLACEMENT_FROM_PIVOT
-  ]
+  ] as [number, number]
 
   // notice the - sign for the y coordinate – because vector 1 is always directed
   // either perfectly horizontally or in some UPWARD direction
@@ -89,8 +98,8 @@ function findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT) {
   return [TOP_LEFT_CORNER, vector1, vector2]
 }
 
-function clickedOnUprightCannon(mouse_x, mouse_y, TOP_LEFT_CORNER,
-  pixel_width, growthFactor) {
+function clickedOnUprightCannon(mouse_x: number, mouse_y: number, TOP_LEFT_CORNER: [number, number],
+  pixel_width: number, growthFactor: number) {
 
   const mu = (mouse_x - TOP_LEFT_CORNER[0]) / 
     ((pixel_width) * growthFactor);
@@ -102,13 +111,26 @@ function clickedOnUprightCannon(mouse_x, mouse_y, TOP_LEFT_CORNER,
 }
 
 ///////////////////////////////// Clicked on Velocity Slider //////////////////////////////////////////////
-export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidth, velocityBarHeight, sliderWidth, sliderHeight, TOP_LEFT_BAR, MAX_SPEED, growthFactor) {
+export function clickedOnVelocitySlider(
+  mouse_x: 
+  number, 
+  mouse_y: 
+  number, 
+  speed: number, 
+  velocityBarWidth: number, 
+  velocityBarHeight: number, 
+  sliderWidth: number, 
+  sliderHeight: number, 
+  TOP_LEFT_BAR: [number, number], 
+  MAX_SPEED: number, 
+  growthFactor: number
+) {
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
   
   const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
   const centreY = TOP_LEFT_BAR[1] + (velocityBarHeight * growthFactor) / 2;
-  const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2];
+  const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2] as [number, number];
 
   const [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_SLIDER, sliderWidth * growthFactor, 0, 0, sliderHeight * growthFactor, mouse_x, mouse_y);
 
@@ -117,7 +139,13 @@ export function clickedOnVelocitySlider(mouse_x, mouse_y, speed, velocityBarWidt
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export function clickedOnHeightArrow(mouse_x, mouse_y, ARROW_TOP_LEFT, growthFactor, ctx) {
+export function clickedOnHeightArrow(
+  mouse_x: number,
+  mouse_y: number,
+  ARROW_TOP_LEFT: [number, number],
+  growthFactor: number, 
+  ctx: any
+) {
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
 
@@ -155,7 +183,15 @@ export function clickedOnHeightArrow(mouse_x, mouse_y, ARROW_TOP_LEFT, growthFac
  *    mouse_x = TOP_LEFT_CORNER[0] + lambda * x1 + mu * x2
  *    mouse_y = TOP_LEFT_CORNER[1] + lambda * y1 + mu * y2
  */
-function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y) {
+function calculateLambdaAndMu(
+  TOP_LEFT_CORNER: [number, number], 
+  x1: number, 
+  y1: number, 
+  x2: number, 
+  y2: number, 
+  mouse_x: number, 
+  mouse_y: number
+): [number, number] {
 
   // TODO: move this working out to proper documentation
   
@@ -186,7 +222,7 @@ function calculateLambdaAndMu(TOP_LEFT_CORNER, x1, y1, x2, y2, mouse_x, mouse_y)
   return [lambda, mu]
 }
 
-function evaluateLambdaAndMu(lambda, mu) {
+function evaluateLambdaAndMu(lambda: number, mu: number): boolean {
   if (lambda < 0 || lambda > 1 || mu < 0 || mu > 1) {
     return false;
   } else {

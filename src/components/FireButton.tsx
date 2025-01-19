@@ -1,6 +1,9 @@
 import "./CSS/FireButton.css"
 
-export default function FireButton({fireCannon}) {
+interface FireButtonProps {
+  fireCannon: Function
+}
+export default function FireButton({fireCannon}: FireButtonProps) {
   return (
     <button id="fireButton" onClick={() => fireCannon()}>
       Fire
