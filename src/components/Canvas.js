@@ -76,7 +76,7 @@ export default function Canvas() {
   const velocitySliderInfo = getHolsterInfo("velocity_slider");
   
   const [elevationAngle, setElevationAngle] = useState(0);
-  const [launchVelocity, setLaunchVelocity] = useState(10)
+  const [launchVelocity, setLaunchVelocity] = useState(0)
 
   // User state variables
   const cannonClick = useRef(false);
