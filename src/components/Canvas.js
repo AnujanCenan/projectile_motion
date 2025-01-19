@@ -124,31 +124,62 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
 
   useEffect(() => {
     if (canvasRef.current) {
+      ctxRef.current = canvasRef.current.getContext('2d');
       positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
     }
-  }, [cannonInfo, holsterInfo])
+  }, [cannonInfo, holsterInfo, MAX_SPEED, MAX_RANGE])
 
   useEffect(() => {
-    ctxRef.current = canvasRef.current.getContext('2d');
+    // console.log("Beginning environment on load")
+    // drawingInterface.current.drawEnvironmentOnLoad(
+    //   GROUND_LEVEL_SCALAR,
+    //   USER_ANCHOR_POINT,
+    //   MAX_SPEED,
+    //   launchVelocity,
+    //   target_range,
+    //   target_altitude,
+    //   foregroundRef,
+    //   holsterRef,
+    //   cannonRef,
+    //   velocityBarRef,
+    //   velocitySliderRef,
+    //   heightScaleRef,
+    //   heightArrowRef,
+    //   targetRef
+    // )
+
+    // console.log("In same useEffect - starting environment (not on load)")
+    // drawingInterface.current.drawEnvironment(
+    //   GROUND_LEVEL_SCALAR,
+    //   USER_ANCHOR_POINT,
+    //   MAX_SPEED,
+    //   launchVelocity,
+    //   elevationAngle,
+    //   target_range,
+    //   target_altitude,
+    //   foregroundRef,
+    //   holsterRef,
+    //   cannonRef,
+    //   velocityBarRef,
+    //   velocitySliderRef,
+    //   heightScaleRef,
+    //   heightArrowRef,
+    //   targetRef
+    // )
 
 
     drawingInterface.current.drawForegroundOnLoad(GROUND_LEVEL_SCALAR, foregroundRef.current);
     
-    drawingInterface.current.drawDefaultCannon(cannonRef.current, holsterRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawHolsterOnLoad(holsterRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawCannonOnLoad(cannonRef.current, USER_ANCHOR_POINT);
 
-    drawingInterface.current.drawDefaultVelocitySlider(
-      velocityBarRef.current,
-      velocitySliderRef.current,
-      launchVelocity,
-      MAX_SPEED,
-      USER_ANCHOR_POINT
-    )
-    drawingInterface.current.drawDefaultHeightScale(
-      heightScaleRef.current,
-      heightArrowRef.current,
-      USER_ANCHOR_POINT
-    )
+
+    drawingInterface.current.drawVelocityBarOnLoad(velocityBarRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawVelocitySliderOnLoad(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
+
+    drawingInterface.current.drawHeightScaleOnLoad(heightScaleRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawHeightArrowOnLoad(heightArrowRef.current, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawTargetOnLoad(
       USER_ANCHOR_POINT, 
@@ -158,38 +189,43 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}) {
       target_altitude
     )
 
-  }, [USER_ANCHOR_POINT, launchVelocity])
+  }, [USER_ANCHOR_POINT, launchVelocity, MAX_SPEED, target_altitude, target_range])
 
   useEffect(() => {
-    ctxRef.current = canvasRef.current.getContext('2d');
+
+    // drawingInterface.current.drawEnvironment(
+    //   GROUND_LEVEL_SCALAR,
+    //   USER_ANCHOR_POINT,
+    //   MAX_SPEED,
+    //   launchVelocity,
+    //   elevationAngle,
+    //   target_range,
+    //   target_altitude,
+    //   foregroundRef,
+    //   holsterRef,
+    //   cannonRef,
+    //   velocityBarRef,
+    //   velocitySliderRef,
+    //   heightScaleRef,
+    //   heightArrowRef,
+    //   targetRef
+    // )
     if (ctxRef && ctxRef.current) {
       ctxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
 
     drawingInterface.current.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
 
-    drawingInterface.current.drawRotatedCannon(
-      -elevationAngle, 
-      cannonRef.current, 
-      holsterRef.current, 
-      USER_ANCHOR_POINT,
-    );
+    drawingInterface.current.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
     
-    drawingInterface.current.drawVelocitySlider(
-      velocityBarRef.current, 
-      velocitySliderRef.current, 
-      launchVelocity, 
-      MAX_SPEED, 
-      USER_ANCHOR_POINT,
-    )
+    drawingInterface.current.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
     
-    drawingInterface.current.drawHeightScale(
-      heightScaleRef.current,
-      heightArrowRef.current,
-      USER_ANCHOR_POINT,
-    )
+    drawingInterface.current.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
+    drawingInterface.current.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
 
     drawingInterface.current.drawTarget(
       USER_ANCHOR_POINT, 
