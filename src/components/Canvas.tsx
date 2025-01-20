@@ -179,7 +179,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   window.onload = () => {
     if (drawingInterface.current) {
-      
+      console.log("Window loaded; drawing environment...")
 
       drawingInterface.current.drawEnvironment(
         GROUND_LEVEL_SCALAR, 
@@ -204,7 +204,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   useEffect(() => {
     if (drawingInterface.current) {
       
-      
+      console.log("useEffect; draw environment...")
       drawingInterface.current.drawEnvironment(
         GROUND_LEVEL_SCALAR, 
         USER_ANCHOR_POINT,
@@ -425,17 +425,19 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         />
       }
 
-      <FireButton 
-        fireCannon={() => fireCannon(
-          canvasRef.current, 
-          USER_ANCHOR_POINT, 
-          launchVelocity, 
-          elevationAngle, 
-          GROUND_LEVEL_SCALAR, 
-          MAX_RANGE, 
-          width
-        )} 
-      />
+      {canvasRef.current && 
+        <FireButton 
+          fireCannon={() => fireCannon(
+            (canvasRef.current) as HTMLCanvasElement, 
+            USER_ANCHOR_POINT, 
+            launchVelocity, 
+            elevationAngle, 
+            GROUND_LEVEL_SCALAR, 
+            MAX_RANGE, 
+            width
+          )} 
+        />
+      }
 
     </div>
     

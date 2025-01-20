@@ -20,6 +20,8 @@ export class DrawingImages {
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
+      console.log("Drawing holster")
+
       drawImageWithRotation(
         ctx,
         holsterImage, 
@@ -48,6 +50,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
+      console.log("Drawing cannon")
       drawImageWithRotation(
         ctx,
         cannonImage, 
@@ -72,6 +75,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
+      console.log("Drawing vel bar")
       drawImageWithRotation(
         ctx,
         velocityBar, 
@@ -97,6 +101,7 @@ export class DrawingImages {
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
+      console.log("Drawing vel slider", velocitySlider)
       drawImageWithRotation(
         ctx,  
         velocitySlider, 
@@ -120,6 +125,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
     
     if (ctx) {
+      console.log("Drawing height scale")
       drawImageWithRotation(
         ctx,
         heightScale, 
@@ -142,6 +148,7 @@ export class DrawingImages {
     
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
+      console.log("Drawing height arrow")
       drawImageWithRotation(
         ctx,
         heightArrow, 
@@ -189,6 +196,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
+      console.log("Drawing foreground")
       drawImageWithRotation(
         ctx,
         foreground,
@@ -218,6 +226,8 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
+      console.log("Drawing target")
+
       drawImageWithRotation(
         ctx,
         target,
@@ -255,6 +265,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx();
     
     if (ctx) {
+      console.log("Clearing canvas...")
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     
       this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
