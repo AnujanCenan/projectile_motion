@@ -1,18 +1,25 @@
 import { useEffect, useRef, useState } from "react"
 import "./CSS/Dialogue.css"
 
-export default function Dialogue({name, speeches, expressions, orderOfExpressions}) {
+interface DialogueProps {
+  name: string;
+  speeches: string[];
+  expressions: string[];
+  orderOfExpressions: number[];
+}
+export default function Dialogue({name, speeches, expressions, orderOfExpressions}: DialogueProps) {
 
-  const containerRef = useRef(null);
-  const speechRef = useRef(null);
-  const profilePicRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const speechRef = useRef<HTMLDivElement>(null);
+  const profilePicRef = useRef<HTMLImageElement>(new Image);
 
-  const timeoutRef = useRef(null);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const [currSpeechIndex, setCurrSpeechIndex] = useState(0);
   
 
   function continueDialogue() {
+    if (!speechRef.current || !containerRef.current) return
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -27,10 +34,14 @@ export default function Dialogue({name, speeches, expressions, orderOfExpression
   
   var i = 0;
   useEffect(() => {  
-    function typewriter(speech) {
+    function typewriter(speech: string) {
       var speed = 30;
       writeCharacter();
       function writeCharacter() {
+        if (!speechRef.current) {
+          return
+        };
+
         if (i < speech.length) {
           speechRef.current.innerHTML += speech.charAt(i);
           i++;
@@ -39,10 +50,10 @@ export default function Dialogue({name, speeches, expressions, orderOfExpression
       }
     }
 
-    if (speechRef) {
+    if (profilePicRef.current) {
       profilePicRef.current.src = expressions[orderOfExpressions[currSpeechIndex]]
-      console.log(profilePicRef.current.style)
-      console.log(expressions[orderOfExpressions[currSpeechIndex]])
+      
+      
       typewriter(speeches[currSpeechIndex]);
     } 
   }, [currSpeechIndex, speeches, i, expressions, orderOfExpressions])

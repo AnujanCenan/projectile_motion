@@ -1,17 +1,18 @@
 // import logo from './logo.svg';
 import './App.css';
 import Canvas from './components/Canvas.tsx';
-import Dialogue from './components/dialogue/Dialogue';
+import Dialogue from './components/dialogue/Dialogue.tsx';
 
 import GeneralPaddy_neutral from "./images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import GeneralPaddy_angry from "./images/characters/GeneralPaddy/GeneralPaddy_angry.png"
 import GeneralPaddy_happy from "./images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 
 function App() {
+  
   return (
     <div>
     <Canvas MAX_RANGE={500} target_range={500} target_altitude={0}/>
-    {/* <Dialogue
+    <Dialogue
       name="General Paddy"
       speeches={[
         "ATTENTION!",
@@ -28,7 +29,7 @@ function App() {
       orderOfExpressions={[
         2, 0, 2, 0, 1
       ]}
-    /> */}
+    />
     </div>
   );
 }

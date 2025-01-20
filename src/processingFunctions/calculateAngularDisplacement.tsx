@@ -9,7 +9,7 @@ export function calculateAngularDisplacement(
   cannonInfo: any, 
   canvas: any,
   angle: number,
-  USER_ANCHOR_POINT: [number, number]
+  USER_ANCHOR_POINT: number[]
 ) {
   
   mouse_x *= window.devicePixelRatio;

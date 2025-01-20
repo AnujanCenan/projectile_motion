@@ -7,10 +7,10 @@ interface InputPanelProps {
   setLaunchVelocity: Function
   setUserAnchorPoint: Function
   MAX_SPEED: number
-  angleInputRef: React.Ref<HTMLInputElement>
-  velocityInputRef: React.Ref<HTMLInputElement> 
-  heightInputRef: React.Ref<HTMLInputElement>
-  canvas: any
+  angleInputRef: React.RefObject<HTMLInputElement | null>
+  velocityInputRef: React.RefObject<HTMLInputElement | null>
+  heightInputRef: React.RefObject<HTMLInputElement | null>
+  canvas: HTMLCanvasElement
   USER_ANCHOR_PONT: number[]
   MAX_HORIZONTAL_RANGE: number
   CANNON_HORIZONTAL_SCALAR: number
@@ -33,7 +33,7 @@ export default function InputPanel({
 }: InputPanelProps) {
 
   function changeVelocityWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!velocityInputRef) {
+    if (!velocityInputRef || !velocityInputRef.current) {
       return;
     }
 
@@ -46,10 +46,10 @@ export default function InputPanel({
         return;
       } else if (parseFloat(val) < 0) {
         setLaunchVelocity(0);
-        velocityInputRef.current.value = 0;
+        velocityInputRef.current.value = "0";
       } else if (parseFloat(val) > MAX_SPEED) {
         setLaunchVelocity(MAX_SPEED);
-        velocityInputRef.current.value = MAX_SPEED;
+        velocityInputRef.current.value = `${MAX_SPEED}`;
       } else {
         setLaunchVelocity(parseFloat(val));
       }
@@ -62,10 +62,10 @@ export default function InputPanel({
   }
   
   function changeAngleWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!angleInputRef) {
+    if (!angleInputRef || !angleInputRef.current) {
       return;
     }
-    console.log(typeof angleInputRef.current)
+    
     const val = e.target.value;
     // requires some defensive programming
     try {
@@ -77,10 +77,10 @@ export default function InputPanel({
         return;
       } else if (parseFloat(val) < 0) {
         setElevationAngle(0)
-        angleInputRef.current.value = 0;
+        angleInputRef.current.value = "0";
       } else if (parseFloat(val) > 90) {
         setElevationAngle(90);
-        angleInputRef.current.value = 90;
+        angleInputRef.current.value = "90";
       } else {
         setElevationAngle(parseFloat(val))
       }
@@ -94,7 +94,7 @@ export default function InputPanel({
   }
 
   function changeHeightWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!heightInputRef) {
+    if (!heightInputRef || !heightInputRef.current) {
       return;
     }
     const val = e.target.value;
@@ -112,10 +112,10 @@ export default function InputPanel({
       const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
-        heightInputRef.current.value = 0;
+        heightInputRef.current.value = "0";
       } else if (anchor_point_y < 0.1) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1])
-        heightInputRef.current.value = maxMetreHeight;
+        heightInputRef.current.value = `${maxMetreHeight}`;
       } else {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, anchor_point_y])
       }

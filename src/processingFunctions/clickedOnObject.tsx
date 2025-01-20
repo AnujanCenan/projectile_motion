@@ -5,21 +5,20 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
-  ctx: any, 
   canvas: any, 
   mouse_x: number, 
   mouse_y: number, 
   cannonInfo: any, 
   angle: number, 
-  clickedBehindPivot: Ref<HTMLInputElement>,
-  USER_ANCHOR_POINT: [number, number]
+  clickedBehindPivot: React.RefObject<number>,
+  USER_ANCHOR_POINT: number[]
 ) {
   if (!clickedBehindPivot) {
     return false;
   }
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
-
+  const ctx = canvas.getContext('2d');
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
   var lambda, mu;
   if (angle === 90) {
@@ -57,7 +56,7 @@ export function clickedOnCannon(
   return !transparency;
 }
 
-function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, USER_ANCHOR_POINT: [number, number]): [[number, number], number[], number[]] {
+function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, USER_ANCHOR_POINT: number[]): [number[], number[], number[]] {
   
   const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   
@@ -81,7 +80,7 @@ function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, US
   const TOP_LEFT_CORNER = [
     PIVOT_X_GLOBAL + X_DISPLACEMENT_FROM_PIVOT, 
     PIVOT_Y_GLOBAL - Y_DISPLACEMENT_FROM_PIVOT
-  ] as [number, number]
+  ] as number[]
 
   // notice the - sign for the y coordinate – because vector 1 is always directed
   // either perfectly horizontally or in some UPWARD direction
@@ -98,7 +97,7 @@ function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, US
   return [TOP_LEFT_CORNER, vector1, vector2]
 }
 
-function clickedOnUprightCannon(mouse_x: number, mouse_y: number, TOP_LEFT_CORNER: [number, number],
+function clickedOnUprightCannon(mouse_x: number, mouse_y: number, TOP_LEFT_CORNER: number[],
   pixel_width: number, growthFactor: number) {
 
   const mu = (mouse_x - TOP_LEFT_CORNER[0]) / 
@@ -121,7 +120,7 @@ export function clickedOnVelocitySlider(
   velocityBarHeight: number, 
   sliderWidth: number, 
   sliderHeight: number, 
-  TOP_LEFT_BAR: [number, number], 
+  TOP_LEFT_BAR: number[], 
   MAX_SPEED: number, 
   growthFactor: number
 ) {
@@ -130,7 +129,7 @@ export function clickedOnVelocitySlider(
   
   const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
   const centreY = TOP_LEFT_BAR[1] + (velocityBarHeight * growthFactor) / 2;
-  const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2] as [number, number];
+  const TOP_LEFT_SLIDER = [centreX - (sliderWidth * growthFactor) / 2, centreY - (sliderHeight * growthFactor) / 2] as number[];
 
   const [lambda, mu] = calculateLambdaAndMu(TOP_LEFT_SLIDER, sliderWidth * growthFactor, 0, 0, sliderHeight * growthFactor, mouse_x, mouse_y);
 
@@ -142,9 +141,8 @@ export function clickedOnVelocitySlider(
 export function clickedOnHeightArrow(
   mouse_x: number,
   mouse_y: number,
-  ARROW_TOP_LEFT: [number, number],
+  ARROW_TOP_LEFT: number[],
   growthFactor: number, 
-  ctx: any
 ) {
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
@@ -184,14 +182,14 @@ export function clickedOnHeightArrow(
  *    mouse_y = TOP_LEFT_CORNER[1] + lambda * y1 + mu * y2
  */
 function calculateLambdaAndMu(
-  TOP_LEFT_CORNER: [number, number], 
+  TOP_LEFT_CORNER: number[], 
   x1: number, 
   y1: number, 
   x2: number, 
   y2: number, 
   mouse_x: number, 
   mouse_y: number
-): [number, number] {
+): number[] {
 
   // TODO: move this working out to proper documentation
   

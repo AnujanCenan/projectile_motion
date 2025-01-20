@@ -50,45 +50,64 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const GROUND_LEVEL_SCALAR = 0.8;
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as [number, number])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
 
 
   const { width, height } = useWindowSize();
 
 
   //// Element References
-  const ctxRef = useRef(null);
-  const canvasRef = useRef(null);
+  // const ctxRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Image references
-  const cannonRef = useRef(null);
-  const holsterRef = useRef(null);
+  const cannonRef = useRef(new Image);
+  const holsterRef = useRef(new Image);
 
-  const velocityBarRef = useRef(null);
-  const velocitySliderRef = useRef(null);
+  const velocityBarRef = useRef(new Image);
+  const velocitySliderRef = useRef(new Image);
 
-  const heightScaleRef = useRef(null);
-  const heightArrowRef = useRef(null);
+  const heightScaleRef = useRef(new Image);
+  const heightArrowRef = useRef(new Image);
 
 
   // Foreground image reference
-  const foregroundRef = useRef(null);
+  const foregroundRef = useRef(new Image);
   
   // Target image reference
-  const targetRef = useRef(null);
+  const targetRef = useRef(new Image);
 
   // Textbox references
-  const angleInputRef = useRef(null);
-  const velocityInputRef = useRef(null);
-  const heightInputRef = useRef(null);
+  const angleInputRef = useRef<HTMLInputElement>(null);
+  const velocityInputRef = useRef<HTMLInputElement>(null);
+  const heightInputRef = useRef<HTMLInputElement>(null);
 
   // const MAX_SPEED = 140;
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
   // Cannon State Variables
-  const cannonInfo = getCannonInfo("v2");
-  const holsterInfo = getHolsterInfo("holster_v1");
-  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
+  const cannonInfo = getCannonInfo("v2") as 
+  {
+    pixel_width: number;
+    pixel_height: number;
+    pivot_x: number;
+    pivot_y: number;
+  }
+  const holsterInfo = getHolsterInfo("holster_v1") as 
+  {  
+    pixel_width: number;
+    pixel_height: number;
+    pivot_x: number;
+    pivot_y: number;
+  }
+
+  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider") as 
+  {
+    pixel_width: number;
+    pixel_height: number;
+    slider_pixel_width: number;
+    slider_pixel_height: number;
+  };
   
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
@@ -100,11 +119,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   const click_x = useRef(0);
   const click_y = useRef(0);
-  const clickedBehindPivot = useRef(1);
+  const clickedBehindPivot = useRef<number>(1);
 
   // For class instances
-  const positionAndSizesInterface = useRef(null);
-  const drawingInterface = useRef(null);
+  const positionAndSizesInterface = useRef(new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE));
+  const drawingInterface = useRef(new DrawingImages(positionAndSizesInterface.current));
   // 0.5 * window.devicePixelRatio: 0.8 * window.devicePixelRatio
   useEffect(() => {
     if (isLandscape()) {
@@ -120,23 +139,24 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     const canvas = canvasRef.current
   
     function fix_dpi() {
-      let style_height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
-      let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
-      canvas.setAttribute('height', style_height * dpi);
-      canvas.setAttribute('width', style_width * dpi);
+      if (canvas) {
+        let style_height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
+        let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
+        canvas.setAttribute('height', (style_height * dpi).toString());
+        canvas.setAttribute('width', (style_width * dpi).toString());
+        setLoadedCanvas(true);
+      }
     }
-    if (canvas) {
-      fix_dpi();
-      setLoadedCanvas(true);
-    }
+    
+    fix_dpi();
   }, [width, height, cannonInfo, holsterInfo]);
 
   useEffect(() => {
     if (canvasRef.current) {
-      ctxRef.current = canvasRef.current.getContext('2d');
+      // ctxRef.current = canvasRef.current.getContext('2d');
       positionAndSizesInterface.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterface.current = new DrawingImages(positionAndSizesInterface.current)
-      console.log("Drawing on load environment:")
+      
       // drawingInterface.current.drawEnvironmentOnLoad(
       //   GROUND_LEVEL_SCALAR, 
       //   USER_ANCHOR_POINT,
@@ -153,13 +173,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       //   heightArrowRef,
       //   targetRef
       // )
-      console.log("Completed on load environment")
+      
     }
   }, [cannonInfo, holsterInfo, MAX_RANGE])
 
   window.onload = () => {
     if (drawingInterface.current) {
-      console.log("Window loaded gonna get got")
+      
 
       drawingInterface.current.drawEnvironment(
         GROUND_LEVEL_SCALAR, 
@@ -183,7 +203,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   useEffect(() => {
     if (drawingInterface.current) {
-      console.log("Boutta start a redraw")
+      
+      
       drawingInterface.current.drawEnvironment(
         GROUND_LEVEL_SCALAR, 
         USER_ANCHOR_POINT,
@@ -206,11 +227,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
-  function mouseDown(e) {
+  function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-    const horizScroll = canvasRef.current.parentNode.scrollLeft
+    if (!canvasRef || (!canvasRef.current)) return;
+    const container = canvasRef.current.parentNode as HTMLDivElement; 
+    const horizScroll = container.scrollLeft
     cannonClick.current = clickedOnCannon(
-      ctxRef.current, canvasRef.current, 
+      canvasRef.current, 
       e.pageX + horizScroll, e.pageY,
       cannonInfo, 
       elevationAngle,
@@ -237,16 +260,19 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
       positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
       positionAndSizesInterface.current.getGrowthFactorHeight(),
-      ctxRef.current
     )
 
     click_x.current = e.pageX + horizScroll;
     click_y.current = e.pageY;
   }
 
-  function mouseMove(e) {
-    const horizScroll = canvasRef.current.parentNode.scrollLeft
+  function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+    if (!canvasRef || (!canvasRef.current)) return;
+    const container = canvasRef.current.parentNode as HTMLDivElement; 
+
+    const horizScroll = container.scrollLeft
     if (cannonClick.current) {
+    if (!angleInputRef.current) return;
       const angularDisplacement = calculateAngularDisplacement(
         e.pageX + horizScroll, e.pageY, 
         click_x.current, click_y.current, clickedBehindPivot.current,
@@ -265,9 +291,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       } else {
         setElevationAngle(elevationAngle + angularDisplacement);
       }
-      angleInputRef.current.value = Math.round(elevationAngle * 1000) / 1000;
+      angleInputRef.current.value = (Math.round(elevationAngle * 1000) / 1000).toString();
 
     } else if (sliderClick.current) {
+      if (!velocityInputRef.current) return;
       const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
@@ -285,9 +312,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
       }
 
-      velocityInputRef.current.value = Math.round(launchVelocity * 1000) / 1000;
+      velocityInputRef.current.value = (Math.round(launchVelocity * 1000) / 1000).toString();
     } 
     else if (heightArrowClick.current) {
+      if (!heightInputRef.current) return;
       const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 
@@ -308,7 +336,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
       const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, MAX_RANGE);
       const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
-      heightInputRef.current.value = metreHeight;
+      heightInputRef.current.value = metreHeight.toString();
     }
   }
 
@@ -318,7 +346,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     heightArrowClick.current = false;
   }
   
-  ////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+
   return (
     <div id="container">
       <canvas ref={canvasRef} 
@@ -374,7 +403,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
       </canvas>
 
-      {loadedCanvas && 
+      {loadedCanvas && canvasRef && canvasRef.current && 
         <InputPanel 
           setElevationAngle={setElevationAngle} 
           setLaunchVelocity={setLaunchVelocity} 
@@ -393,7 +422,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
       <FireButton 
         fireCannon={() => fireCannon(
-          ctxRef.current, 
           canvasRef.current, 
           USER_ANCHOR_POINT, 
           launchVelocity, 
