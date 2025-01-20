@@ -14,7 +14,7 @@ export function getVelocitySliderInfo(name: "velocity_slider") {
 
 /**
  * @param {CanvasRenderingContext2D} ctx - the context for the canvas
- * @param {ImageElement} image - the image you wish to draw
+ * @param {HTMLImageElement} image - the image you wish to draw
  * @param {number} pos_x - the x (pixel) coordinate of the top left corner of the image
  * @param {number} pos_y - the y (pixel) coordinate of the top left corner of the image
  * @param {number} pivot_x - the x (pixel) coorindate of the pivot in the ORIGINAL IMAGE
@@ -38,7 +38,7 @@ export function drawImageWithRotation(
   angle: number, 
   growthFactor: number
 ) {
-
+    console.log("Drawing in generic drawing function...")
     ctx.translate(pos_x + pivot_x * growthFactor, pos_y + pivot_y * growthFactor);
     
     ctx.rotate(angle * Math.PI / 180);

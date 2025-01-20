@@ -114,9 +114,8 @@ export class DrawingImages {
         growthFactor
       )
     }
-
-    
   }
+
 
   drawHeightScale(heightScale: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
@@ -138,6 +137,8 @@ export class DrawingImages {
         0, 
         growthFactor
       );
+      console.log(heightScale)
+      console.log("Finished drawing the height scale")
     }
   }
 
@@ -265,22 +266,39 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx();
     
     if (ctx) {
-      console.log("Clearing canvas...")
+      console.log("Drawing environment; Clearing canvas...");
+      console.log(foregroundRef.current)
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+      foregroundRef.current.onload = () => this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
       this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
 
+      holsterRef.current.onload = () => this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
       this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
+      cannonRef.current.onload = () => this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
       this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
 
       this.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
       
+      velocityBarRef.current.onload = () => this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
       this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
+      velocitySliderRef.current.onload = () => this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
       this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
       
+      heightScaleRef.current.onload = () => this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
       this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
+      heightArrowRef.current.onload = () => this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
       this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
 
+      targetRef.current.onload = () => 
+        this.drawTarget(
+          USER_ANCHOR_POINT, 
+          GROUND_LEVEL_SCALAR, 
+          targetRef.current, 
+          target_range, 
+          target_altitude
+        )
+        
       this.drawTarget(
         USER_ANCHOR_POINT, 
         GROUND_LEVEL_SCALAR, 
