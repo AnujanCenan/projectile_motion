@@ -5,14 +5,27 @@ import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightS
 
 export class CanvasPositionAndSizes {
   #canvas;
-  // #ctx;
   #cannonInfo;
   #holsterInfo;
   #MAX_HORIZONTAL_RANGE;
 
-  constructor(canvas: any, cannonInfo: any, holsterInfo: any, MAX_HORIZONTAL_RANGE: number) {
+  constructor(
+    canvas: HTMLCanvasElement, 
+    cannonInfo: {
+      pixel_width: number;
+      pixel_height: number;
+      pivot_x: number;
+      pivot_y: number;
+    }, 
+    holsterInfo: {
+      pixel_width: number;
+      pixel_height: number;
+      pivot_x: number;
+      pivot_y: number;
+    }, 
+    MAX_HORIZONTAL_RANGE: number) 
+  {
     this.#canvas = canvas;
-    // this.#ctx = canvas.getContext('2d');
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;

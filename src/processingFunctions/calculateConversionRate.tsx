@@ -8,7 +8,7 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
  * and the far edge
  * @returns 
  */
-export function calculateConversionRate(canvas: any, USER_ANCHOR_POINT: number[], MAX_HORIZONTAL_RANGE: number) {
+export function calculateConversionRate(canvas: HTMLCanvasElement, USER_ANCHOR_POINT: number[], MAX_HORIZONTAL_RANGE: number) {
   const availableSpace = (canvas.width - findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)[0]) * 9/10;
   const conversionRate = availableSpace / MAX_HORIZONTAL_RANGE;
   return conversionRate

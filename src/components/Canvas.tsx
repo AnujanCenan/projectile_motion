@@ -61,21 +61,21 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Image references
-  const cannonRef = useRef(new Image);
-  const holsterRef = useRef(new Image);
+  const cannonRef = useRef(new Image());
+  const holsterRef = useRef(new Image());
 
-  const velocityBarRef = useRef(new Image);
-  const velocitySliderRef = useRef(new Image);
+  const velocityBarRef = useRef(new Image());
+  const velocitySliderRef = useRef(new Image());
 
-  const heightScaleRef = useRef(new Image);
-  const heightArrowRef = useRef(new Image);
+  const heightScaleRef = useRef(new Image());
+  const heightArrowRef = useRef(new Image());
 
 
   // Foreground image reference
-  const foregroundRef = useRef(new Image);
+  const foregroundRef = useRef(new Image());
   
   // Target image reference
-  const targetRef = useRef(new Image);
+  const targetRef = useRef(new Image());
 
   // Textbox references
   const angleInputRef = useRef<HTMLInputElement>(null);
@@ -122,8 +122,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const clickedBehindPivot = useRef<number>(1);
 
   // For class instances
-  const positionAndSizesInterface = useRef(new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE));
-  const drawingInterface = useRef(new DrawingImages(positionAndSizesInterface.current));
+  const positionAndSizesInterface = useRef<CanvasPositionAndSizes>(null);
+  const drawingInterface = useRef<DrawingImages>(null);
   // 0.5 * window.devicePixelRatio: 0.8 * window.devicePixelRatio
   useEffect(() => {
     if (isLandscape()) {
@@ -240,27 +240,29 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       clickedBehindPivot,
       USER_ANCHOR_POINT
     )
+    if (positionAndSizesInterface.current) {
+      sliderClick.current = clickedOnVelocitySlider(
+        e.pageX + horizScroll, 
+        e.pageY, 
+        launchVelocity, 
+        velocitySliderInfo.pixel_width, 
+        velocitySliderInfo.pixel_height, 
+        velocitySliderInfo.slider_pixel_width, 
+        velocitySliderInfo.slider_pixel_height, 
+        positionAndSizesInterface.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
+        MAX_SPEED, 
+        calclateGrowthFactorVelocity(canvasRef.current)
+      )
+    }
 
-    sliderClick.current = clickedOnVelocitySlider(
-      e.pageX + horizScroll, 
-      e.pageY, 
-      launchVelocity, 
-      velocitySliderInfo.pixel_width, 
-      velocitySliderInfo.pixel_height, 
-      velocitySliderInfo.slider_pixel_width, 
-      velocitySliderInfo.slider_pixel_height, 
-      positionAndSizesInterface.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
-      MAX_SPEED, 
-      calclateGrowthFactorVelocity(canvasRef.current)
-    )
-
-    heightArrowClick.current = clickedOnHeightArrow(
-      e.pageX + horizScroll,
-      e.pageY,
-
-      positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
-      positionAndSizesInterface.current.getGrowthFactorHeight(),
-    )
+    if (positionAndSizesInterface.current) {
+      heightArrowClick.current = clickedOnHeightArrow(
+        e.pageX + horizScroll,
+        e.pageY,
+        positionAndSizesInterface.current.getHeightArrowPosition(USER_ANCHOR_POINT),
+        positionAndSizesInterface.current.getGrowthFactorHeight(),
+      )
+    }
 
     click_x.current = e.pageX + horizScroll;
     click_y.current = e.pageY;
@@ -274,9 +276,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     if (cannonClick.current) {
     if (!angleInputRef.current) return;
       const angularDisplacement = calculateAngularDisplacement(
-        e.pageX + horizScroll, e.pageY, 
-        click_x.current, click_y.current, clickedBehindPivot.current,
-        cannonInfo, 
+        e.pageX + horizScroll, 
+        e.pageY, 
+        click_x.current, 
+        click_y.current, 
+        clickedBehindPivot.current,
         canvasRef.current,
         elevationAngle,
         USER_ANCHOR_POINT
@@ -295,6 +299,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
     } else if (sliderClick.current) {
       if (!velocityInputRef.current) return;
+      if (!positionAndSizesInterface.current) return;
       const mouse_x = e.pageX + horizScroll;
       const mouse_y = e.pageY;
 

@@ -5,9 +5,8 @@ export function calculateAngularDisplacement(
   mouse_y: number, 
   init_mouse_x: number, 
   init_mouse_y: number, 
-  clickedBehindPivot: any,
-  cannonInfo: any, 
-  canvas: any,
+  clickedBehindPivot: number,
+  canvas: HTMLCanvasElement,
   angle: number,
   USER_ANCHOR_POINT: number[]
 ) {

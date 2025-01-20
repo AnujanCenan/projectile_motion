@@ -11,7 +11,7 @@ export default function Dialogue({name, speeches, expressions, orderOfExpression
 
   const containerRef = useRef<HTMLDivElement>(null);
   const speechRef = useRef<HTMLDivElement>(null);
-  const profilePicRef = useRef<HTMLImageElement>(new Image);
+  const profilePicRef = useRef<HTMLImageElement>(new Image());
 
   const timeoutRef = useRef<NodeJS.Timeout>(null);
 

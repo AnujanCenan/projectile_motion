@@ -3,7 +3,14 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 
 // gets the top left corner when cannon is at rotational position 0 degrees
-export function findCannonTopLeftGlobalCoords(canvas: any, USER_ANCHOR_POINT: number[], cannonInfo: any) {
+export function findCannonTopLeftGlobalCoords(canvas: HTMLCanvasElement, USER_ANCHOR_POINT: number[], 
+  cannonInfo: {
+    pixel_width: number;
+    pixel_height: number;
+    pivot_x: number;
+    pivot_y: number;
+  }
+) {
   const [piv_x, piv_y] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT);
   return [
     piv_x - cannonInfo.pivot_x * calculateGrowthFactorCannon(cannonInfo, canvas),
@@ -11,13 +18,13 @@ export function findCannonTopLeftGlobalCoords(canvas: any, USER_ANCHOR_POINT: nu
   ];
 }
 
-export function topLeftCornerVelocityBar(cannonPosition: number[], canvas: any) {
+export function topLeftCornerVelocityBar(cannonPosition: number[], canvas: HTMLCanvasElement) {
   const pos_x = cannonPosition[0];
   const pos_y = cannonPosition[1] + 0.18 * canvas.height;
   return [pos_x, pos_y]
 }
 
-export function topLeftCornerHeightScale(cannonPosition: number[], canvas: any) {
+export function topLeftCornerHeightScale(cannonPosition: number[], canvas: HTMLCanvasElement) {
   const growthFactor = calculateGrowthFactorHeight(canvas);
 
   const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
@@ -25,7 +32,7 @@ export function topLeftCornerHeightScale(cannonPosition: number[], canvas: any) 
   return [pos_x, pos_y]
 }
 
-export function topLeftCornerArrow(cannonPosition: number[], canvas: any, height_scalar: number) {
+export function topLeftCornerArrow(cannonPosition: number[], canvas: HTMLCanvasElement, height_scalar: number) {
   const growthFactor = calculateGrowthFactorHeight(canvas);
 
   const scale_pos_x = topLeftCornerHeightScale(cannonPosition, canvas)[0]

@@ -5,10 +5,15 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
-  canvas: any, 
+  canvas: HTMLCanvasElement, 
   mouse_x: number, 
   mouse_y: number, 
-  cannonInfo: any, 
+  cannonInfo: {
+    pixel_width: number;
+    pixel_height: number;
+    pivot_x: number;
+    pivot_y: number;
+  }, 
   angle: number, 
   clickedBehindPivot: React.RefObject<number>,
   USER_ANCHOR_POINT: number[]
@@ -44,9 +49,10 @@ export function clickedOnCannon(
 
   // Transparency Check
   let transparency = false;
-  var p = ctx.getImageData(mouse_x, mouse_y, 1, 1).data;
-  if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) transparency = true;
-
+  if (ctx) {
+    var p = ctx.getImageData(mouse_x, mouse_y, 1, 1).data;
+    if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) transparency = true;
+  }
   // Pivot Position Check
   clickedBehindPivot.current = 1;
   if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
@@ -56,7 +62,14 @@ export function clickedOnCannon(
   return !transparency;
 }
 
-function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, USER_ANCHOR_POINT: number[]): [number[], number[], number[]] {
+function findCannonPointAndPlane(canvas: HTMLCanvasElement, 
+  cannonInfo: {
+    pixel_width: number;
+    pixel_height: number;
+    pivot_x: number;
+    pivot_y: number;
+  }, 
+  angle: number, USER_ANCHOR_POINT: number[]): [number[], number[], number[]] {
   
   const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
   
@@ -80,7 +93,7 @@ function findCannonPointAndPlane(canvas: any, cannonInfo: any, angle: number, US
   const TOP_LEFT_CORNER = [
     PIVOT_X_GLOBAL + X_DISPLACEMENT_FROM_PIVOT, 
     PIVOT_Y_GLOBAL - Y_DISPLACEMENT_FROM_PIVOT
-  ] as number[]
+  ]
 
   // notice the - sign for the y coordinate – because vector 1 is always directed
   // either perfectly horizontally or in some UPWARD direction

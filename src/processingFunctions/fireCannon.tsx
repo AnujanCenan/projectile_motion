@@ -4,7 +4,7 @@ import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
-    canvas: any, 
+    canvas: HTMLCanvasElement, 
     USER_ANCHOR_POINT: number[], 
     launchVelocity: number, 
     elevationAngle: number, 
@@ -37,13 +37,15 @@ export function fireCannon(
             + (1/2 * accel * currTime ** 2);            
 
           currTime += 0.04; // something to experiment with
-          canvas.parentNode.scrollTo({
+          (canvas.parentNode as HTMLDivElement).scrollTo({
             top: 0,
             left: (x) / window.devicePixelRatio - width / 2,
             behavior: "instant"
           });
           
-          drawCircle(ctx, x, y, 5, "blue", "black");
+          if (ctx) {
+            drawCircle(ctx, x, y, 5, "blue", "black");
+          }
           if (initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
