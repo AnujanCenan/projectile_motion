@@ -1,0 +1,90 @@
+import { RefObject } from "react";
+import { DrawingImages } from "./DrawingImages";
+import { CanvasPositionAndSizes } from "./CanvasPositionAndSizes";
+import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
+import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject";
+
+export class CanvasMouseEvents {
+  #positionsAndSizesInterface;
+  #cannonClick;
+  #clickedBehindPivot;
+  #sliderClick;
+  #heightArrowClick;
+  #click_x;
+  #click_y;
+  
+  constructor(
+    postionsAndSizesInterface: CanvasPositionAndSizes,
+    cannonClick: RefObject<boolean>,
+    clickedBehindPivot: RefObject<number>,
+    sliderClick: RefObject<boolean>,
+    heightArrowClick: RefObject<boolean>,
+    click_x: RefObject<number>,
+    click_y: RefObject<number>
+
+
+    
+  ) {
+    this.#positionsAndSizesInterface = postionsAndSizesInterface;
+    this.#cannonClick = cannonClick;
+    this.#clickedBehindPivot = clickedBehindPivot
+    this.#sliderClick = sliderClick;
+    this.#heightArrowClick = heightArrowClick;
+    this.#click_x = click_x;
+    this.#click_y = click_y;
+
+
+  }
+
+  mouseDown(
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
+    elevationAngle: number,
+    launchVelocity: number,
+    USER_ANCHOR_POINT: number[],
+    MAX_SPEED: number,
+
+  ) {
+    // uses e.PageX and e.PageY not e.clientX and clientY
+    const canvas = this.#positionsAndSizesInterface.getCanvas();
+    const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
+
+    if (!canvas) return;
+    const container = canvas.parentNode as HTMLDivElement; 
+    const horizScroll = container.scrollLeft
+    this.#cannonClick.current = clickedOnCannon(
+      canvas, 
+      e.pageX + horizScroll, e.pageY,
+      cannonInfo, 
+      elevationAngle,
+      this.#clickedBehindPivot,
+      USER_ANCHOR_POINT
+    )
+
+    const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
+    this.#sliderClick.current = clickedOnVelocitySlider(
+      e.pageX + horizScroll, 
+      e.pageY, 
+      launchVelocity, 
+      velocitySliderInfo.pixel_width, 
+      velocitySliderInfo.pixel_height, 
+      velocitySliderInfo.slider_pixel_width, 
+      velocitySliderInfo.slider_pixel_height, 
+      this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
+      MAX_SPEED, 
+      calclateGrowthFactorVelocity(canvas)
+    )
+
+
+    if (this.#positionsAndSizesInterface) {
+      this.#heightArrowClick.current = clickedOnHeightArrow(
+        e.pageX + horizScroll,
+        e.pageY,
+        this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
+        this.#positionsAndSizesInterface.getGrowthFactorHeight(),
+      )
+    }
+
+    this.#click_x.current = e.pageX + horizScroll;
+    this.#click_y.current = e.pageY;
+  }
+}
