@@ -36,23 +36,7 @@ export function clickedOnCannon(
       );
   }
 
-  if (!evaluateLambdaAndMu(lambda, mu)) {
-    return false;
-  }
-
-  // Transparency Check
-  let transparency = false;
-  if (ctx) {
-    var p = ctx.getImageData(mouse_x, mouse_y, 1, 1).data;
-    if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) transparency = true;
-  }
-  // Pivot Position Check
-  clickedBehindPivot.current = 1;
-  if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
-    clickedBehindPivot.current = -1;
-  }
-  
-  return !transparency;
+  return evaluateLambdaAndMu(lambda, mu);
 }
 
 function findCannonPointAndPlane(
