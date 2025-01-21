@@ -252,99 +252,98 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
 
   return (
-  <>
-    
-    <div id="container">
-      <canvas ref={canvasRef} 
-        id="canvas" 
-        onMouseDown={(e) => mouseDown(e)}
-        onMouseUp={() => mouseUp()}
-        onMouseMove={(e) => mouseMove(e)}
-      >
+    <>
+      
+      <div id="container">
+        <canvas ref={canvasRef} 
+          id="canvas" 
+          onMouseDown={(e) => mouseDown(e)}
+          onMouseUp={() => mouseUp()}
+          onMouseMove={(e) => mouseMove(e)}
+        >
 
-        <>
-        <img 
-          src={grassImg}
-          alt="grass"
-          ref={foregroundRef}
-        />
+          <>
+          <img 
+            src={grassImg}
+            alt="grass"
+            ref={foregroundRef}
+          />
 
-        <img
-          src={cannonImg}
-          alt="barrel"
-          ref={cannonRef}
-        />
-        <img 
-          src={holsterImg}
-          alt="holster"
-          ref={holsterRef}
-        />
+          <img
+            src={cannonImg}
+            alt="barrel"
+            ref={cannonRef}
+          />
+          <img 
+            src={holsterImg}
+            alt="holster"
+            ref={holsterRef}
+          />
 
-        <img
-          src={velocityBarImg}
-          alt="velocityBar"
-          ref={velocityBarRef}
-        />
-        <img
-          src={velocitySliderImg}
-          alt="velocitySlider"
-          ref={velocitySliderRef}
-        />
+          <img
+            src={velocityBarImg}
+            alt="velocityBar"
+            ref={velocityBarRef}
+          />
+          <img
+            src={velocitySliderImg}
+            alt="velocitySlider"
+            ref={velocitySliderRef}
+          />
 
-        <img
-          src={heightScaleImg}
-          alt="heightScale"
-          ref={heightScaleRef}
-        />
-        <img
-          src={heightArrowImg}
-          alt="heightArrow"
-          ref={heightArrowRef}
-        />
+          <img
+            src={heightScaleImg}
+            alt="heightScale"
+            ref={heightScaleRef}
+          />
+          <img
+            src={heightArrowImg}
+            alt="heightArrow"
+            ref={heightArrowRef}
+          />
 
-        <img
-          src={targetImg}
-          alt="target"
-          ref={targetRef}
-        />
-        </>
+          <img
+            src={targetImg}
+            alt="target"
+            ref={targetRef}
+          />
+          </>
 
-      </canvas>
+        </canvas>
 
-      {canvasRef.current &&
-        <InputPanel 
-          setElevationAngle={setElevationAngle} 
-          setLaunchVelocity={setLaunchVelocity} 
-          setUserAnchorPoint={setUserAnchorPoint}
-          MAX_SPEED={MAX_SPEED} 
-          angleInputRef={angleInputRef} 
-          velocityInputRef={velocityInputRef}
-          heightInputRef={heightInputRef}
-          canvas={canvasRef.current}
-          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-          MAX_HORIZONTAL_RANGE={MAX_RANGE}
-          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
-          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
-          positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
-        />
-      }
+        {canvasRef.current &&
+          <InputPanel 
+            setElevationAngle={setElevationAngle} 
+            setLaunchVelocity={setLaunchVelocity} 
+            setUserAnchorPoint={setUserAnchorPoint}
+            MAX_SPEED={MAX_SPEED} 
+            angleInputRef={angleInputRef} 
+            velocityInputRef={velocityInputRef}
+            heightInputRef={heightInputRef}
+            canvas={canvasRef.current}
+            USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+            MAX_HORIZONTAL_RANGE={MAX_RANGE}
+            CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+            GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
+            positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
+          />
+        }
 
-      {readyToDraw && 
-        <FireButton 
-          fireCannon={() => fireCannon(
-            (canvasRef.current) as HTMLCanvasElement,
-            (positionAndSizesInterfaceRef.current)!,
-            USER_ANCHOR_POINT, 
-            launchVelocity, 
-            elevationAngle, 
-            GROUND_LEVEL_SCALAR, 
-            width
-          )} 
-        />
-      }
+        {readyToDraw && 
+          <FireButton 
+            fireCannon={() => fireCannon(
+              (canvasRef.current) as HTMLCanvasElement,
+              (positionAndSizesInterfaceRef.current)!,
+              USER_ANCHOR_POINT, 
+              launchVelocity, 
+              elevationAngle, 
+              GROUND_LEVEL_SCALAR, 
+              width
+            )} 
+          />
+        }
 
-    </div>
-  </>
-    
+      </div>
+    </>
   )
 }
