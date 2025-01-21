@@ -1,33 +1,21 @@
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
-import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor.tsx";
-import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords.tsx";
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightScale } from "../processingFunctions/topLeftCorners.tsx";
-
 export class CanvasPositionAndSizes {
   #canvas;
   #cannonInfo;
+  #velocitySliderInfo;
   #holsterInfo;
   #MAX_HORIZONTAL_RANGE;
 
   constructor(
     canvas: HTMLCanvasElement, 
-    cannonInfo: {
-      pixel_width: number;
-      pixel_height: number;
-      pivot_x: number;
-      pivot_y: number;
-    }, 
-    holsterInfo: {
-      pixel_width: number;
-      pixel_height: number;
-      pivot_x: number;
-      pivot_y: number;
-    }, 
+    cannonInfo: CannonInfo,
+    holsterInfo: HolsterInfo, 
+    velocitySlider: VelocitySliderInfo,
     MAX_HORIZONTAL_RANGE: number) 
   {
     this.#canvas = canvas;
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
+    this.#velocitySliderInfo = velocitySlider
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
   }
 
@@ -49,6 +37,10 @@ export class CanvasPositionAndSizes {
     return this.#holsterInfo;
   }
 
+  getVelocitySliderInfo() {
+    return this.#velocitySliderInfo;
+  }
+
   getMaxHorizontalRage() {
     return this.#MAX_HORIZONTAL_RANGE;
   }
@@ -56,13 +48,21 @@ export class CanvasPositionAndSizes {
   //////////////////////////////////////////////////////////////////////////////
   //// PIVOT
   getPivotPosition(USER_ANCHOR_POINT: number[]) {
-    return findPivotGlobalCoords(this.#canvas, USER_ANCHOR_POINT)
+    const pivX = window.innerWidth * USER_ANCHOR_POINT[0] * window.devicePixelRatio;
+
+    const pivY = this.#canvas.height * USER_ANCHOR_POINT[1]
+  
+    return [pivX, pivY]
   }
 
   /// TOP LEFT CORNERS
 
-  getCannonOriginalTopLeft(USER_ANCHOR_POINT: number[]) {
-    return findCannonTopLeftGlobalCoords(this.#canvas, USER_ANCHOR_POINT, this.#cannonInfo);
+  getCannonOriginalPosition(USER_ANCHOR_POINT: number[]) {
+    const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
+    return [
+      piv_x - this.#cannonInfo.pivot_x * this.getGrowthFactorCannon(),
+      piv_y - this.#cannonInfo.pivot_y * this.getGrowthFactorCannon()
+    ];  
   }
 
   getHolsterPosition(USER_ANCHOR_POINT: number[]) {
@@ -76,32 +76,45 @@ export class CanvasPositionAndSizes {
 
   getVelocityBarPosition(USER_ANCHOR_POINT: number[]) {
     const holster_y = this.getHolsterPosition(USER_ANCHOR_POINT)[1];
-    const cannon_x = this.getCannonOriginalTopLeft(USER_ANCHOR_POINT)[0];
+    const cannon_x = this.getCannonOriginalPosition(USER_ANCHOR_POINT)[0];
     const growthFactor = this.getGrowthFactorCannon();
 
     return [cannon_x, holster_y + this.#holsterInfo.pixel_height * growthFactor + 20];
   }
 
   getHeightArrowPosition(USER_ANCHOR_POINT: number[]) {
-    return topLeftCornerArrow(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas, USER_ANCHOR_POINT[1])
+    const growthFactor = this.getGrowthFactorHeight();
+
+    const scale_pos_x = this.getHeightScalePosition(USER_ANCHOR_POINT)[0]
+    const arrowPosX = scale_pos_x + (100) * growthFactor - 103 * growthFactor;
+    const arrowPosY = USER_ANCHOR_POINT[1] * this.#canvas.height - (63 / 2) * growthFactor;
+  
+    return [arrowPosX, arrowPosY];
   }
 
   getHeightScalePosition(USER_ANCHOR_POINT: number[]) {
-    return topLeftCornerHeightScale(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas);
-  }
+    const cannonPosition = this.getCannonOriginalPosition(USER_ANCHOR_POINT)
+    const growthFactor = this.getGrowthFactorHeight();
+
+    const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
+    const pos_y = 0.1 * this.#canvas.height - 23 * growthFactor; // 23 pixels is the number of pixels that the actual start of the 
+    return [pos_x, pos_y]  }
 
 
   /// GROWTH FACTOR
   getGrowthFactorCannon() {
-    return calculateGrowthFactorCannon(this.#cannonInfo, this.#canvas);
+    const FRACTION_OF_SCREEN = 1/3;
+    return (FRACTION_OF_SCREEN * window.innerWidth) / this.#cannonInfo.pixel_width
   }
 
   getGrowthFactorVelocity() {
-    return calclateGrowthFactorVelocity(this.#canvas);
+    const FRACTION_OF_CANVAS = 2/5;
+    return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
   }
 
-  getGrowthFactorHeight() {
-    return calculateGrowthFactorHeight(this.#canvas);
+  getGrowthFactorHeight(GROUND_LEVEL_SCALAR: number = 0.8) {
+  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
+  return (FRACTION_OF_CANVAS * this.#canvas.height) / 866 // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
   }
 
   getGrowthFactorForeground() {
@@ -110,6 +123,8 @@ export class CanvasPositionAndSizes {
 
   /// CONVERSION RATE
   calculateConversionRate(USER_ANCHOR_POINT: number[]) {
-    return calculateConversionRate(this.#canvas, USER_ANCHOR_POINT, this.#MAX_HORIZONTAL_RANGE)
-  }
+    const availableSpace = (this.#canvas.width - this.getPivotPosition(USER_ANCHOR_POINT)[0]) * 9/10;
+    const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
+    return conversionRate  
+}
 }

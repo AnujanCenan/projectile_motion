@@ -12,7 +12,7 @@ function App() {
   return (
     <div>
     <Canvas MAX_RANGE={500} target_range={500} target_altitude={0}/>
-    {/* <Dialogue
+    <Dialogue
       name="General Paddy"
       speeches={[
         "ATTENTION!",
@@ -29,7 +29,7 @@ function App() {
       orderOfExpressions={[
         2, 0, 2, 0, 1
       ]}
-    /> */}
+    />
     </div>
   );
 }

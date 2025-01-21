@@ -1,15 +1,15 @@
-import { calculateConversionRate } from "./calculateConversionRate.tsx";
+import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
-import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
     canvas: HTMLCanvasElement, 
+    positionAndSizesInterface: CanvasPositionAndSizes,
     USER_ANCHOR_POINT: number[], 
     launchVelocity: number, 
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
-    MAX_HORIZONTAL_RANGE: number,
+  
     width: number
 ) {
 
@@ -18,9 +18,9 @@ export function fireCannon(
     try {
       if (canvas) {
         const [initial_x, initial_y] 
-          = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
+          = positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT);
 
-        const conversionRate = calculateConversionRate(canvas, USER_ANCHOR_POINT, MAX_HORIZONTAL_RANGE);
+        const conversionRate = positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT);
 
         const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
         const initial_v =  launchVelocity * conversionRate;

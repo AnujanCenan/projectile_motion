@@ -1,5 +1,4 @@
-import { Ref } from "react";
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
+import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes"
 import "./CSS/InputPanel.css"
 
 interface InputPanelProps {
@@ -11,6 +10,7 @@ interface InputPanelProps {
   velocityInputRef: React.RefObject<HTMLInputElement | null>
   heightInputRef: React.RefObject<HTMLInputElement | null>
   canvas: HTMLCanvasElement
+  positioningAndSizesInterface: CanvasPositionAndSizes
   USER_ANCHOR_PONT: number[]
   MAX_HORIZONTAL_RANGE: number
   CANNON_HORIZONTAL_SCALAR: number
@@ -26,6 +26,7 @@ export default function InputPanel({
   velocityInputRef, 
   heightInputRef,
   canvas,
+  positioningAndSizesInterface,
   USER_ANCHOR_PONT,
   MAX_HORIZONTAL_RANGE,
   CANNON_HORIZONTAL_SCALAR,
@@ -67,7 +68,6 @@ export default function InputPanel({
     }
     
     const val = e.target.value;
-    // requires some defensive programming
     try {
       if (val === "") {
         setElevationAngle(0);
@@ -98,7 +98,6 @@ export default function InputPanel({
       return;
     }
     const val = e.target.value;
-    // requires some defensive programming
     try {
       if (val === "") {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
@@ -106,8 +105,9 @@ export default function InputPanel({
       // some defensive programming
       if (isNaN(parseFloat(val))) {
         return;
-      }  
-      const conversionRate = calculateConversionRate(canvas, USER_ANCHOR_PONT, MAX_HORIZONTAL_RANGE);
+      }
+      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT);
+      
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
       const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
       if (parseFloat(val) < 0) {

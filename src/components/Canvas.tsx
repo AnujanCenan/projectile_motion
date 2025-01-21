@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 import useWindowSize from "./resizingHook.tsx"
 
 import "./CSS/Canvas.css"
@@ -24,15 +24,15 @@ import heightArrowImg from "../images/height/heightIndicator.png"
 
 import targetImg from "../images/targets/trainingTarget.png"
 
-import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject.tsx"
-import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement.tsx"
-import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor.tsx";
+
 import FireButton from "./FireButton.tsx";
 import InputPanel from "./InputPanel.tsx";
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
 import { fireCannon } from "../processingFunctions/fireCannon.tsx";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { DrawingImages } from "../OOP/DrawingImages.tsx"
+import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
+import { CanvasMouseMove } from "../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
+import { CanvasImagePreloader } from "../OOP/CanvasImagePreloader.tsx"
 
 
 interface CanvasProps {
@@ -52,12 +52,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
 
-
   const { width, height } = useWindowSize();
 
-
   //// Element References
-  // const ctxRef = useRef(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Image references
@@ -77,40 +74,18 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   // Target image reference
   const targetRef = useRef<HTMLImageElement>(null);
 
-  const imageRefs = [foregroundRef, cannonRef, holsterRef, velocityBarRef, velocitySliderRef, heightScaleRef, heightArrowRef, targetRef]
-
   // Textbox references
   const angleInputRef = useRef<HTMLInputElement>(null);
   const velocityInputRef = useRef<HTMLInputElement>(null);
   const heightInputRef = useRef<HTMLInputElement>(null);
 
-  // const MAX_SPEED = 140;
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
-  // Cannon State Variables
-  const cannonInfo = getCannonInfo("v2") as 
-  {
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }
-  const holsterInfo = getHolsterInfo("holster_v1") as 
-  {  
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }
-
-  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider") as 
-  {
-    pixel_width: number;
-    pixel_height: number;
-    slider_pixel_width: number;
-    slider_pixel_height: number;
-  };
+  const cannonInfo = getCannonInfo("v2")
+  const holsterInfo = getHolsterInfo("holster_v1")
+  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
   
+  // Cannon State Variables
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
 
@@ -119,13 +94,20 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const sliderClick = useRef(false);
   const heightArrowClick = useRef(false);
 
-  const click_x = useRef(0);
-  const click_y = useRef(0);
+  const click_x = useRef<number>(0);
+  const click_y = useRef<number>(0);
   const clickedBehindPivot = useRef<number>(1);
 
   // For class instances
   const positionAndSizesInterfaceRef = useRef<CanvasPositionAndSizes>(null);
   const drawingInterfaceRef = useRef<DrawingImages>(null);
+
+  const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
+  const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
+
+  const imagePreloader = useRef<CanvasImagePreloader>(new CanvasImagePreloader());
+
+
   useEffect(() => {
     if (isLandscape()) {
       setCannonHorizontalScalar(0.5);
@@ -133,35 +115,14 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       setCannonHorizontalScalar(0.5);
     }
   }, [width, height]);
-  //////////////////////// Canvas Drawings ///////////////////////////////////////
-  
-  function loadImages(arr: string[], callback: Function) {
-    type SrcToImage = { [key: string]: HTMLImageElement };
+  //////////////////////// Canvas Loading //////////////////////////////////////
 
-    const images: SrcToImage= {};
-    var loadedImageCount = 0;
 
-    // Make sure arr is actually an array and any other error checking
-    for (var i = 0; i < arr.length; i++){
-        var img = new Image();
-        img.onload = imageLoaded;
-        img.src = arr[i];
-        images[arr[i]] = img;
-    }
+  const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
+  imagePreloader.current.loadImages(imageArray, () => drawEnvironmentFromCanvas());
 
-    function imageLoaded() {
-        loadedImageCount++;
-        if (loadedImageCount >= arr.length) {
-            callback();
-        }
-    }
-  }
+  //////////////////////// Canvas Drawing //////////////////////////////////////
 
-  useEffect(() => {
-    loadImages([grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg], function() {
-      drawEnvironmentFromCanvas();
-  });
-  }, [])
   useEffect(() => {
     let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
@@ -178,41 +139,71 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     fix_dpi();
   }, [width, height, readyToDraw]);
 
+
+  // violates open-close principle because if i add an extra image, it has to be added here
+  function allImagesReferenced() {
+    return (
+      holsterRef.current !== null &&
+      cannonRef.current !== null &&
+      velocityBarRef.current !== null &&
+      velocitySliderRef.current !== null &&
+      heightScaleRef.current !== null &&
+      heightArrowRef.current !== null &&
+      foregroundRef.current !== null &&
+      targetRef.current !== null
+    )
+  }
+
+  // useEffect for initialising all our classes
   useEffect(() => {
     if (canvasRef.current) {
-      console.log("Bout to do some drawing")
-      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
-      drawingInterfaceRef.current = new DrawingImages(positionAndSizesInterfaceRef.current)
+      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE);
+      if (allImagesReferenced()) {
+        drawingInterfaceRef.current = new DrawingImages(
+          positionAndSizesInterfaceRef.current,
+          holsterRef as RefObject<HTMLImageElement>,
+          cannonRef as RefObject<HTMLImageElement>,
+          velocityBarRef as RefObject<HTMLImageElement>,
+          velocitySliderRef as RefObject<HTMLImageElement>,
+          heightScaleRef as RefObject<HTMLImageElement>,
+          heightArrowRef as RefObject<HTMLImageElement>,
+          foregroundRef as RefObject<HTMLImageElement>,
+          targetRef as RefObject<HTMLImageElement>
+        )
+
+        canvasMouseDownEvent.current = new CanvasMouseDown(
+          positionAndSizesInterfaceRef.current,
+          cannonClick,
+          clickedBehindPivot,
+          sliderClick,
+          heightArrowClick,
+          click_x,
+          click_y
+        )
+
+        canvasMouseMoveEvent.current = new CanvasMouseMove(
+          positionAndSizesInterfaceRef.current,
+          cannonClick,
+          clickedBehindPivot,
+          sliderClick,
+          heightArrowClick,
+          click_x,
+          click_y
+        )
+      }
       setReadyToDraw(true);
     } else {
       
     }
-  }, [cannonInfo, holsterInfo, MAX_RANGE])
+  }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
   useEffect(() => {
       drawEnvironmentFromCanvas();
   })
 
   function drawEnvironmentFromCanvas() {
-    if (!drawingInterfaceRef.current) {
-      console.log("Check1")
-      
-      return;
-    };
-    if (!foregroundRef.current
-      || !holsterRef.current
-      || !cannonRef.current
-      || !velocityBarRef.current
-      || !velocitySliderRef.current
-      || !heightScaleRef.current
-      || !heightArrowRef.current
-      || !targetRef.current
-    ) {
-      console.log("Check2")
-      return; 
-    }
-    console.log("Successful")
-    drawingInterfaceRef.current.drawEnvironment(
+
+    drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
       MAX_SPEED,
@@ -220,146 +211,34 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       elevationAngle,
       target_range,
       target_altitude,
-      foregroundRef as React.RefObject<HTMLImageElement>, 
-      holsterRef as React.RefObject<HTMLImageElement>, 
-      cannonRef as React.RefObject<HTMLImageElement>, 
-      velocityBarRef as React.RefObject<HTMLImageElement>, 
-      velocitySliderRef as React.RefObject<HTMLImageElement>,
-      heightScaleRef as React.RefObject<HTMLImageElement>, 
-      heightArrowRef as React.RefObject<HTMLImageElement>,
-      targetRef as React.RefObject<HTMLImageElement>
     )
   }
-
-  function clearCanvas() {
-    if (!positionAndSizesInterfaceRef.current) return;
-    const canvas = positionAndSizesInterfaceRef.current.getCanvas();
-    const ctx = positionAndSizesInterfaceRef.current.getCtx();
-    
-    if (ctx) {
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  }
-
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-    // uses e.PageX and e.PageY not e.clientX and clientY
-    if (!canvasRef || (!canvasRef.current)) return;
-    const container = canvasRef.current.parentNode as HTMLDivElement; 
-    const horizScroll = container.scrollLeft
-    cannonClick.current = clickedOnCannon(
-      canvasRef.current, 
-      e.pageX + horizScroll, e.pageY,
-      cannonInfo, 
-      elevationAngle,
-      clickedBehindPivot,
-      USER_ANCHOR_POINT
+    canvasMouseDownEvent.current?.mouseDown(
+      e, positionAndSizesInterfaceRef.current!, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )
-    if (positionAndSizesInterfaceRef.current) {
-      sliderClick.current = clickedOnVelocitySlider(
-        e.pageX + horizScroll, 
-        e.pageY, 
-        launchVelocity, 
-        velocitySliderInfo.pixel_width, 
-        velocitySliderInfo.pixel_height, 
-        velocitySliderInfo.slider_pixel_width, 
-        velocitySliderInfo.slider_pixel_height, 
-        positionAndSizesInterfaceRef.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
-        MAX_SPEED, 
-        calclateGrowthFactorVelocity(canvasRef.current)
-      )
-    }
-
-    if (positionAndSizesInterfaceRef.current) {
-      heightArrowClick.current = clickedOnHeightArrow(
-        e.pageX + horizScroll,
-        e.pageY,
-        positionAndSizesInterfaceRef.current.getHeightArrowPosition(USER_ANCHOR_POINT),
-        positionAndSizesInterfaceRef.current.getGrowthFactorHeight(),
-      )
-    }
-
-    click_x.current = e.pageX + horizScroll;
-    click_y.current = e.pageY;
   }
 
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-    if (!canvasRef || (!canvasRef.current)) return;
-    const container = canvasRef.current.parentNode as HTMLDivElement; 
-
-    const horizScroll = container.scrollLeft
-    if (cannonClick.current) {
-    if (!angleInputRef.current) return;
-      const angularDisplacement = calculateAngularDisplacement(
-        e.pageX + horizScroll, 
-        e.pageY, 
-        click_x.current, 
-        click_y.current, 
-        clickedBehindPivot.current,
-        canvasRef.current,
+    if (angleInputRef.current && velocityInputRef.current && heightInputRef.current) {
+      canvasMouseMoveEvent.current?.mouseMove(
+        e,
         elevationAngle,
-        USER_ANCHOR_POINT
-      );
-
-      click_x.current = e.pageX + horizScroll;
-      click_y.current = e.pageY;
-      if (elevationAngle + angularDisplacement > 90) {
-        setElevationAngle(90)
-      } else if (elevationAngle + angularDisplacement < 0) {
-        setElevationAngle(0)
-      } else {
-        setElevationAngle(elevationAngle + angularDisplacement);
-      }
-      angleInputRef.current.value = (Math.round(elevationAngle * 1000) / 1000).toString();
-
-    } else if (sliderClick.current) {
-      if (!velocityInputRef.current) return;
-      if (!positionAndSizesInterfaceRef.current) return;
-      const mouse_x = e.pageX + horizScroll;
-      const mouse_y = e.pageY;
-
-      const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
-      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * positionAndSizesInterfaceRef.current.getGrowthFactorVelocity());
-      
-      click_x.current = mouse_x;
-      click_y.current = mouse_y;
-
-      if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
-        setLaunchVelocity(MAX_SPEED)
-      } else if (launchVelocity + xDisplacement * velocityPerPixel < 0) {
-        setLaunchVelocity(0)
-      } else {
-        setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
-      }
-
-      velocityInputRef.current.value = (Math.round(launchVelocity * 1000) / 1000).toString();
-    } 
-    else if (heightArrowClick.current) {
-      if (!heightInputRef.current) return;
-      const mouse_x = e.pageX + horizScroll;
-      const mouse_y = e.pageY;
-
-      const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
-      
-      click_x.current = mouse_x;
-      click_y.current = mouse_y;
-      
-      window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
-
-      if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
-      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > GROUND_LEVEL_SCALAR * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
-      } else {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
-      }
-
-      const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, MAX_RANGE);
-      const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
-      heightInputRef.current.value = metreHeight.toString();
+        launchVelocity,
+        USER_ANCHOR_POINT,
+        MAX_SPEED,
+        CANNON_HORIZONTAL_SCALAR,
+        GROUND_LEVEL_SCALAR,
+        angleInputRef as RefObject<HTMLInputElement>,
+        velocityInputRef as RefObject<HTMLInputElement>,
+        heightInputRef as RefObject<HTMLInputElement>,
+        setElevationAngle,
+        setLaunchVelocity,
+        setUserAnchorPoint
+      )
     }
   }
 
@@ -373,98 +252,98 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
 
   return (
-  <>
-    
-    <div id="container">
-      <canvas ref={canvasRef} 
-        id="canvas" 
-        onMouseDown={(e) => mouseDown(e)}
-        onMouseUp={() => mouseUp()}
-        onMouseMove={(e) => mouseMove(e)}
-      >
+    <>
+      
+      <div id="container">
+        <canvas ref={canvasRef} 
+          id="canvas" 
+          onMouseDown={(e) => mouseDown(e)}
+          onMouseUp={() => mouseUp()}
+          onMouseMove={(e) => mouseMove(e)}
+        >
 
-        <>
-        <img 
-          src={grassImg}
-          alt="grass"
-          ref={foregroundRef}
-        />
+          <>
+          <img 
+            src={grassImg}
+            alt="grass"
+            ref={foregroundRef}
+          />
 
-        <img
-          src={cannonImg}
-          alt="barrel"
-          ref={cannonRef}
-        />
-        <img 
-          src={holsterImg}
-          alt="holster"
-          ref={holsterRef}
-        />
+          <img
+            src={cannonImg}
+            alt="barrel"
+            ref={cannonRef}
+          />
+          <img 
+            src={holsterImg}
+            alt="holster"
+            ref={holsterRef}
+          />
 
-        <img
-          src={velocityBarImg}
-          alt="velocityBar"
-          ref={velocityBarRef}
-        />
-        <img
-          src={velocitySliderImg}
-          alt="velocitySlider"
-          ref={velocitySliderRef}
-        />
+          <img
+            src={velocityBarImg}
+            alt="velocityBar"
+            ref={velocityBarRef}
+          />
+          <img
+            src={velocitySliderImg}
+            alt="velocitySlider"
+            ref={velocitySliderRef}
+          />
 
-        <img
-          src={heightScaleImg}
-          alt="heightScale"
-          ref={heightScaleRef}
-        />
-        <img
-          src={heightArrowImg}
-          alt="heightArrow"
-          ref={heightArrowRef}
-        />
+          <img
+            src={heightScaleImg}
+            alt="heightScale"
+            ref={heightScaleRef}
+          />
+          <img
+            src={heightArrowImg}
+            alt="heightArrow"
+            ref={heightArrowRef}
+          />
 
-        <img
-          src={targetImg}
-          alt="target"
-          ref={targetRef}
-        />
-        </>
+          <img
+            src={targetImg}
+            alt="target"
+            ref={targetRef}
+          />
+          </>
 
-      </canvas>
+        </canvas>
 
-      {canvasRef && canvasRef.current && 
-        <InputPanel 
-          setElevationAngle={setElevationAngle} 
-          setLaunchVelocity={setLaunchVelocity} 
-          setUserAnchorPoint={setUserAnchorPoint}
-          MAX_SPEED={MAX_SPEED} 
-          angleInputRef={angleInputRef} 
-          velocityInputRef={velocityInputRef}
-          heightInputRef={heightInputRef}
-          canvas={canvasRef.current}
-          USER_ANCHOR_PONT={USER_ANCHOR_POINT}
-          MAX_HORIZONTAL_RANGE={MAX_RANGE}
-          CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
-          GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
-        />
-      }
+        {canvasRef.current &&
+          <InputPanel 
+            setElevationAngle={setElevationAngle} 
+            setLaunchVelocity={setLaunchVelocity} 
+            setUserAnchorPoint={setUserAnchorPoint}
+            MAX_SPEED={MAX_SPEED} 
+            angleInputRef={angleInputRef} 
+            velocityInputRef={velocityInputRef}
+            heightInputRef={heightInputRef}
+            canvas={canvasRef.current}
+            USER_ANCHOR_PONT={USER_ANCHOR_POINT}
+            MAX_HORIZONTAL_RANGE={MAX_RANGE}
+            CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
+            GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
+            positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
+          />
+        }
 
-      {canvasRef.current && 
-        <FireButton 
-          fireCannon={() => fireCannon(
-            (canvasRef.current) as HTMLCanvasElement, 
-            USER_ANCHOR_POINT, 
-            launchVelocity, 
-            elevationAngle, 
-            GROUND_LEVEL_SCALAR, 
-            MAX_RANGE, 
-            width
-          )} 
-        />
-      }
+        {readyToDraw && 
+          <FireButton 
+            fireCannon={() => fireCannon(
+              (canvasRef.current) as HTMLCanvasElement,
+              (positionAndSizesInterfaceRef.current)!,
+              USER_ANCHOR_POINT, 
+              launchVelocity, 
+              elevationAngle, 
+              GROUND_LEVEL_SCALAR, 
+              width
+            )} 
+          />
+        }
 
-    </div>
-  </>
-    
+      </div>
+    </>
   )
 }
