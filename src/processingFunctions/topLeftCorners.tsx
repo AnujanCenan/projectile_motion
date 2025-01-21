@@ -1,6 +1,7 @@
 import { calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "./calculateGrowthFactor.tsx";
 import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
+// TODO: this file should be deprecated and completely replaced by the CanvasPositionAndSizes Class
 
 // gets the top left corner when cannon is at rotational position 0 degrees
 export function findCannonTopLeftGlobalCoords(canvas: HTMLCanvasElement, USER_ANCHOR_POINT: number[], 
