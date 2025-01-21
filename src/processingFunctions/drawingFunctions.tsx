@@ -47,7 +47,18 @@ export function drawImageWithRotation(
     ctx.rotate(-angle * Math.PI / 180);
     
     ctx.translate(-pos_x - pivot_x * growthFactor, -pos_y - pivot_y * growthFactor)
+}
 
+export function drawImageNoRotation(
+  ctx: CanvasRenderingContext2D, 
+  image: HTMLImageElement, 
+  pos_x: number, 
+  pos_y: number,  
+  width: number, 
+  height: number, 
+  growthFactor: number
+) {
+  drawImageWithRotation(ctx, image, pos_x, pos_y, 0, 0, width, height, 0, growthFactor);
 }
 
 export function drawCircle(
