@@ -1,12 +1,5 @@
-import { isLandscape } from "./drawingFunctions.tsx";
-
 export function calculateGrowthFactorCannon(
-  cannonInfo: {
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }, 
+  cannonInfo: CannonInfo, 
   canvas: HTMLCanvasElement) {
   // LOGIC: say we want the cannon to be ~1/10 of the canvas width
   // Then get the total width of the canvas

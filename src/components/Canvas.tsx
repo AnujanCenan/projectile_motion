@@ -52,12 +52,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
 
-
   const { width, height } = useWindowSize();
 
-
   //// Element References
-  // const ctxRef = useRef(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Image references
@@ -77,14 +74,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   // Target image reference
   const targetRef = useRef<HTMLImageElement>(null);
 
-  const imageRefs = [foregroundRef, cannonRef, holsterRef, velocityBarRef, velocitySliderRef, heightScaleRef, heightArrowRef, targetRef]
-
   // Textbox references
   const angleInputRef = useRef<HTMLInputElement>(null);
   const velocityInputRef = useRef<HTMLInputElement>(null);
   const heightInputRef = useRef<HTMLInputElement>(null);
 
-  // const MAX_SPEED = 140;
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
   // Cannon State Variables
@@ -119,8 +113,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const sliderClick = useRef(false);
   const heightArrowClick = useRef(false);
 
-  const click_x = useRef(0);
-  const click_y = useRef(0);
+  const click_x = useRef<number>(0);
+  const click_y = useRef<number>(0);
   const clickedBehindPivot = useRef<number>(1);
 
   // For class instances
@@ -158,10 +152,12 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   }
 
   useEffect(() => {
-    loadImages([grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg], function() {
+    const imageArray = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
+    loadImages(imageArray, function() {
       drawEnvironmentFromCanvas();
   });
   }, [])
+
   useEffect(() => {
     let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
@@ -230,18 +226,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       targetRef as React.RefObject<HTMLImageElement>
     )
   }
-
-  function clearCanvas() {
-    if (!positionAndSizesInterfaceRef.current) return;
-    const canvas = positionAndSizesInterfaceRef.current.getCanvas();
-    const ctx = positionAndSizesInterfaceRef.current.getCtx();
-    
-    if (ctx) {
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  }
-
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 

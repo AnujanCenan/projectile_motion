@@ -1,4 +1,3 @@
-import { Ref } from "react";
 import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
 import "./CSS/InputPanel.css"
 
@@ -67,7 +66,6 @@ export default function InputPanel({
     }
     
     const val = e.target.value;
-    // requires some defensive programming
     try {
       if (val === "") {
         setElevationAngle(0);
@@ -98,7 +96,6 @@ export default function InputPanel({
       return;
     }
     const val = e.target.value;
-    // requires some defensive programming
     try {
       if (val === "") {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);

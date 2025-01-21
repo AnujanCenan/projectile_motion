@@ -19,9 +19,8 @@ export class DrawingImages {
     ]
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
+    
     if (ctx) {
-      
-
       drawImageWithRotation(
         ctx,
         holsterImage, 
@@ -46,11 +45,10 @@ export class DrawingImages {
       pivot_coords[0] - cannonInfo.pivot_x * growthFactor,
       pivot_coords[1] - cannonInfo.pivot_y * growthFactor
     ]
-  
+    
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
-      
       drawImageWithRotation(
         ctx,
         cannonImage, 
