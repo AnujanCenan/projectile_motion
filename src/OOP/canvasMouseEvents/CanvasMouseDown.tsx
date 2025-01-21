@@ -105,45 +105,11 @@ export class CanvasMouseDown {
     const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
 
     if (!canvas) return;
-    // const container = canvas.parentNode as HTMLDivElement; 
-    // const horizScroll = container.scrollLeft
-    // this.#cannonClick.current = clickedOnCannon(
-    //   canvas, 
-    //   e.pageX + horizScroll, e.pageY,
-    //   cannonInfo, 
-    //   elevationAngle,
-    //   this.#clickedBehindPivot,
-    //   USER_ANCHOR_POINT
-    // )
 
     this.#cannonClickCheck(e, elevationAngle, USER_ANCHOR_POINT);
 
-
-    // const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
-    // this.#sliderClick.current = clickedOnVelocitySlider(
-    //   e.pageX + horizScroll, 
-    //   e.pageY, 
-    //   launchVelocity, 
-    //   velocitySliderInfo.pixel_width, 
-    //   velocitySliderInfo.pixel_height, 
-    //   velocitySliderInfo.slider_pixel_width, 
-    //   velocitySliderInfo.slider_pixel_height, 
-    //   this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
-    //   MAX_SPEED, 
-    //   calclateGrowthFactorVelocity(canvas)
-    // )
-
     this.#velocitySliderCheck(e, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED)
 
-
-    // if (this.#positionsAndSizesInterface) {
-    //   this.#heightArrowClick.current = clickedOnHeightArrow(
-    //     e.pageX + horizScroll,
-    //     e.pageY,
-    //     this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
-    //     this.#positionsAndSizesInterface.getGrowthFactorHeight(),
-    //   )
-    // }
     this.#heightArrowCheck(e, USER_ANCHOR_POINT);
 
     const horizScroll = (canvas.parentNode as HTMLDivElement).scrollLeft

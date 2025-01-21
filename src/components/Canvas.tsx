@@ -34,6 +34,7 @@ import { fireCannon } from "../processingFunctions/fireCannon.tsx";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { DrawingImages } from "../OOP/DrawingImages.tsx"
 import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
+import { CanvasMouseMove } from "../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
 
 
 interface CanvasProps {
@@ -104,6 +105,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const drawingInterfaceRef = useRef<DrawingImages>(null);
 
   const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
+  const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
 
 
   useEffect(() => {
@@ -202,6 +204,16 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
           click_x,
           click_y
         )
+
+        canvasMouseMoveEvent.current = new CanvasMouseMove(
+          positionAndSizesInterfaceRef.current,
+          cannonClick,
+          clickedBehindPivot,
+          sliderClick,
+          heightArrowClick,
+          click_x,
+          click_y
+        )
       }
       setReadyToDraw(true);
     } else {
@@ -235,80 +247,97 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   }
 
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-    if (!canvasRef || (!canvasRef.current)) return;
-    const container = canvasRef.current.parentNode as HTMLDivElement; 
-
-    const horizScroll = container.scrollLeft
-    if (cannonClick.current) {
-    if (!angleInputRef.current) return;
-      const angularDisplacement = calculateAngularDisplacement(
-        e.pageX + horizScroll, 
-        e.pageY, 
-        click_x.current, 
-        click_y.current, 
-        clickedBehindPivot.current,
-        canvasRef.current,
+    if (angleInputRef.current && velocityInputRef.current && heightInputRef.current) {
+      canvasMouseMoveEvent.current?.mouseMove(
+        e,
         elevationAngle,
-        USER_ANCHOR_POINT
-      );
-
-      click_x.current = e.pageX + horizScroll;
-      click_y.current = e.pageY;
-      if (elevationAngle + angularDisplacement > 90) {
-        setElevationAngle(90)
-      } else if (elevationAngle + angularDisplacement < 0) {
-        setElevationAngle(0)
-      } else {
-        setElevationAngle(elevationAngle + angularDisplacement);
-      }
-      angleInputRef.current.value = (Math.round(elevationAngle * 1000) / 1000).toString();
-
-    } else if (sliderClick.current) {
-      if (!velocityInputRef.current) return;
-      if (!positionAndSizesInterfaceRef.current) return;
-      const mouse_x = e.pageX + horizScroll;
-      const mouse_y = e.pageY;
-
-      const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
-      const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * positionAndSizesInterfaceRef.current.getGrowthFactorVelocity());
-      
-      click_x.current = mouse_x;
-      click_y.current = mouse_y;
-
-      if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
-        setLaunchVelocity(MAX_SPEED)
-      } else if (launchVelocity + xDisplacement * velocityPerPixel < 0) {
-        setLaunchVelocity(0)
-      } else {
-        setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
-      }
-
-      velocityInputRef.current.value = (Math.round(launchVelocity * 1000) / 1000).toString();
-    } 
-    else if (heightArrowClick.current) {
-      if (!heightInputRef.current) return;
-      const mouse_x = e.pageX + horizScroll;
-      const mouse_y = e.pageY;
-
-      const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
-      
-      click_x.current = mouse_x;
-      click_y.current = mouse_y;
-      
-      window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
-
-      if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
-      } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > GROUND_LEVEL_SCALAR * canvasRef.current.height) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
-      } else {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
-      }
-
-      const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, MAX_RANGE);
-      const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
-      heightInputRef.current.value = metreHeight.toString();
+        launchVelocity,
+        USER_ANCHOR_POINT,
+        MAX_SPEED,
+        CANNON_HORIZONTAL_SCALAR,
+        GROUND_LEVEL_SCALAR,
+        angleInputRef as RefObject<HTMLInputElement>,
+        velocityInputRef as RefObject<HTMLInputElement>,
+        heightInputRef as RefObject<HTMLInputElement>,
+        setElevationAngle,
+        setLaunchVelocity,
+        setUserAnchorPoint
+      )
     }
+    // if (!canvasRef || (!canvasRef.current)) return;
+    // const container = canvasRef.current.parentNode as HTMLDivElement; 
+
+    // const horizScroll = container.scrollLeft
+    // if (cannonClick.current) {
+    // if (!angleInputRef.current) return;
+    //   const angularDisplacement = calculateAngularDisplacement(
+    //     e.pageX + horizScroll, 
+    //     e.pageY, 
+    //     click_x.current, 
+    //     click_y.current, 
+    //     clickedBehindPivot.current,
+    //     canvasRef.current,
+    //     elevationAngle,
+    //     USER_ANCHOR_POINT
+    //   );
+
+    //   click_x.current = e.pageX + horizScroll;
+    //   click_y.current = e.pageY;
+    //   if (elevationAngle + angularDisplacement > 90) {
+    //     setElevationAngle(90)
+    //   } else if (elevationAngle + angularDisplacement < 0) {
+    //     setElevationAngle(0)
+    //   } else {
+    //     setElevationAngle(elevationAngle + angularDisplacement);
+    //   }
+    //   angleInputRef.current.value = (Math.round(elevationAngle * 1000) / 1000).toString();
+
+    // } else if (sliderClick.current) {
+    //   if (!velocityInputRef.current) return;
+    //   if (!positionAndSizesInterfaceRef.current) return;
+    //   const mouse_x = e.pageX + horizScroll;
+    //   const mouse_y = e.pageY;
+
+    //   const xDisplacement = (mouse_x  - click_x.current) * window.devicePixelRatio;
+    //   const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * positionAndSizesInterfaceRef.current.getGrowthFactorVelocity());
+      
+    //   click_x.current = mouse_x;
+    //   click_y.current = mouse_y;
+
+    //   if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
+    //     setLaunchVelocity(MAX_SPEED)
+    //   } else if (launchVelocity + xDisplacement * velocityPerPixel < 0) {
+    //     setLaunchVelocity(0)
+    //   } else {
+    //     setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
+    //   }
+
+    //   velocityInputRef.current.value = (Math.round(launchVelocity * 1000) / 1000).toString();
+    // } 
+    // else if (heightArrowClick.current) {
+    //   if (!heightInputRef.current) return;
+    //   const mouse_x = e.pageX + horizScroll;
+    //   const mouse_y = e.pageY;
+
+    //   const yDisplacement = (mouse_y - click_y.current) * window.devicePixelRatio;
+      
+    //   click_x.current = mouse_x;
+    //   click_y.current = mouse_y;
+      
+    //   window.scrollTo({top: mouse_y - canvasRef.current.height * 0.1 * 2, behavior: "smooth"})
+
+    //   if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement < 0.1 * canvasRef.current.height) {
+    //     setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
+    //   } else if (USER_ANCHOR_POINT[1] * canvasRef.current.height + yDisplacement > GROUND_LEVEL_SCALAR * canvasRef.current.height) {
+    //     setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
+    //   } else {
+    //     setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvasRef.current.height])
+    //   }
+
+    //   const conversionRate = calculateConversionRate(canvasRef.current, USER_ANCHOR_POINT, MAX_RANGE);
+    //   const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvasRef.current.height) / conversionRate;
+    //   heightInputRef.current.value = metreHeight.toString();
+    // }
   }
 
   function mouseUp() {
