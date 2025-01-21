@@ -1,5 +1,4 @@
 import { RefObject } from "react";
-import { DrawingImages } from "./DrawingImages";
 import { CanvasPositionAndSizes } from "./CanvasPositionAndSizes";
 import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject";
@@ -21,9 +20,6 @@ export class CanvasMouseEvents {
     heightArrowClick: RefObject<boolean>,
     click_x: RefObject<number>,
     click_y: RefObject<number>
-
-
-    
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
     this.#cannonClick = cannonClick;
@@ -32,7 +28,67 @@ export class CanvasMouseEvents {
     this.#heightArrowClick = heightArrowClick;
     this.#click_x = click_x;
     this.#click_y = click_y;
+  }
 
+  #cannonClickCheck(
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>, 
+    elevationAngle: number, 
+    USER_ANCHOR_POINT: number[]
+  ) {
+
+    const canvas = this.#positionsAndSizesInterface.getCanvas();
+    const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
+    const container = canvas.parentNode as HTMLDivElement; 
+    const horizScroll = container.scrollLeft
+    this.#cannonClick.current = clickedOnCannon(
+      canvas, 
+      e.pageX + horizScroll, e.pageY,
+      cannonInfo, 
+      elevationAngle,
+      this.#clickedBehindPivot,
+      USER_ANCHOR_POINT
+    )
+  }
+
+  #velocitySliderCheck(
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>, 
+    launchVelocity: number, 
+    USER_ANCHOR_POINT: number[],
+    MAX_SPEED: number
+  ) {
+    const canvas = this.#positionsAndSizesInterface.getCanvas();
+    const container = canvas.parentNode as HTMLDivElement; 
+    const horizScroll = container.scrollLeft
+    const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
+    this.#sliderClick.current = clickedOnVelocitySlider(
+      e.pageX + horizScroll, 
+      e.pageY, 
+      launchVelocity, 
+      velocitySliderInfo.pixel_width, 
+      velocitySliderInfo.pixel_height, 
+      velocitySliderInfo.slider_pixel_width, 
+      velocitySliderInfo.slider_pixel_height, 
+      this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
+      MAX_SPEED, 
+      calclateGrowthFactorVelocity(canvas)
+    )
+  }
+
+  #heightArrowCheck(
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>, 
+    USER_ANCHOR_POINT: number[]
+  ) {
+    const canvas = this.#positionsAndSizesInterface.getCanvas();
+    const container = canvas.parentNode as HTMLDivElement; 
+    const horizScroll = container.scrollLeft
+    if (this.#positionsAndSizesInterface) {
+      this.#heightArrowClick.current = clickedOnHeightArrow(
+        e.pageX + horizScroll,
+        e.pageY,
+        this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
+        this.#positionsAndSizesInterface.getGrowthFactorHeight(),
+      )
+    }
 
   }
 
@@ -49,41 +105,48 @@ export class CanvasMouseEvents {
     const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
 
     if (!canvas) return;
-    const container = canvas.parentNode as HTMLDivElement; 
-    const horizScroll = container.scrollLeft
-    this.#cannonClick.current = clickedOnCannon(
-      canvas, 
-      e.pageX + horizScroll, e.pageY,
-      cannonInfo, 
-      elevationAngle,
-      this.#clickedBehindPivot,
-      USER_ANCHOR_POINT
-    )
+    // const container = canvas.parentNode as HTMLDivElement; 
+    // const horizScroll = container.scrollLeft
+    // this.#cannonClick.current = clickedOnCannon(
+    //   canvas, 
+    //   e.pageX + horizScroll, e.pageY,
+    //   cannonInfo, 
+    //   elevationAngle,
+    //   this.#clickedBehindPivot,
+    //   USER_ANCHOR_POINT
+    // )
 
-    const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
-    this.#sliderClick.current = clickedOnVelocitySlider(
-      e.pageX + horizScroll, 
-      e.pageY, 
-      launchVelocity, 
-      velocitySliderInfo.pixel_width, 
-      velocitySliderInfo.pixel_height, 
-      velocitySliderInfo.slider_pixel_width, 
-      velocitySliderInfo.slider_pixel_height, 
-      this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
-      MAX_SPEED, 
-      calclateGrowthFactorVelocity(canvas)
-    )
+    this.#cannonClickCheck(e, elevationAngle, USER_ANCHOR_POINT);
 
 
-    if (this.#positionsAndSizesInterface) {
-      this.#heightArrowClick.current = clickedOnHeightArrow(
-        e.pageX + horizScroll,
-        e.pageY,
-        this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
-        this.#positionsAndSizesInterface.getGrowthFactorHeight(),
-      )
-    }
+    // const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
+    // this.#sliderClick.current = clickedOnVelocitySlider(
+    //   e.pageX + horizScroll, 
+    //   e.pageY, 
+    //   launchVelocity, 
+    //   velocitySliderInfo.pixel_width, 
+    //   velocitySliderInfo.pixel_height, 
+    //   velocitySliderInfo.slider_pixel_width, 
+    //   velocitySliderInfo.slider_pixel_height, 
+    //   this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
+    //   MAX_SPEED, 
+    //   calclateGrowthFactorVelocity(canvas)
+    // )
 
+    this.#velocitySliderCheck(e, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED)
+
+
+    // if (this.#positionsAndSizesInterface) {
+    //   this.#heightArrowClick.current = clickedOnHeightArrow(
+    //     e.pageX + horizScroll,
+    //     e.pageY,
+    //     this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
+    //     this.#positionsAndSizesInterface.getGrowthFactorHeight(),
+    //   )
+    // }
+    this.#heightArrowCheck(e, USER_ANCHOR_POINT);
+
+    const horizScroll = (canvas.parentNode as HTMLDivElement).scrollLeft
     this.#click_x.current = e.pageX + horizScroll;
     this.#click_y.current = e.pageY;
   }

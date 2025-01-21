@@ -33,6 +33,7 @@ import { calculateConversionRate } from "../processingFunctions/calculateConvers
 import { fireCannon } from "../processingFunctions/fireCannon.tsx";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { DrawingImages } from "../OOP/DrawingImages.tsx"
+import { CanvasMouseEvents } from "../OOP/CanvasMouseEvents.tsx"
 
 
 interface CanvasProps {
@@ -81,30 +82,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
-  // Cannon State Variables
-  const cannonInfo = getCannonInfo("v2") as 
-  {
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }
-  const holsterInfo = getHolsterInfo("holster_v1") as 
-  {  
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }
-
-  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider") as 
-  {
-    pixel_width: number;
-    pixel_height: number;
-    slider_pixel_width: number;
-    slider_pixel_height: number;
-  };
+  const cannonInfo = getCannonInfo("v2")
+  const holsterInfo = getHolsterInfo("holster_v1")
+  const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
   
+  // Cannon State Variables
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
 
@@ -120,6 +102,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   // For class instances
   const positionAndSizesInterfaceRef = useRef<CanvasPositionAndSizes>(null);
   const drawingInterfaceRef = useRef<DrawingImages>(null);
+
+  const canvasMouseDownEvent = useRef<CanvasMouseEvents>(null);
+
+
   useEffect(() => {
     if (isLandscape()) {
       setCannonHorizontalScalar(0.5);
@@ -190,6 +176,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     )
   }
 
+  // useEffect for initialising all our classes
   useEffect(() => {
     if (canvasRef.current) {
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE);
@@ -204,6 +191,16 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
           heightArrowRef as RefObject<HTMLImageElement>,
           foregroundRef as RefObject<HTMLImageElement>,
           targetRef as RefObject<HTMLImageElement>
+        )
+
+        canvasMouseDownEvent.current = new CanvasMouseEvents(
+          positionAndSizesInterfaceRef.current,
+          cannonClick,
+          clickedBehindPivot,
+          sliderClick,
+          heightArrowClick,
+          click_x,
+          click_y
         )
       }
       setReadyToDraw(true);
@@ -237,43 +234,46 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     // uses e.PageX and e.PageY not e.clientX and clientY
-    if (!canvasRef || (!canvasRef.current)) return;
-    const container = canvasRef.current.parentNode as HTMLDivElement; 
-    const horizScroll = container.scrollLeft
-    cannonClick.current = clickedOnCannon(
-      canvasRef.current, 
-      e.pageX + horizScroll, e.pageY,
-      cannonInfo, 
-      elevationAngle,
-      clickedBehindPivot,
-      USER_ANCHOR_POINT
+    // if (!canvasRef || (!canvasRef.current)) return;
+    // const container = canvasRef.current.parentNode as HTMLDivElement; 
+    // const horizScroll = container.scrollLeft
+    // cannonClick.current = clickedOnCannon(
+    //   canvasRef.current, 
+    //   e.pageX + horizScroll, e.pageY,
+    //   cannonInfo, 
+    //   elevationAngle,
+    //   clickedBehindPivot,
+    //   USER_ANCHOR_POINT
+    // )
+    // if (positionAndSizesInterfaceRef.current) {
+    //   sliderClick.current = clickedOnVelocitySlider(
+    //     e.pageX + horizScroll, 
+    //     e.pageY, 
+    //     launchVelocity, 
+    //     velocitySliderInfo.pixel_width, 
+    //     velocitySliderInfo.pixel_height, 
+    //     velocitySliderInfo.slider_pixel_width, 
+    //     velocitySliderInfo.slider_pixel_height, 
+    //     positionAndSizesInterfaceRef.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
+    //     MAX_SPEED, 
+    //     calclateGrowthFactorVelocity(canvasRef.current)
+    //   )
+    // }
+
+    // if (positionAndSizesInterfaceRef.current) {
+    //   heightArrowClick.current = clickedOnHeightArrow(
+    //     e.pageX + horizScroll,
+    //     e.pageY,
+    //     positionAndSizesInterfaceRef.current.getHeightArrowPosition(USER_ANCHOR_POINT),
+    //     positionAndSizesInterfaceRef.current.getGrowthFactorHeight(),
+    //   )
+    // }
+
+    // click_x.current = e.pageX + horizScroll;
+    // click_y.current = e.pageY;
+    canvasMouseDownEvent.current?.mouseDown(
+      e, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )
-    if (positionAndSizesInterfaceRef.current) {
-      sliderClick.current = clickedOnVelocitySlider(
-        e.pageX + horizScroll, 
-        e.pageY, 
-        launchVelocity, 
-        velocitySliderInfo.pixel_width, 
-        velocitySliderInfo.pixel_height, 
-        velocitySliderInfo.slider_pixel_width, 
-        velocitySliderInfo.slider_pixel_height, 
-        positionAndSizesInterfaceRef.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
-        MAX_SPEED, 
-        calclateGrowthFactorVelocity(canvasRef.current)
-      )
-    }
-
-    if (positionAndSizesInterfaceRef.current) {
-      heightArrowClick.current = clickedOnHeightArrow(
-        e.pageX + horizScroll,
-        e.pageY,
-        positionAndSizesInterfaceRef.current.getHeightArrowPosition(USER_ANCHOR_POINT),
-        positionAndSizesInterfaceRef.current.getGrowthFactorHeight(),
-      )
-    }
-
-    click_x.current = e.pageX + horizScroll;
-    click_y.current = e.pageY;
   }
 
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
