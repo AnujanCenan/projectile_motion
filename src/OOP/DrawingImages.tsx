@@ -20,7 +20,7 @@ export class DrawingImages {
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
-      console.log("Drawing holster")
+      
 
       drawImageWithRotation(
         ctx,
@@ -50,7 +50,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
-      console.log("Drawing cannon")
+      
       drawImageWithRotation(
         ctx,
         cannonImage, 
@@ -75,7 +75,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
-      console.log("Drawing vel bar")
+      
       drawImageWithRotation(
         ctx,
         velocityBar, 
@@ -101,7 +101,7 @@ export class DrawingImages {
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
-      console.log("Drawing vel slider", velocitySlider)
+      
       drawImageWithRotation(
         ctx,  
         velocitySlider, 
@@ -124,7 +124,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
     
     if (ctx) {
-      console.log("Drawing height scale")
+      
       drawImageWithRotation(
         ctx,
         heightScale, 
@@ -137,8 +137,8 @@ export class DrawingImages {
         0, 
         growthFactor
       );
-      console.log(heightScale)
-      console.log("Finished drawing the height scale")
+      
+      
     }
   }
 
@@ -149,7 +149,7 @@ export class DrawingImages {
     
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
-      console.log("Drawing height arrow")
+      
       drawImageWithRotation(
         ctx,
         heightArrow, 
@@ -197,7 +197,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
-      console.log("Drawing foreground")
+      
       drawImageWithRotation(
         ctx,
         foreground,
@@ -227,7 +227,7 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
     if (ctx) {
-      console.log("Drawing target")
+      
 
       drawImageWithRotation(
         ctx,
@@ -266,38 +266,38 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx();
     
     if (ctx) {
-      console.log("Drawing environment; Clearing canvas...");
-      console.log(foregroundRef.current)
+      
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-      foregroundRef.current.onload = () => this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
+      // foregroundRef.current.onload = () => this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
       this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
 
-      holsterRef.current.onload = () => this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
+      // holsterRef.current.onload = () => this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
       this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
-      cannonRef.current.onload = () => this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
+      // cannonRef.current.onload = () => this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
       this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
 
       this.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
       
-      velocityBarRef.current.onload = () => this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
+      // velocityBarRef.current.onload = () => this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
       this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
-      velocitySliderRef.current.onload = () => this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
+      // velocitySliderRef.current.onload = () => this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
       this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
       
-      heightScaleRef.current.onload = () => this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
+      // heightScaleRef.current.onload = () => this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
       this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
-      heightArrowRef.current.onload = () => this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
+      // heightArrowRef.current.onload = () => this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
       this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
 
-      targetRef.current.onload = () => 
-        this.drawTarget(
-          USER_ANCHOR_POINT, 
-          GROUND_LEVEL_SCALAR, 
-          targetRef.current, 
-          target_range, 
-          target_altitude
-        )
+      // targetRef.current.onload = () => 
+        // this.drawTarget(
+        //   USER_ANCHOR_POINT, 
+        //   GROUND_LEVEL_SCALAR, 
+        //   targetRef.current, 
+        //   target_range, 
+        //   target_altitude
+        // )
         
       this.drawTarget(
         USER_ANCHOR_POINT, 

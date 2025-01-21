@@ -10,19 +10,19 @@ import {
   isLandscape
 } from "../processingFunctions/drawingFunctions.tsx"
 
+import grassImg from "../images/foregrounds/grassLarge.png"
+
 import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 
-import velocityBar from "../images/velocity/velocityBar.png"
-import velocitySlider from "../images/velocity/velocitySlider.png"
+import velocityBarImg from "../images/velocity/velocityBar.png"
+import velocitySliderImg from "../images/velocity/velocitySlider.png"
 
-import heightScale from "../images/height/heightBar.png"
-import heightArrow from "../images/height/heightIndicator.png"
+import heightScaleImg from "../images/height/heightBar.png"
+import heightArrowImg from "../images/height/heightIndicator.png"
 
 
-import grassImg from "../images/foregrounds/grassLarge.png"
-
-import target from "../images/targets/trainingTarget.png"
+import targetImg from "../images/targets/trainingTarget.png"
 
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject.tsx"
 import { calculateAngularDisplacement } from "../processingFunctions/calculateAngularDisplacement.tsx"
@@ -44,7 +44,7 @@ interface CanvasProps {
 export default function Canvas({MAX_RANGE, target_range, target_altitude}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
-  const [loadedCanvas, setLoadedCanvas] = useState(false);
+  const [readyToDraw, setReadyToDraw] = useState(false);
 
   // Positioning Constants
   const GROUND_LEVEL_SCALAR = 0.8;
@@ -76,6 +76,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   
   // Target image reference
   const targetRef = useRef<HTMLImageElement>(null);
+
+  const imageRefs = [foregroundRef, cannonRef, holsterRef, velocityBarRef, velocitySliderRef, heightScaleRef, heightArrowRef, targetRef]
 
   // Textbox references
   const angleInputRef = useRef<HTMLInputElement>(null);
@@ -130,9 +132,36 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     } else {
       setCannonHorizontalScalar(0.5);
     }
-  }, []);
+  }, [width, height]);
   //////////////////////// Canvas Drawings ///////////////////////////////////////
+  
+  function loadImages(arr: string[], callback: Function) {
+    type SrcToImage = { [key: string]: HTMLImageElement };
 
+    const images: SrcToImage= {};
+    var loadedImageCount = 0;
+
+    // Make sure arr is actually an array and any other error checking
+    for (var i = 0; i < arr.length; i++){
+        var img = new Image();
+        img.onload = imageLoaded;
+        img.src = arr[i];
+        images[arr[i]] = img;
+    }
+
+    function imageLoaded() {
+        loadedImageCount++;
+        if (loadedImageCount >= arr.length) {
+            callback();
+        }
+    }
+  }
+
+  useEffect(() => {
+    loadImages([grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg], function() {
+      drawEnvironmentFromCanvas();
+  });
+  }, [])
   useEffect(() => {
     let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
@@ -143,17 +172,20 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
         canvas.setAttribute('height', (style_height * dpi).toString());
         canvas.setAttribute('width', (style_width * dpi).toString());
-        setLoadedCanvas(true);
       }
     }
     
     fix_dpi();
-  }, [width, height, cannonInfo, holsterInfo]);
+  }, [width, height, readyToDraw]);
 
   useEffect(() => {
     if (canvasRef.current) {
+      console.log("Bout to do some drawing")
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
       drawingInterfaceRef.current = new DrawingImages(positionAndSizesInterfaceRef.current)
+      setReadyToDraw(true);
+    } else {
+      
     }
   }, [cannonInfo, holsterInfo, MAX_RANGE])
 
@@ -162,7 +194,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   })
 
   function drawEnvironmentFromCanvas() {
-    if (!drawingInterfaceRef.current) return;
+    if (!drawingInterfaceRef.current) {
+      console.log("Check1")
+      
+      return;
+    };
     if (!foregroundRef.current
       || !holsterRef.current
       || !cannonRef.current
@@ -171,8 +207,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       || !heightScaleRef.current
       || !heightArrowRef.current
       || !targetRef.current
-    ) return;
-
+    ) {
+      console.log("Check2")
+      return; 
+    }
+    console.log("Successful")
     drawingInterfaceRef.current.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
@@ -198,15 +237,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     const ctx = positionAndSizesInterfaceRef.current.getCtx();
     
     if (ctx) {
-      console.log(foregroundRef.current)
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   }
 
-  function onImageLoad() {
-    clearCanvas();
-    drawEnvironmentFromCanvas();
-  }
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -336,7 +371,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   
   ///////////////////////////////////////////////////////////////////////////////
 
+
   return (
+  <>
+    
     <div id="container">
       <canvas ref={canvasRef} 
         id="canvas" 
@@ -344,62 +382,57 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         onMouseUp={() => mouseUp()}
         onMouseMove={(e) => mouseMove(e)}
       >
+
+        <>
         <img 
           src={grassImg}
           alt="grass"
           ref={foregroundRef}
-          onLoad={() => onImageLoad()}
         />
 
         <img
           src={cannonImg}
           alt="barrel"
           ref={cannonRef}
-          onLoad={() => onImageLoad()}
         />
         <img 
           src={holsterImg}
           alt="holster"
           ref={holsterRef}
-          onLoad={() => onImageLoad()}
         />
 
         <img
-          src={velocityBar}
+          src={velocityBarImg}
           alt="velocityBar"
           ref={velocityBarRef}
-          onLoad={() => onImageLoad()}
         />
         <img
-          src={velocitySlider}
+          src={velocitySliderImg}
           alt="velocitySlider"
           ref={velocitySliderRef}
-          onLoad={() => onImageLoad()}
         />
 
         <img
-          src={heightScale}
+          src={heightScaleImg}
           alt="heightScale"
           ref={heightScaleRef}
-          onLoad={() => onImageLoad()}
         />
         <img
-          src={heightArrow}
+          src={heightArrowImg}
           alt="heightArrow"
           ref={heightArrowRef}
-          onLoad={() => onImageLoad()}
         />
 
         <img
-          src={target}
+          src={targetImg}
           alt="target"
           ref={targetRef}
-          onLoad={() => onImageLoad()}
         />
+        </>
 
       </canvas>
 
-      {loadedCanvas && canvasRef && canvasRef.current && 
+      {canvasRef && canvasRef.current && 
         <InputPanel 
           setElevationAngle={setElevationAngle} 
           setLaunchVelocity={setLaunchVelocity} 
@@ -431,6 +464,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       }
 
     </div>
+  </>
     
   )
 }

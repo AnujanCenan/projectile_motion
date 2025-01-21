@@ -38,7 +38,7 @@ export function drawImageWithRotation(
   angle: number, 
   growthFactor: number
 ) {
-    console.log("Drawing in generic drawing function...")
+    
     ctx.translate(pos_x + pivot_x * growthFactor, pos_y + pivot_y * growthFactor);
     
     ctx.rotate(angle * Math.PI / 180);
