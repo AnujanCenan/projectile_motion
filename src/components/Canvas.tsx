@@ -33,7 +33,7 @@ import { calculateConversionRate } from "../processingFunctions/calculateConvers
 import { fireCannon } from "../processingFunctions/fireCannon.tsx";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { DrawingImages } from "../OOP/DrawingImages.tsx"
-import { CanvasMouseEvents } from "../OOP/CanvasMouseEvents.tsx"
+import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
 
 
 interface CanvasProps {
@@ -103,7 +103,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const positionAndSizesInterfaceRef = useRef<CanvasPositionAndSizes>(null);
   const drawingInterfaceRef = useRef<DrawingImages>(null);
 
-  const canvasMouseDownEvent = useRef<CanvasMouseEvents>(null);
+  const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
 
 
   useEffect(() => {
@@ -193,7 +193,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
           targetRef as RefObject<HTMLImageElement>
         )
 
-        canvasMouseDownEvent.current = new CanvasMouseEvents(
+        canvasMouseDownEvent.current = new CanvasMouseDown(
           positionAndSizesInterfaceRef.current,
           cannonClick,
           clickedBehindPivot,
@@ -214,12 +214,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   })
 
   function drawEnvironmentFromCanvas() {
-    if (!drawingInterfaceRef.current) {
-      console.log("Check1")
-      return;
-    }
-    console.log("Successful")
-    drawingInterfaceRef.current.drawEnvironment(
+
+    drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
       MAX_SPEED,
@@ -233,44 +229,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-    // uses e.PageX and e.PageY not e.clientX and clientY
-    // if (!canvasRef || (!canvasRef.current)) return;
-    // const container = canvasRef.current.parentNode as HTMLDivElement; 
-    // const horizScroll = container.scrollLeft
-    // cannonClick.current = clickedOnCannon(
-    //   canvasRef.current, 
-    //   e.pageX + horizScroll, e.pageY,
-    //   cannonInfo, 
-    //   elevationAngle,
-    //   clickedBehindPivot,
-    //   USER_ANCHOR_POINT
-    // )
-    // if (positionAndSizesInterfaceRef.current) {
-    //   sliderClick.current = clickedOnVelocitySlider(
-    //     e.pageX + horizScroll, 
-    //     e.pageY, 
-    //     launchVelocity, 
-    //     velocitySliderInfo.pixel_width, 
-    //     velocitySliderInfo.pixel_height, 
-    //     velocitySliderInfo.slider_pixel_width, 
-    //     velocitySliderInfo.slider_pixel_height, 
-    //     positionAndSizesInterfaceRef.current.getVelocityBarPosition(USER_ANCHOR_POINT), 
-    //     MAX_SPEED, 
-    //     calclateGrowthFactorVelocity(canvasRef.current)
-    //   )
-    // }
-
-    // if (positionAndSizesInterfaceRef.current) {
-    //   heightArrowClick.current = clickedOnHeightArrow(
-    //     e.pageX + horizScroll,
-    //     e.pageY,
-    //     positionAndSizesInterfaceRef.current.getHeightArrowPosition(USER_ANCHOR_POINT),
-    //     positionAndSizesInterfaceRef.current.getGrowthFactorHeight(),
-    //   )
-    // }
-
-    // click_x.current = e.pageX + horizScroll;
-    // click_y.current = e.pageY;
     canvasMouseDownEvent.current?.mouseDown(
       e, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )

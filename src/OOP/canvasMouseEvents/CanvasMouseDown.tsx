@@ -1,9 +1,9 @@
 import { RefObject } from "react";
-import { CanvasPositionAndSizes } from "./CanvasPositionAndSizes";
-import { calclateGrowthFactorVelocity } from "../processingFunctions/calculateGrowthFactor";
-import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../processingFunctions/clickedOnObject";
+import { CanvasPositionAndSizes } from "../CanvasPositionAndSizes";
+import { calclateGrowthFactorVelocity } from "../../processingFunctions/calculateGrowthFactor";
+import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../../processingFunctions/clickedOnObject";
 
-export class CanvasMouseEvents {
+export class CanvasMouseDown {
   #positionsAndSizesInterface;
   #cannonClick;
   #clickedBehindPivot;
