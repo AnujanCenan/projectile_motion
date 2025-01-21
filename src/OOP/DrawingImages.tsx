@@ -1,11 +1,41 @@
-import { drawImageWithRotation } from "../processingFunctions/drawingFunctions.tsx";
+import { RefObject } from "react";
+import { drawImageNoRotation, drawImageWithRotation } from "../processingFunctions/drawingFunctions.tsx";
 import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords.tsx";
 import { CanvasPositionAndSizes } from "./CanvasPositionAndSizes.tsx";
 
 export class DrawingImages {
   #canvasPositionAndSizes;
-  constructor(canvasPositionAndSizes: CanvasPositionAndSizes) {
+  #holsterRef;
+  #cannonRef;
+  #velocityBarRef;
+  #velocitySliderRef;
+  #heightScaleRef;
+  #heightArrowRef;
+  #foregroundRef;
+  #targetRef;
+
+  constructor(
+    canvasPositionAndSizes: CanvasPositionAndSizes,
+
+    holsterRef: RefObject<HTMLImageElement>, 
+    cannonRef: RefObject<HTMLImageElement>,
+    velocityBarRef: RefObject<HTMLImageElement>,
+    velocitySliderRef: RefObject<HTMLImageElement>,
+    heightScaleRef: RefObject<HTMLImageElement>,
+    heightArrowRef: RefObject<HTMLImageElement>,
+    foregroundRef: RefObject<HTMLImageElement>,
+    targetRef: RefObject<HTMLImageElement>
+  ) {
     this.#canvasPositionAndSizes = canvasPositionAndSizes;
+
+    this.#holsterRef = holsterRef;
+    this.#cannonRef = cannonRef;
+    this.#velocityBarRef = velocityBarRef;
+    this.#velocitySliderRef = velocitySliderRef;
+    this.#heightScaleRef = heightScaleRef;
+    this.#heightArrowRef = heightArrowRef;
+    this.#foregroundRef = foregroundRef;
+    this.#targetRef = targetRef;
   }
 
   drawHolster(holsterImage: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
@@ -21,16 +51,13 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
     
     if (ctx) {
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         holsterImage, 
         TOP_LEFT_CORNER[0] , 
         TOP_LEFT_CORNER[1],
-        holsterInfo.pivot_x, 
-        holsterInfo.pivot_y, 
         holsterInfo.pixel_width, 
         holsterInfo.pixel_height, 
-        0, 
         growthFactor
       )
     }
@@ -74,16 +101,13 @@ export class DrawingImages {
 
     if (ctx) {
       
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         velocityBar, 
         pos_x, 
         pos_y, 
-        0, 
-        0, 
         817, 
         25, 
-        0, 
         growthFactor
       )
     }
@@ -100,15 +124,13 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
       
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,  
         velocitySlider, 
         sliderPosX, sliderPosY, 
-        0, 
-        0, 
+
         50, 
         51, 
-        0, 
         growthFactor
       )
     }
@@ -123,16 +145,13 @@ export class DrawingImages {
     
     if (ctx) {
       
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         heightScale, 
         pos_x, 
         pos_y, 
-        0, 
-        0, 
         158, 
         917, 
-        0, 
         growthFactor
       );
       
@@ -148,16 +167,13 @@ export class DrawingImages {
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
       
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         heightArrow, 
         arrowPosX, 
         arrowPosY, 
-        0, 
-        0, 
         103, 
         63, 
-        0, 
         growthFactor
       );
     }
@@ -196,16 +212,13 @@ export class DrawingImages {
 
     if (ctx) {
       
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         foreground,
         0,
         y_pos,
-        0,
-        0,
         1000,
         302,
-        0,
         this.#canvasPositionAndSizes.getGrowthFactorForeground()
       )
     }
@@ -227,16 +240,13 @@ export class DrawingImages {
     if (ctx) {
       
 
-      drawImageWithRotation(
+      drawImageNoRotation(
         ctx,
         target,
         x_pos,
         y_pos,
-        0,
-        0,
         505,
         701,
-        0,
         growthFactor
       )
     }
@@ -250,57 +260,31 @@ export class DrawingImages {
     elevationAngle: number,
     target_range: number,
     target_altitude: number,
-    foregroundRef: React.RefObject<HTMLImageElement>, 
-    holsterRef: React.RefObject<HTMLImageElement>, 
-    cannonRef: React.RefObject<HTMLImageElement>, 
-    velocityBarRef: React.RefObject<HTMLImageElement>, 
-    velocitySliderRef: React.RefObject<HTMLImageElement>, 
-    heightScaleRef: React.RefObject<HTMLImageElement>, 
-    heightArrowRef: React.RefObject<HTMLImageElement>,
-    targetRef: React.RefObject<HTMLImageElement>,
   ) {
     
     const canvas = this.#canvasPositionAndSizes.getCanvas();
     const ctx = this.#canvasPositionAndSizes.getCtx();
     
     if (ctx) {
-      
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-      // foregroundRef.current.onload = () => this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
-      this.drawForeground(GROUND_LEVEL_SCALAR, foregroundRef.current);
+      this.drawForeground(GROUND_LEVEL_SCALAR, this.#foregroundRef.current);
 
-      // holsterRef.current.onload = () => this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
-      this.drawHolster(holsterRef.current, USER_ANCHOR_POINT);
-      // cannonRef.current.onload = () => this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
-      this.drawCannon(cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
+      this.drawHolster(this.#holsterRef.current, USER_ANCHOR_POINT);
+      this.drawCannon(this.#cannonRef.current, -elevationAngle, USER_ANCHOR_POINT);
 
       this.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
       
-      // velocityBarRef.current.onload = () => this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
-      this.drawVelocityBar(velocityBarRef.current, USER_ANCHOR_POINT);
-      // velocitySliderRef.current.onload = () => this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
-      this.drawVelocitySlider(velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
+      this.drawVelocityBar(this.#velocityBarRef.current, USER_ANCHOR_POINT);
+      this.drawVelocitySlider(this.#velocitySliderRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
       
-      // heightScaleRef.current.onload = () => this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
-      this.drawHeightScale(heightScaleRef.current, USER_ANCHOR_POINT);
-      // heightArrowRef.current.onload = () => this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
-      this.drawHeightArrow(heightArrowRef.current, USER_ANCHOR_POINT);
+      this.drawHeightScale(this.#heightScaleRef.current, USER_ANCHOR_POINT);
+      this.drawHeightArrow(this.#heightArrowRef.current, USER_ANCHOR_POINT);
 
-      // targetRef.current.onload = () => 
-        // this.drawTarget(
-        //   USER_ANCHOR_POINT, 
-        //   GROUND_LEVEL_SCALAR, 
-        //   targetRef.current, 
-        //   target_range, 
-        //   target_altitude
-        // )
-        
       this.drawTarget(
         USER_ANCHOR_POINT, 
         GROUND_LEVEL_SCALAR, 
-        targetRef.current, 
+        this.#targetRef.current, 
         target_range, 
         target_altitude
       )
