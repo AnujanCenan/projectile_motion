@@ -6,6 +6,7 @@ import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightS
 export class CanvasPositionAndSizes {
   #canvas;
   #cannonInfo;
+  #velocitySliderInfo;
   #holsterInfo;
   #MAX_HORIZONTAL_RANGE;
 
@@ -13,11 +14,13 @@ export class CanvasPositionAndSizes {
     canvas: HTMLCanvasElement, 
     cannonInfo: CannonInfo,
     holsterInfo: HolsterInfo, 
+    velocitySlider: VelocitySliderInfo,
     MAX_HORIZONTAL_RANGE: number) 
   {
     this.#canvas = canvas;
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
+    this.#velocitySliderInfo = velocitySlider
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
   }
 
@@ -37,6 +40,10 @@ export class CanvasPositionAndSizes {
 
   getHolsterInfo() {
     return this.#holsterInfo;
+  }
+
+  getVelocitySliderInfo() {
+    return this.#velocitySliderInfo;
   }
 
   getMaxHorizontalRage() {
