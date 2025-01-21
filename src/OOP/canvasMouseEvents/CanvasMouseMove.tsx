@@ -49,9 +49,8 @@ export class CanvasMouseMove {
       this.#click_x.current, 
       this.#click_y.current, 
       this.#clickedBehindPivot.current,
-      canvas,
+      this.#positionsAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT),
       elevationAngle,
-      USER_ANCHOR_POINT
     );
 
     this.#click_x.current = e.pageX + horizScroll;
@@ -160,74 +159,10 @@ export class CanvasMouseMove {
 
     if (this.#cannonClick.current) {
       this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
-      // const angularDisplacement = calculateAngularDisplacement(
-      //   e.pageX + horizScroll, 
-      //   e.pageY, 
-      //   this.#click_x.current, 
-      //   this.#click_y.current, 
-      //   this.#clickedBehindPivot.current,
-      //   canvas,
-      //   elevationAngle,
-      //   USER_ANCHOR_POINT
-      // );
-
-      // this.#click_x.current = e.pageX + horizScroll;
-      // this.#click_y.current = e.pageY;
-
-      // if (elevationAngle + angularDisplacement > 90) {
-      //   setElevationAngle(90)
-      // } else if (elevationAngle + angularDisplacement < 0) {
-      //   setElevationAngle(0)
-      // } else {
-      //   setElevationAngle(elevationAngle + angularDisplacement);
-      // }
-      
-      // angleInputRef.current.value = (Math.round(elevationAngle * 1000) / 1000).toString();
-
     } else if (this.#sliderClick.current) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
-      // const mouse_x = e.pageX + horizScroll;
-      // const mouse_y = e.pageY;
-
-      // const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
-      // const xDisplacement = (mouse_x  - this.#click_x.current) * window.devicePixelRatio;
-      // const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * this.#positionsAndSizesInterface.getGrowthFactorVelocity());
-      
-      // this.#click_x.current = mouse_x;
-      // this.#click_y.current = mouse_y;
-
-      // if (launchVelocity + xDisplacement * velocityPerPixel > MAX_SPEED) {
-      //   setLaunchVelocity(MAX_SPEED)
-      // } else if (launchVelocity + xDisplacement * velocityPerPixel < 0) {
-      //   setLaunchVelocity(0)
-      // } else {
-      //   setLaunchVelocity(launchVelocity + xDisplacement * velocityPerPixel);
-      // }
-
-      // velocityInputRef.current.value = (Math.round(launchVelocity * 1000) / 1000).toString();
     } 
     else if (this.#heightArrowClick.current) {
-      // const mouse_x = e.pageX + horizScroll;
-      // const mouse_y = e.pageY;
-
-      // const yDisplacement = (mouse_y - this.#click_y.current) * window.devicePixelRatio;
-      
-      // this.#click_x.current = mouse_x;
-      // this.#click_y.current = mouse_y;
-      
-      // window.scrollTo({top: mouse_y - canvas.height * 0.1 * 2, behavior: "smooth"})
-
-      // if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement < 0.1 * canvas.height) {
-      //   setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
-      // } else if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement > GROUND_LEVEL_SCALAR * canvas.height) {
-      //   setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
-      // } else {
-      //   setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvas.height])
-      // }
-
-      // const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT);
-      // const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvas.height) / conversionRate;
-      // heightInputRef.current.value = metreHeight.toString();
       this.#handleHeightArrowClick(
         e, 
         USER_ANCHOR_POINT,

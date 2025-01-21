@@ -1,7 +1,3 @@
-import { Ref } from "react";
-import { calculateGrowthFactorCannon } from "./calculateGrowthFactor.tsx";
-import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
-
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
@@ -14,6 +10,8 @@ export function clickedOnCannon(
     pivot_x: number;
     pivot_y: number;
   }, 
+  cannonGrowthFactor: number,
+  pivotPosition: number[],
   angle: number, 
   clickedBehindPivot: React.RefObject<number>,
   USER_ANCHOR_POINT: number[]
@@ -24,13 +22,13 @@ export function clickedOnCannon(
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
   const ctx = canvas.getContext('2d');
-  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, angle, USER_ANCHOR_POINT);
+  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, cannonGrowthFactor,pivotPosition, angle, USER_ANCHOR_POINT);
   var lambda, mu;
   if (angle === 90) {
     [lambda, mu] = clickedOnUprightCannon(
         mouse_x, mouse_y, TOP_LEFT_CORNER,
         cannonInfo.pixel_width, 
-        calculateGrowthFactorCannon(cannonInfo, canvas)
+        cannonGrowthFactor
       )
   } else {
     [lambda, mu] = calculateLambdaAndMu(
@@ -69,11 +67,13 @@ function findCannonPointAndPlane(canvas: HTMLCanvasElement,
     pivot_x: number;
     pivot_y: number;
   }, 
+  cannonGrowthFactor: number,
+  pivotPosition: number[],
   angle: number, USER_ANCHOR_POINT: number[]): [number[], number[], number[]] {
   
-  const growthFactor = calculateGrowthFactorCannon(cannonInfo, canvas)
+  const growthFactor = cannonGrowthFactor;
   
-  const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = findPivotGlobalCoords(canvas, USER_ANCHOR_POINT)
+  const [PIVOT_X_GLOBAL, PIVOT_Y_GLOBAL] = pivotPosition;
   
   const angle_rad = angle * Math.PI / 180
 

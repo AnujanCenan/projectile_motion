@@ -1,6 +1,5 @@
 import { RefObject } from "react";
 import { CanvasPositionAndSizes } from "../CanvasPositionAndSizes";
-import { calclateGrowthFactorVelocity } from "../../processingFunctions/calculateGrowthFactor";
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../../processingFunctions/clickedOnObject";
 
 export class CanvasMouseDown {
@@ -43,7 +42,9 @@ export class CanvasMouseDown {
     this.#cannonClick.current = clickedOnCannon(
       canvas, 
       e.pageX + horizScroll, e.pageY,
-      cannonInfo, 
+      cannonInfo,
+      this.#positionsAndSizesInterface.getGrowthFactorCannon(),
+      this.#positionsAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT),
       elevationAngle,
       this.#clickedBehindPivot,
       USER_ANCHOR_POINT
@@ -51,7 +52,8 @@ export class CanvasMouseDown {
   }
 
   #velocitySliderCheck(
-    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>, 
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
+    positionAndSizesInterface: CanvasPositionAndSizes,
     launchVelocity: number, 
     USER_ANCHOR_POINT: number[],
     MAX_SPEED: number
@@ -70,7 +72,7 @@ export class CanvasMouseDown {
       velocitySliderInfo.slider_pixel_height, 
       this.#positionsAndSizesInterface.getVelocityBarPosition(USER_ANCHOR_POINT), 
       MAX_SPEED, 
-      calclateGrowthFactorVelocity(canvas)
+      positionAndSizesInterface.getGrowthFactorVelocity()
     )
   }
 
@@ -86,7 +88,7 @@ export class CanvasMouseDown {
         e.pageX + horizScroll,
         e.pageY,
         this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
-        this.#positionsAndSizesInterface.getGrowthFactorHeight(),
+        this.#positionsAndSizesInterface.getGrowthFactorHeight(0.8),
       )
     }
 
@@ -94,6 +96,7 @@ export class CanvasMouseDown {
 
   mouseDown(
     e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
+    positionAndSizesInterface: CanvasPositionAndSizes,
     elevationAngle: number,
     launchVelocity: number,
     USER_ANCHOR_POINT: number[],
@@ -108,7 +111,7 @@ export class CanvasMouseDown {
 
     this.#cannonClickCheck(e, elevationAngle, USER_ANCHOR_POINT);
 
-    this.#velocitySliderCheck(e, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED)
+    this.#velocitySliderCheck(e, positionAndSizesInterface, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED)
 
     this.#heightArrowCheck(e, USER_ANCHOR_POINT);
 
