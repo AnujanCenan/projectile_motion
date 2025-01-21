@@ -1,11 +1,14 @@
-import { findPivotGlobalCoords } from "./findPivotGlobalCoords";
+import { findPivotGlobalCoords } from "./findPivotGlobalCoords.tsx";
 
 export function calculateAngularDisplacement(
-  mouse_x, mouse_y, init_mouse_x, init_mouse_y, clickedBehindPivot,
-  cannonInfo, 
-  canvas,
-  angle,
-  USER_ANCHOR_POINT
+  mouse_x: number, 
+  mouse_y: number, 
+  init_mouse_x: number, 
+  init_mouse_y: number, 
+  clickedBehindPivot: number,
+  canvas: HTMLCanvasElement,
+  angle: number,
+  USER_ANCHOR_POINT: number[]
 ) {
   
   mouse_x *= window.devicePixelRatio;
@@ -62,12 +65,12 @@ export function calculateAngularDisplacement(
   return clickedBehindPivot * sign * angularDisplacement;
 }
 
-function distanceFormula(x1, y1, x2, y2) {
+function distanceFormula(x1: number, y1: number, x2: number, y2: number) {
   return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
 // calculates the angle between the vector formed by a mouse drag, and the basis vecot <1, 0>
-function dragAngle(mouse_x, mouse_y, init_mouse_x, init_mouse_y) {
+function dragAngle(mouse_x: number, mouse_y: number, init_mouse_x: number, init_mouse_y: number) {
   const horizontalVector = [1, 0];
   const dragVector = [mouse_x - init_mouse_x, mouse_y - init_mouse_y];
   // a . b = |a| |b| cos(alpha)

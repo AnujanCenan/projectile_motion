@@ -1,5 +1,21 @@
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
+import { Ref } from "react";
+import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
 import "./CSS/InputPanel.css"
+
+interface InputPanelProps {
+  setElevationAngle: Function 
+  setLaunchVelocity: Function
+  setUserAnchorPoint: Function
+  MAX_SPEED: number
+  angleInputRef: React.RefObject<HTMLInputElement | null>
+  velocityInputRef: React.RefObject<HTMLInputElement | null>
+  heightInputRef: React.RefObject<HTMLInputElement | null>
+  canvas: HTMLCanvasElement
+  USER_ANCHOR_PONT: number[]
+  MAX_HORIZONTAL_RANGE: number
+  CANNON_HORIZONTAL_SCALAR: number
+  GROUND_LEVEL_SCALAR: number
+}
 
 export default function InputPanel({
   setElevationAngle, 
@@ -14,10 +30,13 @@ export default function InputPanel({
   MAX_HORIZONTAL_RANGE,
   CANNON_HORIZONTAL_SCALAR,
   GROUND_LEVEL_SCALAR = 0.8
+}: InputPanelProps) {
 
-}) {
+  function changeVelocityWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!velocityInputRef || !velocityInputRef.current) {
+      return;
+    }
 
-  function changeVelocityWithTextBox(e) {
     const val = e.target.value;
     try {
       if (val === "") {
@@ -27,20 +46,26 @@ export default function InputPanel({
         return;
       } else if (parseFloat(val) < 0) {
         setLaunchVelocity(0);
-        velocityInputRef.current.value = 0;
+        velocityInputRef.current.value = "0";
       } else if (parseFloat(val) > MAX_SPEED) {
         setLaunchVelocity(MAX_SPEED);
-        velocityInputRef.current.value = MAX_SPEED;
+        velocityInputRef.current.value = `${MAX_SPEED}`;
       } else {
         setLaunchVelocity(parseFloat(val));
       }
-    } catch (error) {
-      console.error("In Canvas.js | function changeVelocityWithTextBox")
-      console.error(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("In Canvas.js | function changeVelocityWithTextBox")
+        console.error(error.message)
+      }
     }
   }
   
-  function changeAngleWithTextBox(e) {
+  function changeAngleWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!angleInputRef || !angleInputRef.current) {
+      return;
+    }
+    
     const val = e.target.value;
     // requires some defensive programming
     try {
@@ -52,21 +77,26 @@ export default function InputPanel({
         return;
       } else if (parseFloat(val) < 0) {
         setElevationAngle(0)
-        angleInputRef.current.value = 0;
+        angleInputRef.current.value = "0";
       } else if (parseFloat(val) > 90) {
         setElevationAngle(90);
-        angleInputRef.current.value = 90;
+        angleInputRef.current.value = "90";
       } else {
         setElevationAngle(parseFloat(val))
       }
-    } catch (error) {
-      console.error("In Canvas.js | function changeAngleWithTextBox")
-      console.error(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("In Canvas.js | function changeAngleWithTextBox")
+        console.error(error.message)
+      }
       return;
     }
   }
 
-  function changeHeightWithTextBox(e) {
+  function changeHeightWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!heightInputRef || !heightInputRef.current) {
+      return;
+    }
     const val = e.target.value;
     // requires some defensive programming
     try {
@@ -78,20 +108,22 @@ export default function InputPanel({
         return;
       }  
       const conversionRate = calculateConversionRate(canvas, USER_ANCHOR_PONT, MAX_HORIZONTAL_RANGE);
-      const anchor_point_y = GROUND_LEVEL_SCALAR - ((val * conversionRate)/ canvas.height);
+      const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
       const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
-        heightInputRef.current.value = 0;
+        heightInputRef.current.value = "0";
       } else if (anchor_point_y < 0.1) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1])
-        heightInputRef.current.value = maxMetreHeight;
+        heightInputRef.current.value = `${maxMetreHeight}`;
       } else {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, anchor_point_y])
       }
-    } catch (error) {
-      console.error("In Canvas.js | function changeAngleWithTextBox")
-      console.error(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("In Canvas.js | function changeAngleWithTextBox")
+        console.error(error.message)
+      }
       return;
     }
   }
@@ -105,7 +137,7 @@ export default function InputPanel({
         <input 
           maxLength={4}
           onChange={(e) => changeHeightWithTextBox(e)}
-          placeholder={0}
+          placeholder="0"
           ref={heightInputRef}
           type="text"
         />
@@ -117,7 +149,7 @@ export default function InputPanel({
         <input 
           maxLength={8}
           onChange={(e) => changeVelocityWithTextBox(e)}
-          placeholder={0}
+          placeholder="0"
           ref={velocityInputRef}
           type="text"
         />
@@ -129,7 +161,7 @@ export default function InputPanel({
         <input 
           maxLength={6}
           onChange={(e) => {changeAngleWithTextBox(e)}} 
-          placeholder={0}
+          placeholder="0"
           ref={angleInputRef}
           style={{bottom: "95px"}}
           type="text" 

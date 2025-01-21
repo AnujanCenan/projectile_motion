@@ -1,35 +1,20 @@
 import Cannons from "../Cannons.json"
 
-export function getCannonInfo(name) {
-  try {
-    return Cannons[name];
-  } catch (e) {
-    console.error("Error at getCannonInfo in drawingFunctions.js");
-    console.error(e.message);
-  }
+export function getCannonInfo(name: "v2") {
+  return Cannons[name];
 }
 
-export function getHolsterInfo(name) {
-  try {
-    return Cannons[name];
-  } catch (e) {
-    console.error("Error at getHolsterInfo in drawingFunctions.js");
-    console.error(e.message);
-  }
+export function getHolsterInfo(name: "holster_v1") {
+  return Cannons[name];
 }
 
-export function getVelocitySliderInfo(name) {
-  try {
-    return Cannons[name];
-  } catch (e) {
-    console.error("Error at getVelocitySliderInfo in drawingFunctions.js");
-    console.error(e.message);
-  }
+export function getVelocitySliderInfo(name: "velocity_slider") {
+  return Cannons[name];
 }
 
 /**
  * @param {CanvasRenderingContext2D} ctx - the context for the canvas
- * @param {ImageElement} image - the image you wish to draw
+ * @param {HTMLImageElement} image - the image you wish to draw
  * @param {number} pos_x - the x (pixel) coordinate of the top left corner of the image
  * @param {number} pos_y - the y (pixel) coordinate of the top left corner of the image
  * @param {number} pivot_x - the x (pixel) coorindate of the pivot in the ORIGINAL IMAGE
@@ -42,9 +27,18 @@ export function getVelocitySliderInfo(name) {
  *  the image)
  */
 export function drawImageWithRotation(
-  ctx, image, pos_x, pos_y, pivot_x, pivot_y, width, height, angle, growthFactor
+  ctx: CanvasRenderingContext2D, 
+  image: HTMLImageElement, 
+  pos_x: number, 
+  pos_y: number, 
+  pivot_x: number, 
+  pivot_y: number, 
+  width: number, 
+  height: number, 
+  angle: number, 
+  growthFactor: number
 ) {
-
+    console.log("Drawing in generic drawing function...")
     ctx.translate(pos_x + pivot_x * growthFactor, pos_y + pivot_y * growthFactor);
     
     ctx.rotate(angle * Math.PI / 180);
@@ -56,11 +50,18 @@ export function drawImageWithRotation(
 
 }
 
-export function drawCircle(ctx, x, y, r, fillColour, strokeColour) {
+export function drawCircle(
+  ctx: CanvasRenderingContext2D, 
+  x: number, 
+  y: number, 
+  r: number, 
+  fillColour: string, 
+  strokeColour: string
+) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = fillColour;
-  ctx.strokeColour = strokeColour;
+  ctx.strokeStyle = strokeColour;
   ctx.stroke();
   ctx.fill();
 }

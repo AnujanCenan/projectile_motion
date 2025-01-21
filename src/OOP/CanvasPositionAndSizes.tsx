@@ -1,18 +1,31 @@
-import { calculateConversionRate } from "../processingFunctions/calculateConversionRate";
-import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor";
-import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords";
-import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightScale } from "../processingFunctions/topLeftCorners";
+import { calculateConversionRate } from "../processingFunctions/calculateConversionRate.tsx";
+import { calclateGrowthFactorVelocity, calculateGrowthFactorCannon, calculateGrowthFactorHeight } from "../processingFunctions/calculateGrowthFactor.tsx";
+import { findPivotGlobalCoords } from "../processingFunctions/findPivotGlobalCoords.tsx";
+import { findCannonTopLeftGlobalCoords, topLeftCornerArrow, topLeftCornerHeightScale } from "../processingFunctions/topLeftCorners.tsx";
 
 export class CanvasPositionAndSizes {
   #canvas;
-  #ctx;
   #cannonInfo;
   #holsterInfo;
   #MAX_HORIZONTAL_RANGE;
 
-  constructor(canvas, cannonInfo, holsterInfo, MAX_HORIZONTAL_RANGE) {
+  constructor(
+    canvas: HTMLCanvasElement, 
+    cannonInfo: {
+      pixel_width: number;
+      pixel_height: number;
+      pivot_x: number;
+      pivot_y: number;
+    }, 
+    holsterInfo: {
+      pixel_width: number;
+      pixel_height: number;
+      pivot_x: number;
+      pivot_y: number;
+    }, 
+    MAX_HORIZONTAL_RANGE: number) 
+  {
     this.#canvas = canvas;
-    this.#ctx = canvas.getContext('2d');
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
@@ -25,7 +38,7 @@ export class CanvasPositionAndSizes {
   }
 
   getCtx() {
-    return this.#ctx;
+    return this.#canvas.getContext('2d');
   }
 
   getCannonInfo() {
@@ -42,17 +55,17 @@ export class CanvasPositionAndSizes {
 
   //////////////////////////////////////////////////////////////////////////////
   //// PIVOT
-  getPivotPosition(USER_ANCHOR_POINT) {
+  getPivotPosition(USER_ANCHOR_POINT: number[]) {
     return findPivotGlobalCoords(this.#canvas, USER_ANCHOR_POINT)
   }
 
   /// TOP LEFT CORNERS
 
-  getCannonOriginalTopLeft(USER_ANCHOR_POINT) {
+  getCannonOriginalTopLeft(USER_ANCHOR_POINT: number[]) {
     return findCannonTopLeftGlobalCoords(this.#canvas, USER_ANCHOR_POINT, this.#cannonInfo);
   }
 
-  getHolsterPosition(USER_ANCHOR_POINT) {
+  getHolsterPosition(USER_ANCHOR_POINT: number[]) {
     const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
     const growthFactor = this.getGrowthFactorCannon();
     return [
@@ -61,7 +74,7 @@ export class CanvasPositionAndSizes {
     ]
   }
 
-  getVelocityBarPosition(USER_ANCHOR_POINT) {
+  getVelocityBarPosition(USER_ANCHOR_POINT: number[]) {
     const holster_y = this.getHolsterPosition(USER_ANCHOR_POINT)[1];
     const cannon_x = this.getCannonOriginalTopLeft(USER_ANCHOR_POINT)[0];
     const growthFactor = this.getGrowthFactorCannon();
@@ -69,11 +82,11 @@ export class CanvasPositionAndSizes {
     return [cannon_x, holster_y + this.#holsterInfo.pixel_height * growthFactor + 20];
   }
 
-  getHeightArrowPosition(USER_ANCHOR_POINT) {
+  getHeightArrowPosition(USER_ANCHOR_POINT: number[]) {
     return topLeftCornerArrow(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas, USER_ANCHOR_POINT[1])
   }
 
-  getHeightScalePosition(USER_ANCHOR_POINT) {
+  getHeightScalePosition(USER_ANCHOR_POINT: number[]) {
     return topLeftCornerHeightScale(this.getCannonOriginalTopLeft(USER_ANCHOR_POINT), this.#canvas);
   }
 
@@ -96,7 +109,7 @@ export class CanvasPositionAndSizes {
   }
 
   /// CONVERSION RATE
-  calculateConversionRate(USER_ANCHOR_POINT) {
+  calculateConversionRate(USER_ANCHOR_POINT: number[]) {
     return calculateConversionRate(this.#canvas, USER_ANCHOR_POINT, this.#MAX_HORIZONTAL_RANGE)
   }
 }
