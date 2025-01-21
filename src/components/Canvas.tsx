@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 import useWindowSize from "./resizingHook.tsx"
 
 import "./CSS/Canvas.css"
@@ -151,8 +151,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     }
   }
 
+  const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
+
   useEffect(() => {
-    const imageArray = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
     loadImages(imageArray, function() {
       drawEnvironmentFromCanvas();
   });
@@ -174,11 +175,37 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     fix_dpi();
   }, [width, height, readyToDraw]);
 
+
+  // violates open-close principle because if i add an extra image, it has to be added here
+  function allImagesReferenced() {
+    return (
+      holsterRef.current !== null &&
+      cannonRef.current !== null &&
+      velocityBarRef.current !== null &&
+      velocitySliderRef.current !== null &&
+      heightScaleRef.current !== null &&
+      heightArrowRef.current !== null &&
+      foregroundRef.current !== null &&
+      targetRef.current !== null
+    )
+  }
+
   useEffect(() => {
     if (canvasRef.current) {
-      console.log("Bout to do some drawing")
-      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, MAX_RANGE);
-      drawingInterfaceRef.current = new DrawingImages(positionAndSizesInterfaceRef.current)
+      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE);
+      if (allImagesReferenced()) {
+        drawingInterfaceRef.current = new DrawingImages(
+          positionAndSizesInterfaceRef.current,
+          holsterRef as RefObject<HTMLImageElement>,
+          cannonRef as RefObject<HTMLImageElement>,
+          velocityBarRef as RefObject<HTMLImageElement>,
+          velocitySliderRef as RefObject<HTMLImageElement>,
+          heightScaleRef as RefObject<HTMLImageElement>,
+          heightArrowRef as RefObject<HTMLImageElement>,
+          foregroundRef as RefObject<HTMLImageElement>,
+          targetRef as RefObject<HTMLImageElement>
+        )
+      }
       setReadyToDraw(true);
     } else {
       
@@ -192,20 +219,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   function drawEnvironmentFromCanvas() {
     if (!drawingInterfaceRef.current) {
       console.log("Check1")
-      
       return;
-    };
-    if (!foregroundRef.current
-      || !holsterRef.current
-      || !cannonRef.current
-      || !velocityBarRef.current
-      || !velocitySliderRef.current
-      || !heightScaleRef.current
-      || !heightArrowRef.current
-      || !targetRef.current
-    ) {
-      console.log("Check2")
-      return; 
     }
     console.log("Successful")
     drawingInterfaceRef.current.drawEnvironment(
@@ -216,14 +230,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       elevationAngle,
       target_range,
       target_altitude,
-      foregroundRef as React.RefObject<HTMLImageElement>, 
-      holsterRef as React.RefObject<HTMLImageElement>, 
-      cannonRef as React.RefObject<HTMLImageElement>, 
-      velocityBarRef as React.RefObject<HTMLImageElement>, 
-      velocitySliderRef as React.RefObject<HTMLImageElement>,
-      heightScaleRef as React.RefObject<HTMLImageElement>, 
-      heightArrowRef as React.RefObject<HTMLImageElement>,
-      targetRef as React.RefObject<HTMLImageElement>
     )
   }
 
@@ -416,7 +422,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
       </canvas>
 
-      {canvasRef && canvasRef.current && 
+      {readyToDraw && canvasRef.current && 
         <InputPanel 
           setElevationAngle={setElevationAngle} 
           setLaunchVelocity={setLaunchVelocity} 
@@ -433,7 +439,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         />
       }
 
-      {canvasRef.current && 
+      {readyToDraw && 
         <FireButton 
           fireCannon={() => fireCannon(
             (canvasRef.current) as HTMLCanvasElement, 
