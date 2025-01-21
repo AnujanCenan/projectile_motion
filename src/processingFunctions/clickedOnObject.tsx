@@ -14,7 +14,6 @@ export function clickedOnCannon(
   pivotPosition: number[],
   angle: number, 
   clickedBehindPivot: React.RefObject<number>,
-  USER_ANCHOR_POINT: number[]
 ) {
   if (!clickedBehindPivot) {
     return false;
@@ -22,7 +21,7 @@ export function clickedOnCannon(
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
   const ctx = canvas.getContext('2d');
-  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(canvas, cannonInfo, cannonGrowthFactor,pivotPosition, angle, USER_ANCHOR_POINT);
+  const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(cannonInfo, cannonGrowthFactor,pivotPosition,angle);
   var lambda, mu;
   if (angle === 90) {
     [lambda, mu] = clickedOnUprightCannon(
@@ -41,10 +40,6 @@ export function clickedOnCannon(
     return false;
   }
 
-  const proposedX = TOP_LEFT_CORNER[0] + lambda * v1[0] + mu * v2[0];
-  const proposedY = TOP_LEFT_CORNER[1] + lambda * v1[1] + mu * v2[1];
-
-
   // Transparency Check
   let transparency = false;
   if (ctx) {
@@ -60,16 +55,12 @@ export function clickedOnCannon(
   return !transparency;
 }
 
-function findCannonPointAndPlane(canvas: HTMLCanvasElement, 
-  cannonInfo: {
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }, 
+function findCannonPointAndPlane(
+  cannonInfo: CannonInfo, 
   cannonGrowthFactor: number,
   pivotPosition: number[],
-  angle: number, USER_ANCHOR_POINT: number[]): [number[], number[], number[]] {
+  angle: number
+): [number[], number[], number[]] {
   
   const growthFactor = cannonGrowthFactor;
   

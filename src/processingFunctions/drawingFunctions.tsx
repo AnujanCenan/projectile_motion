@@ -40,12 +40,9 @@ export function drawImageWithRotation(
 ) {
     
     ctx.translate(pos_x + pivot_x * growthFactor, pos_y + pivot_y * growthFactor);
-    
     ctx.rotate(angle * Math.PI / 180);
-
     ctx.drawImage(image, -pivot_x * growthFactor, -pivot_y * growthFactor, width * growthFactor, height * growthFactor);
     ctx.rotate(-angle * Math.PI / 180);
-    
     ctx.translate(-pos_x - pivot_x * growthFactor, -pos_y - pivot_y * growthFactor)
 }
 

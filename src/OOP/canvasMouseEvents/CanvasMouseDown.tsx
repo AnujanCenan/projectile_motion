@@ -47,7 +47,6 @@ export class CanvasMouseDown {
       this.#positionsAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT),
       elevationAngle,
       this.#clickedBehindPivot,
-      USER_ANCHOR_POINT
     )
   }
 
@@ -105,7 +104,6 @@ export class CanvasMouseDown {
   ) {
     // uses e.PageX and e.PageY not e.clientX and clientY
     const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
 
     if (!canvas) return;
 

@@ -32,6 +32,7 @@ import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { DrawingImages } from "../OOP/DrawingImages.tsx"
 import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
 import { CanvasMouseMove } from "../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
+import { CanvasImagePreloader } from "../OOP/CanvasImagePreloader.tsx"
 
 
 interface CanvasProps {
@@ -104,6 +105,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
   const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
 
+  const imagePreloader = useRef<CanvasImagePreloader>(new CanvasImagePreloader());
+
 
   useEffect(() => {
     if (isLandscape()) {
@@ -112,37 +115,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       setCannonHorizontalScalar(0.5);
     }
   }, [width, height]);
-  //////////////////////// Canvas Drawings ///////////////////////////////////////
-  
-  function loadImages(arr: string[], callback: Function) {
-    type SrcToImage = { [key: string]: HTMLImageElement };
+  //////////////////////// Canvas Loading //////////////////////////////////////
 
-    const images: SrcToImage= {};
-    var loadedImageCount = 0;
-
-    // Make sure arr is actually an array and any other error checking
-    for (var i = 0; i < arr.length; i++){
-        var img = new Image();
-        img.onload = imageLoaded;
-        img.src = arr[i];
-        images[arr[i]] = img;
-    }
-
-    function imageLoaded() {
-        loadedImageCount++;
-        if (loadedImageCount >= arr.length) {
-            callback();
-        }
-    }
-  }
 
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
+  imagePreloader.current.loadImages(imageArray, () => drawEnvironmentFromCanvas());
 
-  useEffect(() => {
-    loadImages(imageArray, function() {
-      drawEnvironmentFromCanvas();
-  });
-  }, [])
+  //////////////////////// Canvas Drawing //////////////////////////////////////
 
   useEffect(() => {
     let dpi = window.devicePixelRatio;
@@ -216,7 +195,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     } else {
       
     }
-  }, [cannonInfo, holsterInfo, MAX_RANGE])
+  }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
   useEffect(() => {
       drawEnvironmentFromCanvas();
