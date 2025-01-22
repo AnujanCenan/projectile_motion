@@ -20,7 +20,6 @@ export function clickedOnCannon(
   }
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
-  const ctx = canvas.getContext('2d');
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(cannonInfo, cannonGrowthFactor,pivotPosition,angle);
   var lambda, mu;
   if (angle === 90) {

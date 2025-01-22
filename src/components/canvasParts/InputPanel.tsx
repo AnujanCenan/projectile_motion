@@ -1,4 +1,4 @@
-import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes"
+import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes"
 import "./CSS/InputPanel.css"
 
 interface InputPanelProps {

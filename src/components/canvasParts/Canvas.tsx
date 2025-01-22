@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from "react"
-import useWindowSize from "./resizingHook.tsx"
+import useWindowSize from "../resizingHook.tsx"
 
 import "./CSS/Canvas.css"
 
@@ -8,31 +8,33 @@ import {
   getHolsterInfo,
   getVelocitySliderInfo,
   isLandscape
-} from "../processingFunctions/drawingFunctions.tsx"
+} from "../../processingFunctions/drawingFunctions.tsx"
 
-import grassImg from "../images/foregrounds/grassLarge.png"
+import grassImg from "../../images/foregrounds/grassLarge.png"
 
-import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
-import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+import cannonImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 
-import velocityBarImg from "../images/velocity/velocityBar.png"
-import velocitySliderImg from "../images/velocity/velocitySlider.png"
+import holsterImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 
-import heightScaleImg from "../images/height/heightBar.png"
-import heightArrowImg from "../images/height/heightIndicator.png"
+import velocityBarImg from "../../images/velocity/velocityBar.png"
+import velocitySliderImg from "../../images/velocity/velocitySlider.png"
+
+import heightScaleImg from "../../images/height/heightBar.png"
+import heightArrowImg from "../../images/height/heightIndicator.png"
 
 
-import targetImg from "../images/targets/trainingTarget.png"
+import targetImg from "../../images/targets/trainingTarget.png"
+
 
 
 import FireButton from "./FireButton.tsx";
 import InputPanel from "./InputPanel.tsx";
-import { fireCannon } from "../processingFunctions/fireCannon.tsx";
-import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
-import { DrawingImages } from "../OOP/DrawingImages.tsx"
-import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
-import { CanvasMouseMove } from "../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
-import { CanvasImagePreloader } from "../OOP/CanvasImagePreloader.tsx"
+import { fireCannon } from "../../processingFunctions/fireCannon.tsx";
+import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes.tsx";
+import { DrawingImages } from "../../OOP/DrawingImages.tsx"
+import { CanvasMouseDown } from "../../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
+import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
+import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 
 
 interface CanvasProps {

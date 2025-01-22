@@ -1,11 +1,11 @@
 @font-face {
     font-family: do-futuristic;
-    src: url(../../fonts/do-futuristic-font/DoFuturistic-JRwaB.ttf);
+    src: url(../../../fonts/do-futuristic-font/DoFuturistic-JRwaB.ttf);
 }
 
 @font-face {
     font-family: futuristic;
-    src: url(../../fonts/futuristic-font/FuturisticStandard-vmVED.ttf);
+    src: url(../../../fonts/futuristic-font/FuturisticStandard-vmVED.ttf);
 }
 
 /* variables in CSS: decalred under the :root section */

@@ -152,10 +152,6 @@ export class CanvasMouseMove {
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
   ) {
-    const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const container = canvas.parentNode as HTMLDivElement;
-
-    const horizScroll = container.scrollLeft
 
     if (this.#cannonClick.current) {
       this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
