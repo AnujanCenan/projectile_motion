@@ -6,14 +6,17 @@ interface DialogueProps {
   speeches: string[];
   expressions: string[];
   orderOfExpressions: number[];
-  setCompletionVariable: Function|null
+
+  setCompletionVariable: React.Dispatch<React.SetStateAction<TutorialState>> | null;
+  completionVal: TutorialState | null;
 }
 export default function Dialogue({
   name, 
   speeches, 
   expressions, 
   orderOfExpressions,
-  setCompletionVariable
+  setCompletionVariable,
+  completionVal
 
 }: DialogueProps) {
 
@@ -67,9 +70,9 @@ export default function Dialogue({
 
   useEffect(() => {
     console.log(`currSpeech Index = ${currSpeechIndex}; speeches.length = ${speeches.length}`)
-    if (setCompletionVariable !== null && currSpeechIndex === speeches.length) {
-      console.log("Jimmy jim junior")
-      setCompletionVariable(true);
+    if (setCompletionVariable !== null && completionVal !== null && currSpeechIndex === speeches.length) {
+
+      setCompletionVariable(completionVal);
     }
   })
   return (

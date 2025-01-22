@@ -11,11 +11,9 @@ export default function Tutorial() {
 
 
   const [userState, setUserState] = useState("default" as UserState);
-  const [gameState, setGameState] = useState([0, 0, 0.8]);
+  const [gameState, setGameState] = useState([0, 0, 0.8]);  // [angle, velocity, userAnchor[1]]
 
-  const [completedSalutations, setCompletedSalutations] = useState(false);
-  const [completedCannonDragDialogue, setCompletedCannonDragDialogue] = useState(false);
-  const [draggedCannon, setDraggedCannon] = useState(false);
+  const [sequenceMarker, setSequenceMarker] = useState("Salutations" as TutorialState)
 
   const salutations = 
     <Dialogue
@@ -33,16 +31,17 @@ export default function Tutorial() {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[2, 0, 2, 0, 1]}
-      setCompletionVariable={setCompletedSalutations}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"DraggingCannonInstructions"}
     />
   
-  const changeAngle =
+  const dragCannonInstructions =
     <Dialogue
       name="General Paddy"
       speeches={[
         "It is important to be able to change the angle of your cannon. You have a few options to change the angle of elevation.",
         "You can click and drag the cannon to raise and lower it.",
-        "Try changing the angle so that it is greater than 50 degrees"
+        "Try changing the angle so that it is greater than 50 degrees."
       ]}
       expressions={[
         GeneralPaddy_neutral,
@@ -50,10 +49,11 @@ export default function Tutorial() {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0, 0]}
-      setCompletionVariable={setCompletedCannonDragDialogue}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"ToDragCannon"}
     />
 
-    const wellDone =
+  const wellDone =
     <Dialogue
       name="General Paddy"
       speeches={[
@@ -65,15 +65,85 @@ export default function Tutorial() {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0]}
-      setCompletionVariable={null}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"DraggingVelocityInstructions"}
+    />
+    
+  const dragVelocityInstructions =
+    <Dialogue 
+      name="General Paddy"
+      speeches={[
+        "If you need to change the launch speed, you can draw the slider below the cannon.",
+        "Try changing the velocity so that it is greater than 30 metres per second."
+      ]}
+      expressions={[
+        GeneralPaddy_neutral,
+        GeneralPaddy_happy,
+        GeneralPaddy_angry
+      ]} 
+      orderOfExpressions={[0, 0]}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"ToDragVelocity"}
+    />
+
+  const wellDone2 =
+    <Dialogue
+      name="General Paddy"
+      speeches={[
+        "Well done",
+      ]}
+      expressions={[
+        GeneralPaddy_neutral,
+        GeneralPaddy_happy,
+        GeneralPaddy_angry
+      ]} 
+      orderOfExpressions={[0]}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"DragHeightArrowInstructions"}
+    />
+  
+  const dragHeightArrowInstructions = 
+    <Dialogue 
+      name="General Paddy"
+      speeches={[
+        "Finally, to change the height of your cannon, you can drag the height arrow up and down",
+        "Move the cannon at least a quarter of a way up"
+      ]}
+      expressions={[
+        GeneralPaddy_neutral,
+        GeneralPaddy_happy,
+        GeneralPaddy_angry
+      ]} 
+      orderOfExpressions={[0, 0]}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"ToDragHeightArrow"}
+    />
+
+    const wellDone3 =
+    <Dialogue
+      name="General Paddy"
+      speeches={[
+        "Well done",
+      ]}
+      expressions={[
+        GeneralPaddy_neutral,
+        GeneralPaddy_happy,
+        GeneralPaddy_angry
+      ]} 
+      orderOfExpressions={[0]}
+      setCompletionVariable={setSequenceMarker}
+      completionVal={"ToPanToTarget"}
     />
 
   useEffect(() => {
-    if (userState === "draggingCannon" && gameState[0] >= 50) {
-      setDraggedCannon(true);
+    if (sequenceMarker === "ToDragCannon" && userState === "draggingCannon" && gameState[0] >= 50) {
+      setSequenceMarker("DraggedCannon");
+    } else if (sequenceMarker === "ToDragVelocity" && userState === "draggingVelocity" && gameState[1] >= 30) {
+      setSequenceMarker("DraggedVelocity");
+    } else if (sequenceMarker === "ToDragHeightArrow" && userState === "draggingHeightArrow" && gameState[2] <= 0.625) {
+      setSequenceMarker("DraggedHeightArrow");
     }
-
-  })
+  }, [userState, gameState, sequenceMarker])
 
   
   return (
@@ -86,10 +156,13 @@ export default function Tutorial() {
         setGameState={setGameState}
       />
       
-      {!completedSalutations && salutations}
-      {completedSalutations && !completedCannonDragDialogue && changeAngle}
-      {completedCannonDragDialogue && draggedCannon && wellDone}
-
+      {(sequenceMarker === "Salutations") && salutations}
+      {(sequenceMarker === "DraggingCannonInstructions") &&  dragCannonInstructions}
+      {(sequenceMarker === "DraggedCannon") && wellDone}
+      {(sequenceMarker === "DraggingVelocityInstructions") && dragVelocityInstructions}
+      {(sequenceMarker === "DraggedVelocity") && wellDone2}
+      {(sequenceMarker === "DragHeightArrowInstructions") && dragHeightArrowInstructions}
+      {(sequenceMarker === "DraggedHeightArrow") && wellDone3}
     </>
   )
 }
