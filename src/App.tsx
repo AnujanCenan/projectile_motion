@@ -1,10 +1,8 @@
-import { useRef, useState } from 'react';
 import './App.css';
 import Tutorial from './components/tutorial/Tutorial.tsx';
 
 function App() {
   
-
   return (
     <Tutorial/>
   );

@@ -3,15 +3,46 @@ import Dialogue from "../dialogue/Dialogue";
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
 import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
+import { TutorialState } from "../../types/tutorialStates";
 
 export class TutorialDialogues {
-  setSequenceMarker;
-  constructor(setSequenceMarker: Function) {
-    this.setSequenceMarker = setSequenceMarker;
+
+  setCompletedDialogue;
+  constructor(setCompletedDialogue: Function) {
+    this.setCompletedDialogue = setCompletedDialogue;
   }
 
+  factory(currTutorialState: TutorialState) {
+    console.log("In factory; currTutorialState = ", currTutorialState)
+
+    if (currTutorialState === "Salutations") {
+      return this.salutations();
+    } else if (currTutorialState === "DraggingCannonInstructions") {
+      console.log("Hit the correct branch")
+      return this.dragCannonInstructions()
+    } else if (currTutorialState === "ToDragCannon") {
+      return null;
+    } else if (currTutorialState === "DraggedVelocity") {
+      return this.wellDone();
+    } else if (currTutorialState === "DragHeightArrowInstructions") {
+      return this.dragHeightArrowInstructions();
+    } else if (currTutorialState === "ToDragHeightArrow") {
+      return null;
+    } else if (currTutorialState === "DraggedHeightArrow") {
+      return this.wellDone();
+    } else if (currTutorialState === "InputPanelInstructions") {
+      return this.inputPanelInstructions();
+    } else if (currTutorialState === "ToUseInputPanel") {
+      return null;
+    } else if (currTutorialState === "UsedInputPanel") {
+      return this.wellDone();
+    } else {
+      return null;
+    }
+  }
 
   salutations() {
+
     return <Dialogue
       name="General Paddy"
       speeches={[
@@ -27,13 +58,12 @@ export class TutorialDialogues {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[2, 0, 2, 0, 1]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"DraggingCannonInstructions"}
+      setCompletedDialogue={this.setCompletedDialogue}
     />
   }
 
-
- dragCannonInstructions() {
+  dragCannonInstructions() {
+    console.log("Returning dragCannonInstructions:")
     return <Dialogue
       name="General Paddy"
       speeches={[
@@ -44,16 +74,16 @@ export class TutorialDialogues {
         GeneralPaddy_neutral
       ]} 
       orderOfExpressions={[0, 0, 0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"ToDragCannon"}
+      setCompletedDialogue={this.setCompletedDialogue}
+
     />
   }
 
- wellDone() {
+  wellDone() {
     return <Dialogue
       name="General Paddy"
       speeches={[
-        "Well done",
+        "Well done.",
       ]}
       expressions={[
         GeneralPaddy_neutral,
@@ -61,11 +91,10 @@ export class TutorialDialogues {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"DraggingVelocityInstructions"}
+      setCompletedDialogue={this.setCompletedDialogue}
+
     />
   }
-
 
   dragVelocityInstructions() {
     return <Dialogue 
@@ -80,27 +109,9 @@ export class TutorialDialogues {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"ToDragVelocity"}
+      setCompletedDialogue={this.setCompletedDialogue}
     />
   }
-
- wellDone2() {
-    return <Dialogue
-      name="General Paddy"
-      speeches={[
-        "Well done",
-      ]}
-      expressions={[
-        GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
-      ]} 
-      orderOfExpressions={[0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"DragHeightArrowInstructions"}
-    />
-}
 
   dragHeightArrowInstructions() { 
     return <Dialogue 
@@ -115,35 +126,17 @@ export class TutorialDialogues {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"ToDragHeightArrow"}
+      setCompletedDialogue={this.setCompletedDialogue}
     />
   }
 
-  wellDone3() {
-    return <Dialogue
-      name="General Paddy"
-      speeches={[
-        "Well done",
-      ]}
-      expressions={[
-        GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
-      ]} 
-      orderOfExpressions={[0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"InputPanelInstructions"}
-    />
-  }
-
- inputPanelInstructions() {
+  inputPanelInstructions() {
     return <Dialogue
       name="General Paddy"
       speeches={[
         "Alternatively, instead of clicking and dragging, you can use the input panel",
         "The input panel lets you provide more precise values for your angle, velocity and height",
-        "Try using the input panel now"
+        "Try using the input panel now to change velocity to 40 metres per second."
       ]}
       expressions={[
         GeneralPaddy_neutral,
@@ -151,25 +144,11 @@ export class TutorialDialogues {
         GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0, 0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"ToUseInputPanel"}
+      setCompletedDialogue={this.setCompletedDialogue}
     />
   }
 
-  wellDone4() {
-    return <Dialogue
-      name="General Paddy"
-      speeches={[
-        "Well done",
-      ]}
-      expressions={[
-        GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
-      ]} 
-      orderOfExpressions={[0]}
-      setCompletionVariable={this.setSequenceMarker}
-      completionVal={"ToPanToTarget"}
-    />
-  }
+
+
+
 }

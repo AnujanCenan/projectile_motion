@@ -1,36 +1,45 @@
 import Canvas from "../canvasParts/Canvas";
-import Dialogue from "../dialogue/Dialogue";
 
-import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
-import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
-import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 import { useEffect, useRef, useState } from "react";
 import { TutorialDialogues } from "./TutorialDialogues";
-
+import { TutorialState, tutorialStates } from "../../types/tutorialStates";
 
 export default function Tutorial() {
 
-
   const [userState, setUserState] = useState("default" as UserState);
   const [gameState, setGameState] = useState([0, 0, 0.8]);  // [angle, velocity, userAnchor[1]]
-
-  const [sequenceMarker, setSequenceMarker] = useState("Salutations" as TutorialState)
   
-  const tutorialDialoguesRef = useRef(new TutorialDialogues(setSequenceMarker));
+  const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
+  const [currTutStateIndex, setCurrTutStateIndex] = useState(0);
+
+  const tutorialDialoguesRef = useRef(new TutorialDialogues(setCompletedCurrDialogue));
 
   useEffect(() => {
-    if (sequenceMarker === "ToDragCannon" && userState === "draggingCannon" && gameState[0] >= 50) {
-      setSequenceMarker("DraggedCannon");
-    } else if (sequenceMarker === "ToDragVelocity" && userState === "draggingVelocity" && gameState[1] >= 30) {
-      setSequenceMarker("DraggedVelocity");
-    } else if (sequenceMarker === "ToDragHeightArrow" && userState === "draggingHeightArrow" && gameState[2] <= 0.625) {
-      setSequenceMarker("DraggedHeightArrow");
-    } else if (sequenceMarker === "ToUseInputPanel" && ["inputPanelAngle", "inputPanelVelocity", "inputPanelHeight"].includes(userState)) {
-      setSequenceMarker("UsedInputPanel")
+    const tutorialState = tutorialStates[currTutStateIndex];
+    if (tutorialState === "ToDragCannon" && userState === "draggingCannon" && gameState[0] >= 50) {
+      setCurrTutStateIndex(currTutStateIndex + 1);
+    } else if (tutorialState === "ToDragVelocity" && userState === "draggingVelocity" && gameState[1] >= 30) {
+      setCurrTutStateIndex(currTutStateIndex + 1);
+    } else if (tutorialState === "ToDragHeightArrow" && userState === "draggingHeightArrow" && gameState[2] <= 0.625) {
+      setCurrTutStateIndex(currTutStateIndex + 1);
+    } else if (tutorialState === "ToUseInputPanel" && userState === "inputPanelVelocity" && gameState[1] === 40) {
+      setCurrTutStateIndex(currTutStateIndex + 1);
     }
-  }, [userState, gameState, sequenceMarker])
+  }, [userState, gameState, currTutStateIndex]);
 
-  
+  useEffect(() => {
+    if (completedCurrDialogue) {
+      console.log("In useEffect in tutorial.tsx because completedCurrDialogue was set to true")
+      
+      setCurrTutStateIndex(c => c + 1); 
+    }
+  }, [completedCurrDialogue])
+
+  useEffect(() => {
+    setCompletedCurrDialogue(false);
+    console.log(tutorialStates[currTutStateIndex])
+  }, [currTutStateIndex])
+
   return (
     <>
       <Canvas 
@@ -41,15 +50,15 @@ export default function Tutorial() {
         setGameState={setGameState}
       />
       
-      {(sequenceMarker === "Salutations") && tutorialDialoguesRef.current.salutations()}
-      {(sequenceMarker === "DraggingCannonInstructions") &&  tutorialDialoguesRef.current.dragCannonInstructions()}
-      {(sequenceMarker === "DraggedCannon") && tutorialDialoguesRef.current.wellDone()}
-      {(sequenceMarker === "DraggingVelocityInstructions") && tutorialDialoguesRef.current.dragVelocityInstructions()}
-      {(sequenceMarker === "DraggedVelocity") && tutorialDialoguesRef.current.wellDone2()}
-      {(sequenceMarker === "DragHeightArrowInstructions") && tutorialDialoguesRef.current.dragHeightArrowInstructions()}
-      {(sequenceMarker === "DraggedHeightArrow") && tutorialDialoguesRef.current.wellDone3()}
-      {(sequenceMarker === "InputPanelInstructions" && tutorialDialoguesRef.current.inputPanelInstructions())}
-      {(sequenceMarker === "UsedInputPanel") && tutorialDialoguesRef.current.wellDone4()}
+      {(tutorialStates[currTutStateIndex] === "Salutations") && tutorialDialoguesRef.current.salutations()}
+      {(tutorialStates[currTutStateIndex] === "DraggingCannonInstructions") &&  tutorialDialoguesRef.current.dragCannonInstructions()}
+      {(tutorialStates[currTutStateIndex] === "DraggedCannon") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "DraggingVelocityInstructions") && tutorialDialoguesRef.current.dragVelocityInstructions()}
+      {(tutorialStates[currTutStateIndex] === "DraggedVelocity") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "DragHeightArrowInstructions") && tutorialDialoguesRef.current.dragHeightArrowInstructions()}
+      {(tutorialStates[currTutStateIndex] === "DraggedHeightArrow") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "InputPanelInstructions" && tutorialDialoguesRef.current.inputPanelInstructions())}
+      {(tutorialStates[currTutStateIndex] === "UsedInputPanel") && tutorialDialoguesRef.current.wellDone()}
     </>
   )
 }

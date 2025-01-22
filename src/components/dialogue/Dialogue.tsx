@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 import "./CSS/Dialogue.css"
 
 interface DialogueProps {
@@ -6,17 +6,14 @@ interface DialogueProps {
   speeches: string[];
   expressions: string[];
   orderOfExpressions: number[];
-
-  setCompletionVariable: Function
-  completionVal: string
+  setCompletedDialogue: Function;
 }
 export default function Dialogue({
   name, 
   speeches, 
   expressions, 
   orderOfExpressions,
-  setCompletionVariable,
-  completionVal
+  setCompletedDialogue
 
 }: DialogueProps) {
 
@@ -27,6 +24,7 @@ export default function Dialogue({
   const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const [currSpeechIndex, setCurrSpeechIndex] = useState(0);
+
   
 
   function continueDialogue() {
@@ -37,12 +35,15 @@ export default function Dialogue({
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
       containerRef.current.style.visibility = "hidden";
+      console.log("setCompletedDialogue to true")
+      setCompletedDialogue(true);
     } 
     setCurrSpeechIndex(currSpeechIndex + 1);
   }
   
-  var c = 0;
   useEffect(() => { 
+    // console.log(containerRef.current?.style.visibility);
+
     function typewriter(speech: string) {
       // var speed = 30;
       // writeCharacter();
@@ -68,13 +69,13 @@ export default function Dialogue({
   }, [currSpeechIndex])
   
 
-  useEffect(() => {
-    console.log(`currSpeech Index = ${currSpeechIndex}; speeches.length = ${speeches.length}`)
-    if (setCompletionVariable !== null && completionVal !== null && currSpeechIndex === speeches.length) {
+  // useEffect(() => {
+  //   console.log(`currSpeech Index = ${currSpeechIndex}; speeches.length = ${speeches.length}`)
+  //   if (setCompletionVariable !== null && completionVal !== null && currSpeechIndex === speeches.length) {
 
-      setCompletionVariable(completionVal);
-    }
-  })
+  //     setCompletionVariable(completionVal);
+  //   }
+  // })
   return (
     <div ref={containerRef} id="dialogue_container">
       <div id="dialouge_profile_pic">
