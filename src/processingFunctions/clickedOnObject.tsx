@@ -1,7 +1,6 @@
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
-  canvas: HTMLCanvasElement, 
   mouse_x: number, 
   mouse_y: number, 
   cannonInfo: {
@@ -35,7 +34,17 @@ export function clickedOnCannon(
       );
   }
 
-  return evaluateLambdaAndMu(lambda, mu);
+  if (!evaluateLambdaAndMu(lambda, mu)) {
+    return false;
+  }
+
+  // Pivot Position Check
+  clickedBehindPivot.current = 1;
+  if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
+    clickedBehindPivot.current = -1;
+  }
+  
+  return true;
 }
 
 function findCannonPointAndPlane(
