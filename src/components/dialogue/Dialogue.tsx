@@ -7,8 +7,8 @@ interface DialogueProps {
   expressions: string[];
   orderOfExpressions: number[];
 
-  setCompletionVariable: React.Dispatch<React.SetStateAction<TutorialState>> | null;
-  completionVal: TutorialState | null;
+  setCompletionVariable: Function
+  completionVal: string
 }
 export default function Dialogue({
   name, 
@@ -39,25 +39,25 @@ export default function Dialogue({
       containerRef.current.style.visibility = "hidden";
     } 
     setCurrSpeechIndex(currSpeechIndex + 1);
-    
   }
   
   var c = 0;
   useEffect(() => { 
     function typewriter(speech: string) {
-      var speed = 20;
-      writeCharacter();
-      function writeCharacter() {
-        if (!speechRef.current) {
-          return
-        };
+      // var speed = 30;
+      // writeCharacter();
+      // function writeCharacter() {
+      //   if (!speechRef.current) {
+      //     return
+      //   };
 
-        if (c < speech.length) {
-          speechRef.current.innerHTML += speech.charAt(c);
-          c++;
-          timeoutRef.current = setTimeout(writeCharacter, speed);
-        }
-      }
+      //   if (c < speech.length) {
+      //     speechRef.current.innerHTML += speech.charAt(c);
+      //     c++;
+      //     timeoutRef.current = setTimeout(writeCharacter, speed);
+      //   }
+      // }
+      speechRef.current!.innerHTML = speech;
     }
 
     if (currSpeechIndex === speeches.length) return;
