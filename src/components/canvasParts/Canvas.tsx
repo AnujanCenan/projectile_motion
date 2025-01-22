@@ -334,7 +334,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         {readyToDraw && 
           <FireButton 
             fireCannon={() => fireCannon(
-              (canvasRef.current) as HTMLCanvasElement,
               (positionAndSizesInterfaceRef.current)!,
               USER_ANCHOR_POINT, 
               launchVelocity, 

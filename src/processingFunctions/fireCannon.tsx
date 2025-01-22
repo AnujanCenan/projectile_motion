@@ -3,7 +3,6 @@ import { drawCircle } from "./drawingFunctions.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
-    canvas: HTMLCanvasElement, 
     positionAndSizesInterface: CanvasPositionAndSizes,
     USER_ANCHOR_POINT: number[], 
     launchVelocity: number, 
@@ -13,7 +12,9 @@ export function fireCannon(
     width: number
 ) {
 
-    const ctx = canvas.getContext('2d');
+    // const ctx = canvas.getContext('2d');
+    const canvas = positionAndSizesInterface.getCanvas();
+    const ctx = positionAndSizesInterface.getCtx();
     var reqNum: number;
     try {
       if (canvas) {
