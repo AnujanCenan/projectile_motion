@@ -3,3 +3,6 @@ type UserState =
   | "draggingCannon" 
   | "draggingVelocity" 
   | "draggingHeightArrow"
+  | "inputPanelAngle"
+  | "inputPanelVelocity"
+  | "inputPanelHeight"
