@@ -335,6 +335,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
             CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
             GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
             positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
+            setUserState={setUserState}
           />
         }
 
