@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 export default function Tutorial() {
 
 
-  const [userState, setUserState] = useState("");
-  // gameState = [angle, velocity, userAnchor[1]]
+  const [userState, setUserState] = useState("default" as UserState);
   const [gameState, setGameState] = useState([0, 0, 0.8]);
 
   const [completedSalutations, setCompletedSalutations] = useState(false);
@@ -70,7 +69,7 @@ export default function Tutorial() {
     />
 
   useEffect(() => {
-    if (userState === "dragginCannon" && gameState[0] >= 50) {
+    if (userState === "draggingCannon" && gameState[0] >= 50) {
       setDraggedCannon(true);
     }
 

@@ -41,7 +41,7 @@ interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
   target_altitude: number,
-  setUserState: Function,
+  setUserState: React.Dispatch<React.SetStateAction<UserState>>,
   setGameState: Function
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE

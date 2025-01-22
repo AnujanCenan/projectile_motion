@@ -1,6 +1,5 @@
-enum UserState {
-  none,
-  cannonDragging,
-  velocityDragging,
-  heightArrowDragging
-}
+type UserState = 
+    "default"
+  | "draggingCannon" 
+  | "draggingVelocity" 
+  | "draggingHeightArrow"
