@@ -6,8 +6,16 @@ interface DialogueProps {
   speeches: string[];
   expressions: string[];
   orderOfExpressions: number[];
+  setCompletionVariable: Function|null
 }
-export default function Dialogue({name, speeches, expressions, orderOfExpressions}: DialogueProps) {
+export default function Dialogue({
+  name, 
+  speeches, 
+  expressions, 
+  orderOfExpressions,
+  setCompletionVariable
+
+}: DialogueProps) {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const speechRef = useRef<HTMLDivElement>(null);
@@ -25,39 +33,45 @@ export default function Dialogue({name, speeches, expressions, orderOfExpression
     }
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
-      setCurrSpeechIndex(0);
       containerRef.current.style.visibility = "hidden";
-    } else {
-      setCurrSpeechIndex(currSpeechIndex + 1);
-    }
+    } 
+    setCurrSpeechIndex(currSpeechIndex + 1);
+    
   }
   
-  var i = 0;
-  useEffect(() => {  
+  var c = 0;
+  useEffect(() => { 
     function typewriter(speech: string) {
-      var speed = 30;
+      var speed = 20;
       writeCharacter();
       function writeCharacter() {
         if (!speechRef.current) {
           return
         };
 
-        if (i < speech.length) {
-          speechRef.current.innerHTML += speech.charAt(i);
-          i++;
+        if (c < speech.length) {
+          speechRef.current.innerHTML += speech.charAt(c);
+          c++;
           timeoutRef.current = setTimeout(writeCharacter, speed);
         }
       }
     }
 
+    if (currSpeechIndex === speeches.length) return;
     if (profilePicRef.current) {
       profilePicRef.current.src = expressions[orderOfExpressions[currSpeechIndex]]
-      
-      
       typewriter(speeches[currSpeechIndex]);
     } 
-  }, [currSpeechIndex, speeches, i, expressions, orderOfExpressions])
+  }, [currSpeechIndex])
   
+
+  useEffect(() => {
+    console.log(`currSpeech Index = ${currSpeechIndex}; speeches.length = ${speeches.length}`)
+    if (setCompletionVariable !== null && currSpeechIndex === speeches.length) {
+      console.log("Jimmy jim junior")
+      setCompletionVariable(true);
+    }
+  })
   return (
     <div ref={containerRef} id="dialogue_container">
       <div id="dialouge_profile_pic">

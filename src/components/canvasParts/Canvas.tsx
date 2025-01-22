@@ -40,10 +40,12 @@ import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
-  target_altitude: number
+  target_altitude: number,
+  setUserState: Function,
+  setGameState: Function
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, setUserState, setGameState}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [readyToDraw, setReadyToDraw] = useState(false);
@@ -216,6 +218,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
     )
   }
 
+  useEffect(() => {
+    setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1]])
+  }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
+
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
@@ -239,7 +245,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         heightInputRef as RefObject<HTMLInputElement>,
         setElevationAngle,
         setLaunchVelocity,
-        setUserAnchorPoint
+        setUserAnchorPoint,
+        setUserState
       )
     }
   }

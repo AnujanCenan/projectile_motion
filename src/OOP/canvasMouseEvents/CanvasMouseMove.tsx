@@ -151,12 +151,16 @@ export class CanvasMouseMove {
     setElevationAngle: Function,
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
+    
+    setUserState: Function
   ) {
 
     if (this.#cannonClick.current) {
       this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
+     setUserState("dragginCannon");
     } else if (this.#sliderClick.current) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
+      setUserState("velocityDragging");
     } 
     else if (this.#heightArrowClick.current) {
       this.#handleHeightArrowClick(
@@ -167,6 +171,7 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
+      setUserState("draggingArrowClick")
     }
   }
   
