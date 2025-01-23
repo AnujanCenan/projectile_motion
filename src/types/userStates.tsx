@@ -1,5 +1,6 @@
 type UserState = 
     "default"
+  | "idle"
   | "draggingCannon" 
   | "draggingVelocity" 
   | "draggingHeightArrow"

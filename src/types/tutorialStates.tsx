@@ -18,8 +18,7 @@ export type TutorialState =
     | "FireAtTargetInstructions"
     | "ToFireAtTarget"
     | "FiredAtTarget"
-    | "HitTarget"
-    | "MissedTarget"
+    | "Conclusion"
     | "CompletedTutorial"
 
 export const tutorialStates = [
@@ -42,7 +41,6 @@ export const tutorialStates = [
   "FireAtTargetInstructions",
   "ToFireAtTarget", 
   "FiredAtTarget", 
-  "HitTarget", 
-  "MissedTarget", 
+  "Conclusion",
   "CompletedTutorial"
 ] as TutorialState[]

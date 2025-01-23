@@ -124,7 +124,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
 
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
-  imagePreloader.loadImages(imageArray, () => drawEnvironmentFromCanvas());
+  
+  useEffect(() => {
+    imagePreloader.loadImages(imageArray, () => {
+      console.log("Preloader: drawing Environment from preloader")
+      drawEnvironmentFromCanvas()
+    })
+  }, [width, height]);
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -203,11 +209,15 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
   useEffect(() => {
-      drawEnvironmentFromCanvas();
-  })
+    drawEnvironmentFromCanvas();
+
+  }, [GROUND_LEVEL_SCALAR, 
+    USER_ANCHOR_POINT,
+    MAX_SPEED,
+    launchVelocity,
+    elevationAngle])
 
   function drawEnvironmentFromCanvas() {
-
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
@@ -221,7 +231,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0])
-
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
@@ -268,6 +277,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       <div id="container" onScroll={(e) => {
         if (userState !== "firing") {
           setUserState("scrolling");
+          console.log("Set user state to scrolling")
           const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
           const clientWidth = (e.target as HTMLDivElement).clientWidth;
           const scrollWidth = (e.target as HTMLDivElement).scrollWidth;

@@ -2,11 +2,11 @@ import Canvas from "../canvasParts/Canvas";
 
 import { useEffect, useRef, useState } from "react";
 import { TutorialDialogues } from "./TutorialDialogues";
-import { TutorialState, tutorialStates } from "../../types/tutorialStates";
+import { tutorialStates } from "../../types/tutorialStates";
 
 export default function Tutorial() {
 
-  const [userState, setUserState] = useState("default" as UserState);
+  const [userState, setUserState] = useState("idle" as UserState);
   const [gameState, setGameState] = useState([0, 0, 0.8, 0] as GameState);
 
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
@@ -26,6 +26,9 @@ export default function Tutorial() {
       setCurrTutStateIndex(c => c + 1);
     } else if (tutorialState === "ToPanToTarget" && userState === "scrolling" && gameState[3] === 1) {
       setCurrTutStateIndex(c => c + 1)
+    } else if (tutorialState === "ToFireAtTarget" && userState === "idle" 
+        && gameState[0] === 45 && gameState[1] === 70 && gameState[2] === 0.8) {
+      setCurrTutStateIndex(c => c + 1)
     }
   }, [userState, gameState]);
 
@@ -38,10 +41,6 @@ export default function Tutorial() {
   useEffect(() => {
     setCompletedCurrDialogue(false);
   }, [currTutStateIndex])
-
-  useEffect(() => {
-    console.log(gameState)
-  })
 
   return (
     <>
@@ -63,11 +62,13 @@ export default function Tutorial() {
       {(tutorialStates[currTutStateIndex] === "DraggedVelocity") && tutorialDialoguesRef.current.wellDone()}
       {(tutorialStates[currTutStateIndex] === "DragHeightArrowInstructions") && tutorialDialoguesRef.current.dragHeightArrowInstructions()}
       {(tutorialStates[currTutStateIndex] === "DraggedHeightArrow") && tutorialDialoguesRef.current.wellDone()}
-      {(tutorialStates[currTutStateIndex] === "InputPanelInstructions" && tutorialDialoguesRef.current.inputPanelInstructions())}
+      {(tutorialStates[currTutStateIndex] === "InputPanelInstructions") && tutorialDialoguesRef.current.inputPanelInstructions()}
       {(tutorialStates[currTutStateIndex] === "UsedInputPanel") && tutorialDialoguesRef.current.wellDone()}
       {(tutorialStates[currTutStateIndex] === "PanToTargetInstructions") && tutorialDialoguesRef.current.panToTargetInstructions()}
       {(tutorialStates[currTutStateIndex] === "PannedToTarget") && tutorialDialoguesRef.current.wellDone()}
       {(tutorialStates[currTutStateIndex] === "FireAtTargetInstructions") && tutorialDialoguesRef.current.fireAtTargetInstructions()}
+      {(tutorialStates[currTutStateIndex] === "FiredAtTarget") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "Conclusion") && tutorialDialoguesRef.current.completedTutorial()}
     </>
   )
 }

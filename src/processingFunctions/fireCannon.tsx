@@ -13,6 +13,7 @@ export function fireCannon(
 ) {
 
   setUserState("firing");
+  console.log("Set user state to firing")
     const canvas = positionAndSizesInterface.getCanvas();
     const ctx = positionAndSizesInterface.getCtx();
     var reqNum: number;
@@ -45,6 +46,7 @@ export function fireCannon(
           });
           
           if (ctx) {
+            console.log("In firing function, cannon ball at", x, y)
             drawCircle(ctx, x, y, 5, "blue", "black");
           }
           if (initial_y
@@ -53,6 +55,8 @@ export function fireCannon(
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);
+            setUserState("idle");
+            console.log("from firing function, changed state to idle")
           }
         }
         reqNum = requestAnimationFrame(trackProjectile);

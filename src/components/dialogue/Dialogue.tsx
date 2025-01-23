@@ -2,14 +2,16 @@ import { RefObject, useEffect, useRef, useState } from "react"
 import "./CSS/Dialogue.css"
 
 interface DialogueProps {
-  name: string;
+  name?: string;
+  names?: string[];
   speeches: string[];
   expressions: string[];
   orderOfExpressions: number[];
   setCompletedDialogue: Function;
 }
 export default function Dialogue({
-  name, 
+  name,
+  names,
   speeches, 
   expressions, 
   orderOfExpressions,
@@ -80,7 +82,7 @@ export default function Dialogue({
     <div ref={containerRef} id="dialogue_container">
       <div id="dialouge_profile_pic">
         <img ref={profilePicRef} alt="character expression"/>
-        <span>{name}</span>
+        <span>{names ? names[currSpeechIndex] : name}</span>
       </div>
       <div ref={speechRef} id="dialogue_speech"></div>
       <div id="dialogue_button_container">
