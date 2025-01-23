@@ -3,17 +3,19 @@ import { drawCircle } from "./drawingFunctions.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
-    canvas: HTMLCanvasElement, 
     positionAndSizesInterface: CanvasPositionAndSizes,
     USER_ANCHOR_POINT: number[], 
     launchVelocity: number, 
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
-  
-    width: number
+    width: number,
+    setUserState: React.Dispatch<React.SetStateAction<UserState>>
 ) {
 
-    const ctx = canvas.getContext('2d');
+  setUserState("firing");
+  console.log("Set user state to firing")
+    const canvas = positionAndSizesInterface.getCanvas();
+    const ctx = positionAndSizesInterface.getCtx();
     var reqNum: number;
     try {
       if (canvas) {
@@ -44,6 +46,7 @@ export function fireCannon(
           });
           
           if (ctx) {
+            console.log("In firing function, cannon ball at", x, y)
             drawCircle(ctx, x, y, 5, "blue", "black");
           }
           if (initial_y
@@ -52,6 +55,8 @@ export function fireCannon(
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);
+            setUserState("idle");
+            console.log("from firing function, changed state to idle")
           }
         }
         reqNum = requestAnimationFrame(trackProjectile);

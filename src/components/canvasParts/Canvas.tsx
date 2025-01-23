@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from "react"
-import useWindowSize from "./resizingHook.tsx"
+import useWindowSize from "../resizingHook.tsx"
 
 import "./CSS/Canvas.css"
 
@@ -8,40 +8,45 @@ import {
   getHolsterInfo,
   getVelocitySliderInfo,
   isLandscape
-} from "../processingFunctions/drawingFunctions.tsx"
+} from "../../processingFunctions/drawingFunctions.tsx"
 
-import grassImg from "../images/foregrounds/grassLarge.png"
+import grassImg from "../../images/foregrounds/grassLarge.png"
 
-import cannonImg from "../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
-import holsterImg from "../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+import cannonImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
 
-import velocityBarImg from "../images/velocity/velocityBar.png"
-import velocitySliderImg from "../images/velocity/velocitySlider.png"
+import holsterImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
 
-import heightScaleImg from "../images/height/heightBar.png"
-import heightArrowImg from "../images/height/heightIndicator.png"
+import velocityBarImg from "../../images/velocity/velocityBar.png"
+import velocitySliderImg from "../../images/velocity/velocitySlider.png"
+
+import heightScaleImg from "../../images/height/heightBar.png"
+import heightArrowImg from "../../images/height/heightIndicator.png"
 
 
-import targetImg from "../images/targets/trainingTarget.png"
+import targetImg from "../../images/targets/trainingTarget.png"
+
 
 
 import FireButton from "./FireButton.tsx";
 import InputPanel from "./InputPanel.tsx";
-import { fireCannon } from "../processingFunctions/fireCannon.tsx";
-import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
-import { DrawingImages } from "../OOP/DrawingImages.tsx"
-import { CanvasMouseDown } from "../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
-import { CanvasMouseMove } from "../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
-import { CanvasImagePreloader } from "../OOP/CanvasImagePreloader.tsx"
+import { fireCannon } from "../../processingFunctions/fireCannon.tsx";
+import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes.tsx";
+import { DrawingImages } from "../../OOP/DrawingImages.tsx"
+import { CanvasMouseDown } from "../../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
+import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
+import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 
 
 interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
-  target_altitude: number
+  target_altitude: number,
+  userState: UserState,
+  setUserState: React.Dispatch<React.SetStateAction<UserState>>,
+  setGameState: Function
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, userState, setUserState, setGameState}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [readyToDraw, setReadyToDraw] = useState(false);
@@ -105,7 +110,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
   const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
 
-  const imagePreloader = useRef<CanvasImagePreloader>(new CanvasImagePreloader());
+  const imagePreloader = new CanvasImagePreloader();
 
 
   useEffect(() => {
@@ -119,7 +124,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
 
 
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
-  imagePreloader.current.loadImages(imageArray, () => drawEnvironmentFromCanvas());
+  
+  useEffect(() => {
+    imagePreloader.loadImages(imageArray, () => {
+      console.log("Preloader: drawing Environment from preloader")
+      drawEnvironmentFromCanvas()
+    })
+  }, [width, height]);
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -198,11 +209,15 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
   useEffect(() => {
-      drawEnvironmentFromCanvas();
-  })
+    drawEnvironmentFromCanvas();
+
+  }, [GROUND_LEVEL_SCALAR, 
+    USER_ANCHOR_POINT,
+    MAX_SPEED,
+    launchVelocity,
+    elevationAngle])
 
   function drawEnvironmentFromCanvas() {
-
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
       USER_ANCHOR_POINT,
@@ -213,6 +228,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
       target_altitude,
     )
   }
+
+  useEffect(() => {
+    setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0])
+  }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
@@ -237,7 +256,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
         heightInputRef as RefObject<HTMLInputElement>,
         setElevationAngle,
         setLaunchVelocity,
-        setUserAnchorPoint
+        setUserAnchorPoint,
+        setUserState
       )
     }
   }
@@ -254,7 +274,18 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
   return (
     <>
       
-      <div id="container">
+      <div id="container" onScroll={(e) => {
+        if (userState !== "firing") {
+          setUserState("scrolling");
+          console.log("Set user state to scrolling")
+          const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
+          const clientWidth = (e.target as HTMLDivElement).clientWidth;
+          const scrollWidth = (e.target as HTMLDivElement).scrollWidth;
+          setGameState([
+            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], (scrollLeft + clientWidth) / scrollWidth
+          ])
+        }
+      }}>
         <canvas ref={canvasRef} 
           id="canvas" 
           onMouseDown={(e) => mouseDown(e)}
@@ -326,19 +357,20 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude}: Canva
             CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
             GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
             positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
+            setUserState={setUserState}
           />
         }
 
         {readyToDraw && 
           <FireButton 
             fireCannon={() => fireCannon(
-              (canvasRef.current) as HTMLCanvasElement,
               (positionAndSizesInterfaceRef.current)!,
               USER_ANCHOR_POINT, 
               launchVelocity, 
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
-              width
+              width,
+              setUserState
             )} 
           />
         }

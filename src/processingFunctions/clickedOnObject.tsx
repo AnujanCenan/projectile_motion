@@ -1,7 +1,6 @@
 ////////////////////////////////////// Clicked on Cannon //////////////////////////////////////////////
 
 export function clickedOnCannon(
-  canvas: HTMLCanvasElement, 
   mouse_x: number, 
   mouse_y: number, 
   cannonInfo: {
@@ -20,7 +19,6 @@ export function clickedOnCannon(
   }
   mouse_x *= window.devicePixelRatio;
   mouse_y *= window.devicePixelRatio;
-  const ctx = canvas.getContext('2d');
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(cannonInfo, cannonGrowthFactor,pivotPosition,angle);
   var lambda, mu;
   if (angle === 90) {
@@ -40,19 +38,13 @@ export function clickedOnCannon(
     return false;
   }
 
-  // Transparency Check
-  let transparency = false;
-  if (ctx) {
-    var p = ctx.getImageData(mouse_x, mouse_y, 1, 1).data;
-    if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) transparency = true;
-  }
   // Pivot Position Check
   clickedBehindPivot.current = 1;
   if (lambda < cannonInfo.pivot_x / cannonInfo.pixel_width) {
     clickedBehindPivot.current = -1;
   }
   
-  return !transparency;
+  return true;
 }
 
 function findCannonPointAndPlane(

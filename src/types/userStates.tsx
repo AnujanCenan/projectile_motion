@@ -1,0 +1,11 @@
+type UserState = 
+    "default"
+  | "idle"
+  | "draggingCannon" 
+  | "draggingVelocity" 
+  | "draggingHeightArrow"
+  | "inputPanelAngle"
+  | "inputPanelVelocity"
+  | "inputPanelHeight"
+  | "scrolling"
+  | "firing"

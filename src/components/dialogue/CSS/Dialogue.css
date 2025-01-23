@@ -7,12 +7,12 @@
     width: 96%;
     background-color: rgb(164, 164, 164);
     position: absolute;
-    bottom: 0vh;
+    top: 0vh;
     /* height: 30vh; */
     max-height: 600px;
     margin-left: 2%;
     margin-right: 2%;
-    margin-bottom: 2%;
+    margin-top: 2%;
 
     display: flex;
 }

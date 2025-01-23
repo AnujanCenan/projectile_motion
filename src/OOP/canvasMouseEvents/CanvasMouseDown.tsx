@@ -40,7 +40,6 @@ export class CanvasMouseDown {
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
     this.#cannonClick.current = clickedOnCannon(
-      canvas, 
       e.pageX + horizScroll, e.pageY,
       cannonInfo,
       this.#positionsAndSizesInterface.getGrowthFactorCannon(),
