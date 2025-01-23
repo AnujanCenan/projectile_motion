@@ -13,12 +13,11 @@ export class TutorialDialogues {
   }
 
   factory(currTutorialState: TutorialState) {
-    console.log("In factory; currTutorialState = ", currTutorialState)
+
 
     if (currTutorialState === "Salutations") {
       return this.salutations();
     } else if (currTutorialState === "DraggingCannonInstructions") {
-      console.log("Hit the correct branch")
       return this.dragCannonInstructions()
     } else if (currTutorialState === "ToDragCannon") {
       return null;
@@ -63,7 +62,7 @@ export class TutorialDialogues {
   }
 
   dragCannonInstructions() {
-    console.log("Returning dragCannonInstructions:")
+
     return <Dialogue
       name="General Paddy"
       speeches={[
@@ -87,8 +86,6 @@ export class TutorialDialogues {
       ]}
       expressions={[
         GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0]}
       setCompletedDialogue={this.setCompletedDialogue}
@@ -105,8 +102,6 @@ export class TutorialDialogues {
       ]}
       expressions={[
         GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0]}
       setCompletedDialogue={this.setCompletedDialogue}
@@ -122,8 +117,6 @@ export class TutorialDialogues {
       ]}
       expressions={[
         GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0]}
       setCompletedDialogue={this.setCompletedDialogue}
@@ -140,11 +133,38 @@ export class TutorialDialogues {
       ]}
       expressions={[
         GeneralPaddy_neutral,
-        GeneralPaddy_happy,
-        GeneralPaddy_angry
       ]} 
       orderOfExpressions={[0, 0, 0]}
       setCompletedDialogue={this.setCompletedDialogue}
+    />
+  }
+
+  panToTargetInstructions() {
+    return <Dialogue 
+    name={"General Paddy"} 
+    speeches={[
+      "Your target can be seen by panning to the right.", 
+      "You can do this by scrolling or using the interactive map on the top left corner",
+      "Pan all the way to the end of the training ground"
+    ]} 
+    expressions={[GeneralPaddy_neutral]}
+    orderOfExpressions={[0, 0, 0]} 
+    setCompletedDialogue={this.setCompletedDialogue}    
+      
+    />
+  }
+
+  fireAtTargetInstructions() {
+    return <Dialogue 
+      name={"General Paddy"} 
+      speeches={[
+        "Since this is just training, I will provide you with the values to hit the target",
+        "Try having your angle at 45 degrees, your velocity at 70 metres per second and your height at 0 metres",
+        "Then click the fire button."
+      ]} 
+      expressions={[GeneralPaddy_neutral]} 
+      orderOfExpressions={[0, 0, 0]} 
+      setCompletedDialogue={this.setCompletedDialogue}    
     />
   }
 

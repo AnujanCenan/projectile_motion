@@ -15,6 +15,7 @@ export type TutorialState =
     | "PanToTargetInstructions"
     | "ToPanToTarget"
     | "PannedToTarget"
+    | "FireAtTargetInstructions"
     | "ToFireAtTarget"
     | "FiredAtTarget"
     | "HitTarget"
@@ -38,6 +39,7 @@ export const tutorialStates = [
   "PanToTargetInstructions",
   "ToPanToTarget", 
   "PannedToTarget", 
+  "FireAtTargetInstructions",
   "ToFireAtTarget", 
   "FiredAtTarget", 
   "HitTarget", 

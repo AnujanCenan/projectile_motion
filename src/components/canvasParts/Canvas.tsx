@@ -41,11 +41,12 @@ interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
   target_altitude: number,
+  userState: UserState,
   setUserState: React.Dispatch<React.SetStateAction<UserState>>,
   setGameState: Function
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude, setUserState, setGameState}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, userState, setUserState, setGameState}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [readyToDraw, setReadyToDraw] = useState(false);
@@ -109,7 +110,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
   const canvasMouseDownEvent = useRef<CanvasMouseDown>(null);
   const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
 
-  const imagePreloader = useRef<CanvasImagePreloader>(new CanvasImagePreloader());
+  const imagePreloader = new CanvasImagePreloader();
 
 
   useEffect(() => {
@@ -123,7 +124,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
 
 
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
-  imagePreloader.current.loadImages(imageArray, () => drawEnvironmentFromCanvas());
+  imagePreloader.loadImages(imageArray, () => drawEnvironmentFromCanvas());
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -219,7 +220,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
   }
 
   useEffect(() => {
-    setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1]])
+    setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0])
+
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
@@ -263,7 +265,17 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
   return (
     <>
       
-      <div id="container">
+      <div id="container" onScroll={(e) => {
+        if (userState !== "firing") {
+          setUserState("scrolling");
+          const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
+          const clientWidth = (e.target as HTMLDivElement).clientWidth;
+          const scrollWidth = (e.target as HTMLDivElement).scrollWidth;
+          setGameState([
+            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], (scrollLeft + clientWidth) / scrollWidth
+          ])
+        }
+      }}>
         <canvas ref={canvasRef} 
           id="canvas" 
           onMouseDown={(e) => mouseDown(e)}
@@ -347,7 +359,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, setUse
               launchVelocity, 
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
-              width
+              width,
+              setUserState
             )} 
           />
         }

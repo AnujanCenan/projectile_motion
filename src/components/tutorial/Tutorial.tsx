@@ -7,8 +7,8 @@ import { TutorialState, tutorialStates } from "../../types/tutorialStates";
 export default function Tutorial() {
 
   const [userState, setUserState] = useState("default" as UserState);
-  const [gameState, setGameState] = useState([0, 0, 0.8]);  // [angle, velocity, userAnchor[1]]
-  
+  const [gameState, setGameState] = useState([0, 0, 0.8, 0] as GameState);
+
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
   const [currTutStateIndex, setCurrTutStateIndex] = useState(0);
 
@@ -17,38 +17,44 @@ export default function Tutorial() {
   useEffect(() => {
     const tutorialState = tutorialStates[currTutStateIndex];
     if (tutorialState === "ToDragCannon" && userState === "draggingCannon" && gameState[0] >= 50) {
-      setCurrTutStateIndex(currTutStateIndex + 1);
+      setCurrTutStateIndex(c => c + 1);
     } else if (tutorialState === "ToDragVelocity" && userState === "draggingVelocity" && gameState[1] >= 30) {
-      setCurrTutStateIndex(currTutStateIndex + 1);
+      setCurrTutStateIndex(c => c + 1);
     } else if (tutorialState === "ToDragHeightArrow" && userState === "draggingHeightArrow" && gameState[2] <= 0.625) {
-      setCurrTutStateIndex(currTutStateIndex + 1);
+      setCurrTutStateIndex(c => c + 1);
     } else if (tutorialState === "ToUseInputPanel" && userState === "inputPanelVelocity" && gameState[1] === 40) {
-      setCurrTutStateIndex(currTutStateIndex + 1);
+      setCurrTutStateIndex(c => c + 1);
+    } else if (tutorialState === "ToPanToTarget" && userState === "scrolling" && gameState[3] === 1) {
+      setCurrTutStateIndex(c => c + 1)
     }
-  }, [userState, gameState, currTutStateIndex]);
+  }, [userState, gameState]);
 
   useEffect(() => {
     if (completedCurrDialogue) {
-      console.log("In useEffect in tutorial.tsx because completedCurrDialogue was set to true")
-      
       setCurrTutStateIndex(c => c + 1); 
     }
   }, [completedCurrDialogue])
 
   useEffect(() => {
     setCompletedCurrDialogue(false);
-    console.log(tutorialStates[currTutStateIndex])
   }, [currTutStateIndex])
+
+  useEffect(() => {
+    console.log(gameState)
+  })
 
   return (
     <>
+    <div onScroll={() => console.log("I like chicken like i invented kfc")}>
       <Canvas 
         MAX_RANGE={500} 
         target_range={500} 
         target_altitude={0} 
+        userState={userState}
         setUserState={setUserState} 
         setGameState={setGameState}
       />
+    </div>
       
       {(tutorialStates[currTutStateIndex] === "Salutations") && tutorialDialoguesRef.current.salutations()}
       {(tutorialStates[currTutStateIndex] === "DraggingCannonInstructions") &&  tutorialDialoguesRef.current.dragCannonInstructions()}
@@ -59,6 +65,9 @@ export default function Tutorial() {
       {(tutorialStates[currTutStateIndex] === "DraggedHeightArrow") && tutorialDialoguesRef.current.wellDone()}
       {(tutorialStates[currTutStateIndex] === "InputPanelInstructions" && tutorialDialoguesRef.current.inputPanelInstructions())}
       {(tutorialStates[currTutStateIndex] === "UsedInputPanel") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "PanToTargetInstructions") && tutorialDialoguesRef.current.panToTargetInstructions()}
+      {(tutorialStates[currTutStateIndex] === "PannedToTarget") && tutorialDialoguesRef.current.wellDone()}
+      {(tutorialStates[currTutStateIndex] === "FireAtTargetInstructions") && tutorialDialoguesRef.current.fireAtTargetInstructions()}
     </>
   )
 }

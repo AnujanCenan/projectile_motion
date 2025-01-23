@@ -8,11 +8,11 @@ export function fireCannon(
     launchVelocity: number, 
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
-  
-    width: number
+    width: number,
+    setUserState: React.Dispatch<React.SetStateAction<UserState>>
 ) {
 
-    // const ctx = canvas.getContext('2d');
+  setUserState("firing");
     const canvas = positionAndSizesInterface.getCanvas();
     const ctx = positionAndSizesInterface.getCtx();
     var reqNum: number;

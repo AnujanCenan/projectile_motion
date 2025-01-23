@@ -6,3 +6,5 @@ type UserState =
   | "inputPanelAngle"
   | "inputPanelVelocity"
   | "inputPanelHeight"
+  | "scrolling"
+  | "firing"

@@ -35,14 +35,14 @@ export default function Dialogue({
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
       containerRef.current.style.visibility = "hidden";
-      console.log("setCompletedDialogue to true")
+
       setCompletedDialogue(true);
     } 
     setCurrSpeechIndex(currSpeechIndex + 1);
   }
   
   useEffect(() => { 
-    // console.log(containerRef.current?.style.visibility);
+
 
     function typewriter(speech: string) {
       // var speed = 30;
@@ -70,7 +70,7 @@ export default function Dialogue({
   
 
   // useEffect(() => {
-  //   console.log(`currSpeech Index = ${currSpeechIndex}; speeches.length = ${speeches.length}`)
+
   //   if (setCompletionVariable !== null && completionVal !== null && currSpeechIndex === speeches.length) {
 
   //     setCompletionVariable(completionVal);
