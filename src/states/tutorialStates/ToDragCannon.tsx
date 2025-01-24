@@ -14,7 +14,7 @@ export class ToDragCannon extends TutorialState {
   }
 
   private completedTaskHelper(): boolean {
-    return this.getUserState() === "draggingCannon" && this.getGameState()[0] >= 50;
+    return this.getUserState().current === "draggingCannon" && this.getGameState().current[0] >= 50;
   }
 
 }

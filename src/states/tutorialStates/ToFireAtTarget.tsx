@@ -18,10 +18,10 @@ export class ToFireAtTarget extends TutorialState {
     const gameState = this.getGameState();
     const userState = this.getUserState();
     return (
-      userState === "idle" && 
-      gameState[0] === 45 && 
-      gameState[1] === 70 && 
-      gameState[2] === 0.8
+      userState.current === "idle" && 
+      gameState.current[0] === 45 && 
+      gameState.current[1] === 70 && 
+      gameState.current[2] === 0.8
     )
   }
 }

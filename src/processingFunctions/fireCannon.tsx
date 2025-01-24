@@ -1,3 +1,4 @@
+import { RefObject } from "react";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
 
@@ -9,10 +10,13 @@ export function fireCannon(
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
     width: number,
-    setUserState: React.Dispatch<React.SetStateAction<UserState>>
+    userStateRef: RefObject<UserState>,
+    setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
+
 ) {
 
-  setUserState("firing");
+  userStateRef.current = "firing";
+  setStateChangeTrigger(x => x ^ 1);
   console.log("Set user state to firing")
     const canvas = positionAndSizesInterface.getCanvas();
     const ctx = positionAndSizesInterface.getCtx();
@@ -46,7 +50,6 @@ export function fireCannon(
           });
           
           if (ctx) {
-            console.log("In firing function, cannon ball at", x, y)
             drawCircle(ctx, x, y, 5, "blue", "black");
           }
           if (initial_y
@@ -55,8 +58,8 @@ export function fireCannon(
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);
-            setUserState("idle");
-            console.log("from firing function, changed state to idle")
+            userStateRef.current = "idle";
+            setStateChangeTrigger(x => x ^ 1)
           }
         }
         reqNum = requestAnimationFrame(trackProjectile);

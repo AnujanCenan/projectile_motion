@@ -41,12 +41,12 @@ interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
   target_altitude: number,
-  userState: UserState,
-  setUserState: React.Dispatch<React.SetStateAction<UserState>>,
-  setGameState: Function
+  userStateRef: RefObject<UserState>,
+  gameStateRef: RefObject<GameState>
+  setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude, userState, setUserState, setGameState}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
 
   // Hack to make sure the input panel loads in after the canvas is rendered
   const [readyToDraw, setReadyToDraw] = useState(false);
@@ -127,7 +127,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   
   useEffect(() => {
     imagePreloader.loadImages(imageArray, () => {
-      console.log("Preloader: drawing Environment from preloader")
       drawEnvironmentFromCanvas()
     })
   }, [width, height]);
@@ -230,7 +229,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }
 
   useEffect(() => {
-    setGameState([elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0])
+    gameStateRef.current =[elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0]
+    setStateChangeTrigger(x => x ^ 1);
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
@@ -240,7 +240,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       e, positionAndSizesInterfaceRef.current!, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )
   }
-
+  // done
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     if (angleInputRef.current && velocityInputRef.current && heightInputRef.current) {
       canvasMouseMoveEvent.current?.mouseMove(
@@ -257,7 +257,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         setElevationAngle,
         setLaunchVelocity,
         setUserAnchorPoint,
-        setUserState
+        userStateRef,
+        setStateChangeTrigger
       )
     }
   }
@@ -275,15 +276,16 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     <>
       
       <div id="container" onScroll={(e) => {
-        if (userState !== "firing") {
-          setUserState("scrolling");
+        if (userStateRef.current !== "firing") {
+          userStateRef.current = "scrolling";
           console.log("Set user state to scrolling")
           const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
           const clientWidth = (e.target as HTMLDivElement).clientWidth;
           const scrollWidth = (e.target as HTMLDivElement).scrollWidth;
-          setGameState([
+          gameStateRef.current = [
             elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], (scrollLeft + clientWidth) / scrollWidth
-          ])
+          ]
+          setStateChangeTrigger(x => x ^ 1);
         }
       }}>
         <canvas ref={canvasRef} 
@@ -341,7 +343,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           </>
 
         </canvas>
-
+      {/* done */}
         {canvasRef.current &&
           <InputPanel 
             setElevationAngle={setElevationAngle} 
@@ -357,7 +359,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             CANNON_HORIZONTAL_SCALAR={CANNON_HORIZONTAL_SCALAR}
             GROUND_LEVEL_SCALAR={GROUND_LEVEL_SCALAR}
             positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
-            setUserState={setUserState}
+            userStateRef={userStateRef}
+            setStateChangeTrigger={setStateChangeTrigger}
           />
         }
 
@@ -370,7 +373,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
               width,
-              setUserState
+              userStateRef,
+              setStateChangeTrigger
             )} 
           />
         }

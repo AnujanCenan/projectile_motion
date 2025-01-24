@@ -152,15 +152,16 @@ export class CanvasMouseMove {
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
     
-    setUserState: React.Dispatch<React.SetStateAction<UserState>>
+    userStateRef: RefObject<UserState>,
+    setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
   ) {
 
     if (this.#cannonClick.current) {
       this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
-     setUserState("draggingCannon");
+     userStateRef.current = "draggingCannon";
     } else if (this.#sliderClick.current) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
-      setUserState("draggingVelocity");
+      userStateRef.current = "draggingVelocity";
     } 
     else if (this.#heightArrowClick.current) {
       this.#handleHeightArrowClick(
@@ -171,7 +172,8 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
-      setUserState("draggingHeightArrow")
+      userStateRef.current = "draggingHeightArrow";
+      setStateChangeTrigger(x => x ^ 1);
     }
   }
   
