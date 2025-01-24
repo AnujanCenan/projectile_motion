@@ -1,5 +1,6 @@
 import { ToDragCannon } from "./ToDragCannon";
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
+
 
 export default class DraggingCannonInstructions implements TutorialState {
   public completedTask(): TutorialState {

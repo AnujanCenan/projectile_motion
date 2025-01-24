@@ -1,4 +1,4 @@
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
 
 export class ToDragCannon implements TutorialState {
   completeDialogue(): TutorialState {

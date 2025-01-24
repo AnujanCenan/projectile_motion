@@ -1,4 +1,4 @@
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
 
 export class ToUseInputPanel implements TutorialState {
   completeDialogue(): TutorialState {

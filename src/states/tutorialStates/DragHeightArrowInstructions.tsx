@@ -1,4 +1,5 @@
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
+
 
 export class DragHeightArrowInstructions implements TutorialState {
   completeDialogue(): TutorialState {
