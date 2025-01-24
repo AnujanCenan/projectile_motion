@@ -1,12 +1,14 @@
+import { ToDragHeightArrow } from "./ToDragHeightArrow";
 import { TutorialState } from "./TutorialState";
 
 
 export class DragHeightArrowInstructions extends TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+  public completeDialogue(): TutorialState {
+    return new ToDragHeightArrow(this.getUserState(), this.getGameState());
+    
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }

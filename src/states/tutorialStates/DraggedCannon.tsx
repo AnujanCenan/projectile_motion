@@ -1,12 +1,18 @@
+import { DraggingVelocityInstructions } from "./DraggingVelocityInstructions";
 import { TutorialState } from "./TutorialState";
 
 
-export class DraggedCannon implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class DraggedCannon extends TutorialState {
+
+  constructor(userState: UserState, gameState: GameState) {
+    super(userState, gameState);
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  
+  completeDialogue(): TutorialState {
+    return new DraggingVelocityInstructions(this.getUserState(), this.getGameState());
+  }
+  checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }

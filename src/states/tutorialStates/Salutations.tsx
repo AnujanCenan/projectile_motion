@@ -1,13 +1,13 @@
 import DraggingCannonInstructions from "./DraggingCannonInstructions";
 import { TutorialState } from "./TutorialState";
 
-export class Salutations implements TutorialState {
+export class Salutations extends TutorialState {
 
   public completeDialogue(): TutorialState {
-    return new DraggingCannonInstructions();
+    return new DraggingCannonInstructions(this.getUserState(), this.getGameState());
   }
 
-  public completedTask(): TutorialState {
+  public checkIfCompletedTask(): TutorialState {
     return this;
   }
 

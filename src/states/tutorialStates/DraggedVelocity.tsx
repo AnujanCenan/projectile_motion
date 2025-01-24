@@ -1,11 +1,12 @@
+import { DragHeightArrowInstructions } from "./DraggingHeightArrowInstructions";
 import { TutorialState } from "./TutorialState";
 
 
-export class DraggedVelocity implements TutorialState {
+export class DraggedVelocity extends TutorialState {
   completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+    return new DragHeightArrowInstructions(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  checkIfCompletedTask(): TutorialState {
+    return this;
   }
 }

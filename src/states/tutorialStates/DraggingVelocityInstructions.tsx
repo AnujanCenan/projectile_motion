@@ -1,11 +1,12 @@
+import { ToDragVelocity } from "./ToDragVelocity";
 import { TutorialState } from "./TutorialState";
 
 
-export class DraggingVelocityInstructions implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class DraggingVelocityInstructions extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return new ToDragVelocity(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 }

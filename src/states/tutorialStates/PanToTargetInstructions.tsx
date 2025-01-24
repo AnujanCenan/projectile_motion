@@ -1,10 +1,11 @@
+import { ToPanToTarget } from "./ToPanToTarget";
 import { TutorialState } from "./TutorialState";
 
-export class PanToTargetInstructions implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class PanToTargetInstructions extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return new ToPanToTarget(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 }

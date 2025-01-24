@@ -1,12 +1,13 @@
+import { ToFireAtTarget } from "./ToFireAtTarget";
 import { TutorialState } from "./TutorialState";
 
 
-export class FireAtTargetInstructions implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class FireAtTargetInstructions extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return new ToFireAtTarget(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }

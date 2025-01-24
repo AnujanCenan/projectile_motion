@@ -1,10 +1,11 @@
+import { CompletedTutorial } from "./CompletedTutorial";
 import { TutorialState } from "./TutorialState";
 
-export class Conclusion implements TutorialState {
+export class Conclusion extends TutorialState {
   completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+    return new CompletedTutorial(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  checkIfCompletedTask(): TutorialState {
+    return this;
   } 
 }

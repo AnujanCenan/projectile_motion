@@ -1,12 +1,13 @@
+import { InputPanelInstructions } from "./InputPanelInstructions";
 import { TutorialState } from "./TutorialState";
 
 
-export class DraggedHeightArrow implements TutorialState {
+export class DraggedHeightArrow extends TutorialState {
   completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+    return new InputPanelInstructions(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }

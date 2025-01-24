@@ -1,11 +1,12 @@
+import { PanToTargetInstructions } from "./PanToTargetInstructions";
 import { TutorialState } from "./TutorialState";
 
-export class UsedInputPanel implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class UsedInputPanel extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return new PanToTargetInstructions(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }

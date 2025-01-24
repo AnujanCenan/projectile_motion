@@ -1,11 +1,12 @@
+import { ToUseInputPanel } from "./ToUseInputPanel";
 import { TutorialState } from "./TutorialState";
 
-export class InputPanelInstructions implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class InputPanelInstructions extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return new ToUseInputPanel(this.getUserState(), this.getGameState());
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 
 }
