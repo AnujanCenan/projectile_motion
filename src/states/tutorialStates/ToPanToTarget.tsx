@@ -8,7 +8,7 @@ export class ToPanToTarget extends TutorialState {
   
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      return new PannedToTarget(this.getUserState(), this.getGameState());
+      return new PannedToTarget(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     } else {
       return this;
     }

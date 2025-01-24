@@ -7,7 +7,7 @@ export class ToUseInputPanel extends TutorialState {
   }
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      return new UsedInputPanel(this.getUserState(), this.getGameState());
+      return new UsedInputPanel(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     } else {
       return this;
     }

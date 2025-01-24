@@ -1,9 +1,11 @@
 export abstract class TutorialState {
   private userState;
   private gameState;
-  constructor(userState: UserState, gameState: GameState) {
+  private setCompletedDialogue;
+  constructor(userState: UserState, gameState: GameState, setCompletedDialgoue: Function) {
     this.userState = userState;
     this.gameState = gameState;
+    this.setCompletedDialogue = setCompletedDialgoue;
   }
   
   /// getters
@@ -13,6 +15,10 @@ export abstract class TutorialState {
 
   public getGameState(): GameState {
     return this.gameState;
+  }
+
+  public getSetCompletedDialogue(): Function {
+    return this.setCompletedDialogue;
   }
 
   abstract completeDialogue(): TutorialState;

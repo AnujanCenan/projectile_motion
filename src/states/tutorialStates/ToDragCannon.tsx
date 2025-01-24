@@ -7,7 +7,7 @@ export class ToDragCannon extends TutorialState {
   }
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      return new DraggedCannon(this.getUserState(), this.getGameState());
+      return new DraggedCannon(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     } else {
       return this;
     }

@@ -7,7 +7,7 @@ export class ToDragVelocity extends TutorialState {
   }
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      return new DraggedVelocity(this.getUserState(), this.getGameState());
+      return new DraggedVelocity(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     } else {
       return this;
     }

@@ -8,7 +8,7 @@ export class ToFireAtTarget extends TutorialState {
   
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      return new FiredAtTarget(this.getUserState(), this.getGameState());
+      return new FiredAtTarget(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     } else {
       return this;
     }
