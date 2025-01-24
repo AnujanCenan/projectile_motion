@@ -1,5 +1,6 @@
 import { JSX } from "react";
-import { DialogueState } from "./DialogueState";
+import { TutorialDialogueState } from "./TutorialDialogueState";
+
 import { ToPanToTarget } from "./ToPanToTarget";
 import { TutorialState } from "./TutorialState";
 import Dialogue from "../../components/dialogue/Dialogue";
@@ -7,7 +8,7 @@ import Dialogue from "../../components/dialogue/Dialogue";
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 
 
-export class PanToTargetInstructions extends TutorialState implements DialogueState {
+export class PanToTargetInstructions extends TutorialDialogueState {
   
   getDialogue(): JSX.Element {
     return <Dialogue

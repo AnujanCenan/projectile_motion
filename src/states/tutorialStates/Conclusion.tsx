@@ -1,6 +1,6 @@
 import { JSX } from "react";
+import { TutorialDialogueState } from "./TutorialDialogueState";
 import { CompletedTutorial } from "./CompletedTutorial";
-import { DialogueState } from "./DialogueState";
 import { TutorialState } from "./TutorialState";
 import Dialogue from "../../components/dialogue/Dialogue";
 
@@ -8,7 +8,8 @@ import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPa
 import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
 import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 
-export class Conclusion extends TutorialState implements DialogueState {
+
+export class Conclusion extends TutorialDialogueState {
   getDialogue(): JSX.Element {
     return <Dialogue
       names={[

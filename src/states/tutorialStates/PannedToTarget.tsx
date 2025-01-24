@@ -1,12 +1,13 @@
 import { JSX } from "react";
-import { DialogueState } from "./DialogueState";
+import { TutorialDialogueState } from "./TutorialDialogueState";
+
 import { FireAtTargetInstructions } from "./FireAtTargetInstructions";
 import { TutorialState } from "./TutorialState";
 import Dialogue from "../../components/dialogue/Dialogue";
 
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 
-export class PannedToTarget extends TutorialState implements DialogueState {
+export class PannedToTarget extends TutorialDialogueState {
 
   getDialogue(): JSX.Element {
     return <Dialogue

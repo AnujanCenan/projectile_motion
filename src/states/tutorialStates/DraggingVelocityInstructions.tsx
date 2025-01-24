@@ -1,5 +1,6 @@
 import { JSX } from "react";
-import { DialogueState } from "./DialogueState";
+import { TutorialDialogueState } from "./TutorialDialogueState";
+
 import { ToDragVelocity } from "./ToDragVelocity";
 import { TutorialState } from "./TutorialState";
 import Dialogue from "../../components/dialogue/Dialogue";
@@ -7,7 +8,7 @@ import Dialogue from "../../components/dialogue/Dialogue";
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 
 
-export class DraggingVelocityInstructions extends TutorialState implements DialogueState {
+export class DraggingVelocityInstructions extends TutorialDialogueState {
   getDialogue(): JSX.Element {
     return <Dialogue
       name="General Paddy"

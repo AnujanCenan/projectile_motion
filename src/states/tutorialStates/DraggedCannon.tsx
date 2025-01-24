@@ -1,12 +1,12 @@
 import { JSX } from "react";
-import { DialogueState } from "./DialogueState";
+import { TutorialDialogueState } from "./TutorialDialogueState";
 import { DraggingVelocityInstructions } from "./DraggingVelocityInstructions";
 import { TutorialState } from "./TutorialState";
 
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import Dialogue from "../../components/dialogue/Dialogue";
 
-export class DraggedCannon extends TutorialState implements DialogueState {
+export class DraggedCannon extends TutorialDialogueState {
 
   getDialogue(): JSX.Element {
     return <Dialogue
