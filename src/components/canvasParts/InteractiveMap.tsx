@@ -88,6 +88,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
   })
 
   ///////////////////////////////////////////////////////////////////////////////////
+
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     clickedOn.current = true;
     clicked_x.current = e.pageX;
@@ -122,6 +123,10 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
     clickedOn.current = false;
     updateGameStateMouseDown();
   }
+  
+  window.addEventListener("mouseup", () => {
+    mouseUp();
+  })
 
   function updateGameStateMouseDown() {
     var newVal = (clicked_x.current + (highlighter_width/2)) / INTERACTIVE_MAP_WIDTH;
