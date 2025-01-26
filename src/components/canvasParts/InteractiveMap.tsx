@@ -16,14 +16,18 @@ export default function InteractiveMap({canvasWidth, containerWidth, pivotCoords
   const INTERACTIVE_MAP_HEIGHT = 100
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
+  const scale = INTERACTIVE_MAP_WIDTH / canvasWidth;
+  
   const yCoord = INTERACTIVE_MAP_HEIGHT / 2;
   const piv_x_real = pivotCoords[0];
-  const piv_x_map = (piv_x_real / canvasWidth) * INTERACTIVE_MAP_WIDTH * window.devicePixelRatio;
+  const piv_x_map = (piv_x_real * scale) * window.devicePixelRatio;
 
   const target_x_real = targetCoords[0];
-  const target_x_map = (target_x_real / canvasWidth) * INTERACTIVE_MAP_WIDTH * window.devicePixelRatio;
+  const target_x_map = (target_x_real * scale) * window.devicePixelRatio;
 
   const radius = 10;
+
+
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -31,8 +35,6 @@ export default function InteractiveMap({canvasWidth, containerWidth, pivotCoords
   }, []);
 
   useEffect(() => {
-    console.log("canvas width is given as ", canvasWidth);
-    console.log("container width is given as ", containerWidth);
     if (canvasRef.current) {
       const ctx = canvasRef.current?.getContext("2d");
       const rightMostScalar = gameStateRef.current[3];
@@ -42,13 +44,6 @@ export default function InteractiveMap({canvasWidth, containerWidth, pivotCoords
 
         const rightSideContainer = rightMostScalar * canvasWidth ;
         const leftSideContainer = rightSideContainer - containerWidth * window.devicePixelRatio;
-
-        console.log("rightmost scalar = ", rightMostScalar)
-        console.log("target coords are ", targetCoords);
-        console.log("cannon coords = ", pivotCoords)
-        const scale = INTERACTIVE_MAP_WIDTH / canvasWidth;
-        console.log("left side conatiner is given as ", leftSideContainer);
-        console.log("right side container is given as ", rightSideContainer);
 
         const highlighter_right_side = (rightSideContainer * scale) * window.devicePixelRatio;
         const highlighter_left_side = (leftSideContainer * scale) * window.devicePixelRatio;
