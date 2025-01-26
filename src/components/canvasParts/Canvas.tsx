@@ -131,24 +131,14 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     imagePreloader.loadImages(imageArray, () => {
       drawEnvironmentFromCanvas()
     })
-  });
+
+  }, [width, height]);
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
   useEffect(() => {
     // let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
-  
-    // function fix_dpi() {
-    //   if (canvas) {
-    //     let style_height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
-    //     let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
-    //     canvas.setAttribute('height', (style_height * dpi).toString());
-    //     canvas.setAttribute('width', (style_width * dpi).toString());
-    //   }
-    // }
-    
-    // fix_dpi();
     if (canvas) fix_dpi(canvas);
   }, [width, height, readyToDraw]);
 
@@ -377,8 +367,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
         {canvasRef.current && canvasRef.current.parentElement && positionAndSizesInterfaceRef.current &&      
           <InteractiveMap 
-            canvasWidth={canvasRef.current.width} 
-            containerWidth={canvasRef.current.parentElement.clientWidth}
+            parentCanvasRef={canvasRef as RefObject<HTMLCanvasElement>}
             pivotCoords={positionAndSizesInterfaceRef.current.getPivotPosition(USER_ANCHOR_POINT)} 
             targetCoords={positionAndSizesInterfaceRef.current.getTargetPivot(
               GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, target_altitude, target_range
