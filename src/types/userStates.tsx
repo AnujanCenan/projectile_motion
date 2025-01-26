@@ -1,5 +1,6 @@
 type UserState = 
     "default"
+  | "loading"
   | "idle"
   | "draggingCannon" 
   | "draggingVelocity" 
