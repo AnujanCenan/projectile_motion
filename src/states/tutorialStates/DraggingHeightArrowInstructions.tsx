@@ -24,7 +24,7 @@ export class DragHeightArrowInstructions extends TutorialDialogueState {
   }
   
   public completeDialogue(): TutorialState {
-    return new ToDragHeightArrow(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue);
+    return new ToDragHeightArrow(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
     
   }
   public checkIfCompletedTask(): TutorialState {

@@ -13,7 +13,7 @@ export class ToUseInputPanel extends TutorialState {
     }
   }
 
-  private completedTaskHelper() {
+  public completedTaskHelper() {
     return  this.getUserState().current === "inputPanelVelocity" &&  this.getGameState().current[1] === 40
   }
 }

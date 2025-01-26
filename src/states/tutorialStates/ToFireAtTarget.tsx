@@ -14,7 +14,7 @@ export class ToFireAtTarget extends TutorialState {
     }
   }
 
-  private completedTaskHelper() {
+  public completedTaskHelper() {
     const gameState = this.getGameState();
     const userState = this.getUserState();
     return (

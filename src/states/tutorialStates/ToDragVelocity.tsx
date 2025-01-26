@@ -13,7 +13,7 @@ export class ToDragVelocity extends TutorialState {
     }
     
   }
-  private completedTaskHelper() {
+  public completedTaskHelper() {
     return this.getUserState().current === "draggingVelocity" &&  this.getGameState().current[1] >= 30;
   }
 }

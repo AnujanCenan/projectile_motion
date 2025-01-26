@@ -4,7 +4,11 @@ export abstract class TutorialState {
   private userState;
   private gameState;
   private setCompletedDialogue;
-  constructor(userState: RefObject<UserState>, gameState: RefObject<GameState>, setCompletedDialgoue: Function) {
+  constructor(
+    userState: RefObject<UserState>, 
+    gameState: RefObject<GameState>,
+     setCompletedDialgoue: React.Dispatch<React.SetStateAction<boolean>>
+  ) {
     this.userState = userState;
     this.gameState = gameState;
     this.setCompletedDialogue = setCompletedDialgoue;
@@ -19,7 +23,7 @@ export abstract class TutorialState {
     return this.gameState;
   }
 
-  public getSetCompletedDialogue(): Function {
+  public getSetCompletedDialogue(): React.Dispatch<React.SetStateAction<boolean>> {
     return this.setCompletedDialogue;
   }
 

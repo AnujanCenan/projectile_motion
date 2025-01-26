@@ -14,7 +14,7 @@ export class ToPanToTarget extends TutorialState {
     }
   }
 
-  private completedTaskHelper(): boolean {
+  public completedTaskHelper(): boolean {
     return  this.getGameState().current[3] === 1;
   }
 }
