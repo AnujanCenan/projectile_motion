@@ -22,7 +22,6 @@ import velocitySliderImg from "../../images/velocity/velocitySlider.png"
 import heightScaleImg from "../../images/height/heightBar.png"
 import heightArrowImg from "../../images/height/heightIndicator.png"
 
-
 import targetImg from "../../images/targets/trainingTarget.png"
 
 
@@ -223,11 +222,17 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
+
+      const canvasParent = canvasRef.current.parentElement;
+
+      const scrollLeft = canvasParent.scrollLeft;
+      const clientWidth = canvasParent.clientWidth;
+      const scrollWidth = canvasParent.scrollWidth;
       gameStateRef.current = [
         elevationAngle, 
         launchVelocity, 
         USER_ANCHOR_POINT[1], 
-        (canvasRef.current.parentElement.clientWidth / canvasRef.current.width) * window.devicePixelRatio
+        (scrollLeft + clientWidth) / scrollWidth
       ]
       setStateChangeTrigger(x => x ^ 1);
     }
