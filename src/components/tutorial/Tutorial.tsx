@@ -1,8 +1,8 @@
+// My saving grace: https://stackoverflow.com/questions/35905988/react-js-how-to-append-a-component-on-click
+
 import Canvas from "../canvasParts/Canvas";
 
 import { JSX, useEffect, useRef, useState } from "react";
-// import { TutorialDialogues } from "./TutorialDialogues";
-// import { tutorialStates } from "../../types/tutorialStates";
 import { Salutations } from "../../states/tutorialStates/Salutations";
 import { TutorialState } from "../../states/tutorialStates/TutorialState";
 import { TutorialDialogueState } from "../../states/tutorialStates/TutorialDialogueState";
@@ -17,7 +17,7 @@ export default function Tutorial() {
 
 
   const [tutorialState, setTutorialState] = useState(new Salutations(userStateRef, gameStateRef, setCompletedCurrDialogue) as TutorialState);
-  const dialgueChildren = useRef<JSX.Element[]>([new Salutations(userStateRef, gameStateRef, setCompletedCurrDialogue).getDialogue()]);
+  const [dialogueChildren, setDialogueChildren] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
     setTutorialState(tutState => tutState.checkIfCompletedTask());
@@ -36,14 +36,13 @@ export default function Tutorial() {
   
   function addChild() {
     console.log("Adding a child in dialogue children")
-    if (tutorialState instanceof TutorialDialogueState && !(tutorialState instanceof Salutations)) {
-      dialgueChildren.current.push(tutorialState.getDialogue());
-      console.log(dialgueChildren.current)
-      setStateChangeTrigger(x => x ^ 1);
+    if (tutorialState instanceof TutorialDialogueState) {
+      setDialogueChildren([
+        ...dialogueChildren, tutorialState.getDialogue()
+      ]);
+
     } 
   }
-
-
 
   return (
     <>
@@ -56,7 +55,7 @@ export default function Tutorial() {
         setStateChangeTrigger={setStateChangeTrigger}
       />
       <div id="dialogue_wrapper">
-        {dialgueChildren.current}
+        {dialogueChildren}
       </div>
       
     </>
