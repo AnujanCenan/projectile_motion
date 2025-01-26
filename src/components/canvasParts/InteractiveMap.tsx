@@ -18,14 +18,14 @@ export default function InteractiveMap({canvasWidth, containerWidth, pivotCoords
   
   const scale = INTERACTIVE_MAP_WIDTH / canvasWidth;
   
-  const yCoord = INTERACTIVE_MAP_HEIGHT / 2;
+  const yCoord = (INTERACTIVE_MAP_HEIGHT / 2) * window.devicePixelRatio;
   const piv_x_real = pivotCoords[0];
   const piv_x_map = (piv_x_real * scale) * window.devicePixelRatio;
 
   const target_x_real = targetCoords[0];
   const target_x_map = (target_x_real * scale) * window.devicePixelRatio;
 
-  const radius = 10;
+  const radius = 10 * window.devicePixelRatio;
 
 
 
@@ -49,7 +49,7 @@ export default function InteractiveMap({canvasWidth, containerWidth, pivotCoords
         const highlighter_left_side = (leftSideContainer * scale) * window.devicePixelRatio;
 
         const width = (highlighter_right_side - highlighter_left_side);
-        const height = INTERACTIVE_MAP_HEIGHT;
+        const height = INTERACTIVE_MAP_HEIGHT * window.devicePixelRatio;
         const x = highlighter_left_side;
         const y = 0;
 
