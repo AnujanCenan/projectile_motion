@@ -35,6 +35,8 @@ import { DrawingImages } from "../../OOP/DrawingImages.tsx"
 import { CanvasMouseDown } from "../../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
 import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
 import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
+import InteractiveMap from "./InteractiveMap.tsx"
+import { fix_dpi } from "../fixDPI.tsx"
 
 
 interface CanvasProps {
@@ -129,24 +131,25 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     imagePreloader.loadImages(imageArray, () => {
       drawEnvironmentFromCanvas()
     })
-  }, [width, height]);
+  });
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
   useEffect(() => {
-    let dpi = window.devicePixelRatio;
+    // let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
   
-    function fix_dpi() {
-      if (canvas) {
-        let style_height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
-        let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
-        canvas.setAttribute('height', (style_height * dpi).toString());
-        canvas.setAttribute('width', (style_width * dpi).toString());
-      }
-    }
+    // function fix_dpi() {
+    //   if (canvas) {
+    //     let style_height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
+    //     let style_width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
+    //     canvas.setAttribute('height', (style_height * dpi).toString());
+    //     canvas.setAttribute('width', (style_width * dpi).toString());
+    //   }
+    // }
     
-    fix_dpi();
+    // fix_dpi();
+    if (canvas) fix_dpi(canvas);
   }, [width, height, readyToDraw]);
 
 
@@ -345,6 +348,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         </canvas>
       {/* done */}
         {canvasRef.current &&
+
           <InputPanel 
             setElevationAngle={setElevationAngle} 
             setLaunchVelocity={setLaunchVelocity} 
@@ -363,6 +367,17 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             setStateChangeTrigger={setStateChangeTrigger}
           />
         }
+
+        {canvasRef.current && canvasRef.current.parentElement && positionAndSizesInterfaceRef.current &&      
+          <InteractiveMap 
+            canvasWidth={canvasRef.current.width} 
+            containerWidth={canvasRef.current.parentElement.clientWidth}
+            pivotCoords={positionAndSizesInterfaceRef.current.getPivotPosition(USER_ANCHOR_POINT)} 
+            targetCoords={positionAndSizesInterfaceRef.current.getTargetPivot(
+              GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, target_altitude, target_range
+            )}        
+            gameStateRef={gameStateRef}
+          />}
 
         {readyToDraw && 
           <FireButton 
