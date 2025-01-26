@@ -231,6 +231,7 @@ export class DrawingImages {
     // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
     const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - altitude * conversionRate - 356 * growthFactor;
     const x_pos = anchor_x + range * conversionRate - 152 * growthFactor;
+    // const [x_pos, y_pos] = this.#canvasPositionAndSizes.getTargetTopLeft(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range);
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
