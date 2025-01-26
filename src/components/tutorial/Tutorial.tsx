@@ -35,7 +35,6 @@ export default function Tutorial() {
   }, [tutorialState])
   
   function addChild() {
-    console.log("Adding a child in dialogue children")
     if (tutorialState instanceof TutorialDialogueState) {
       setDialogueChildren([
         ...dialogueChildren, tutorialState.getDialogue()
