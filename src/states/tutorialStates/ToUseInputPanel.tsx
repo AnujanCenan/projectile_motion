@@ -1,10 +1,19 @@
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
+import { UsedInputPanel } from "./UsedInputPanel";
 
-export class ToUseInputPanel implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class ToUseInputPanel extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return this;
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    if (this.completedTaskHelper()) {
+      return new UsedInputPanel(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
+    } else {
+      return this;
+    }
+  }
+
+  public completedTaskHelper() {
+    return  this.getUserState().current === "inputPanelVelocity" &&  this.getGameState().current[1] === 40
   }
 }

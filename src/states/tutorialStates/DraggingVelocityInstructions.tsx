@@ -1,10 +1,33 @@
-import { TutorialState } from "./tutorialState";
+import { JSX } from "react";
+import { TutorialDialogueState } from "./TutorialDialogueState";
 
-export class DraggingVelocityInstructions implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+import { ToDragVelocity } from "./ToDragVelocity";
+import { TutorialState } from "./TutorialState";
+import Dialogue from "../../components/dialogue/Dialogue";
+
+import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
+
+
+export class DraggingVelocityInstructions extends TutorialDialogueState {
+  getDialogue(): JSX.Element {
+    return <Dialogue
+      name="General Paddy"
+      speeches={[
+        "If you need to change the launch speed, you can draw the slider below the cannon.",
+        "Try changing the velocity so that it is greater than 30 metres per second."
+      ]}
+      expressions={[
+        GeneralPaddy_neutral,
+      ]} 
+      orderOfExpressions={[0, 0]}
+      setCompletedDialogue={this.getSetCompletedDialogue()}
+    />
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+
+  public completeDialogue(): TutorialState {
+    return new ToDragVelocity(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
+  }
+  public checkIfCompletedTask(): TutorialState {
+    return this;
   }
 }

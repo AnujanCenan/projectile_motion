@@ -7,7 +7,7 @@ interface DialogueProps {
   speeches: string[];
   expressions: string[];
   orderOfExpressions: number[];
-  setCompletedDialogue: Function;
+  setCompletedDialogue: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function Dialogue({
   name,
@@ -37,6 +37,14 @@ export default function Dialogue({
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
       containerRef.current.style.visibility = "hidden";
+
+      
+      // const child = document.getElementById('dialogue_container') as HTMLDivElement;
+      // console.log(`parent = ${child.parentElement}`)
+      // const parent = child.parentElement as HTMLDivElement;
+      // console.log(`child = ${child}`)
+
+      // parent.removeChild(child);
 
       setCompletedDialogue(true);
     } 

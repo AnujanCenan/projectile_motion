@@ -1,11 +1,20 @@
-import { TutorialState } from "./tutorialState";
+import { DraggedCannon } from "./DraggedCannon";
+import { TutorialState } from "./TutorialState";
 
-export class ToDragCannon implements TutorialState {
-  completeDialogue(): TutorialState {
-    throw new Error("Method not implemented.");
+export class ToDragCannon extends TutorialState {
+  public completeDialogue(): TutorialState {
+    return this;
   }
-  completedTask(): TutorialState {
-    throw new Error("Method not implemented.");
+  public checkIfCompletedTask(): TutorialState {
+    if (this.completedTaskHelper()) {
+      return new DraggedCannon(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue());
+    } else {
+      return this;
+    }
+  }
+
+  public completedTaskHelper(): boolean {
+    return this.getUserState().current === "draggingCannon" && this.getGameState().current[0] >= 50;
   }
 
 }

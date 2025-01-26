@@ -1,10 +1,10 @@
-import { TutorialState } from "./tutorialState";
+import { TutorialState } from "./TutorialState";
 
-export class CompletedTutorial implements TutorialState {
+export class CompletedTutorial extends TutorialState {
   completeDialogue(): TutorialState {
     throw new Error("Method not implemented.");
   }
-  completedTask(): TutorialState {
+  checkIfCompletedTask(): TutorialState {
     throw new Error("Method not implemented.");
   }
 }

@@ -1,3 +1,4 @@
+import { RefObject } from "react"
 import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes"
 import "./CSS/InputPanel.css"
 
@@ -15,7 +16,9 @@ interface InputPanelProps {
   MAX_HORIZONTAL_RANGE: number
   CANNON_HORIZONTAL_SCALAR: number
   GROUND_LEVEL_SCALAR: number
-  setUserState: React.Dispatch<React.SetStateAction<UserState>>
+  userStateRef: RefObject<UserState>
+  setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
+
 }
 
 export default function InputPanel({
@@ -32,14 +35,16 @@ export default function InputPanel({
   MAX_HORIZONTAL_RANGE,
   CANNON_HORIZONTAL_SCALAR,
   GROUND_LEVEL_SCALAR = 0.8,
-  setUserState
+  userStateRef,
+  setStateChangeTrigger
 }: InputPanelProps) {
 
   function changeVelocityWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
     if (!velocityInputRef || !velocityInputRef.current) {
       return;
     }
-    setUserState("inputPanelVelocity");
+    userStateRef.current = "inputPanelVelocity";
+    setStateChangeTrigger(x => x ^ 1)
     const val = e.target.value;
     try {
       if (val === "") {
@@ -68,7 +73,9 @@ export default function InputPanel({
     if (!angleInputRef || !angleInputRef.current) {
       return;
     }
-    setUserState("inputPanelAngle");
+    userStateRef.current = "inputPanelAngle";
+    setStateChangeTrigger(x => x ^ 1)
+
     const val = e.target.value;
     try {
       if (val === "") {
@@ -99,7 +106,9 @@ export default function InputPanel({
     if (!heightInputRef || !heightInputRef.current) {
       return;
     }
-    setUserState("inputPanelHeight");
+    userStateRef.current = "inputPanelHeight";
+    setStateChangeTrigger(x => x ^ 1)
+
     const val = e.target.value;
     try {
       if (val === "") {
