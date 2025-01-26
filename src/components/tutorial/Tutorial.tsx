@@ -9,7 +9,7 @@ import { TutorialDialogueState } from "../../states/tutorialStates/TutorialDialo
 
 
 export default function Tutorial() {
-  const userStateRef = useRef<UserState>("idle")
+  const userStateRef = useRef<UserState>("loading")
   const gameStateRef = useRef<GameState>([0, 0, 0.8, 0]);
   const [stateChangeTrigger, setStateChangeTrigger] = useState(0);
 

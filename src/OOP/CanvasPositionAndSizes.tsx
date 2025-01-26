@@ -57,6 +57,27 @@ export class CanvasPositionAndSizes {
 
   /// TOP LEFT CORNERS
 
+
+
+  getTargetPivot(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
+    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
+    const growthFactor = 0.5;
+  
+  
+    const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
+  
+    // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
+    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate/* - 356 * growthFactor*/;
+    const x_pos = anchor_x + range * conversionRate /*- 152 * growthFactor*/;
+
+    return [x_pos, y_pos]
+  }
+
+  getTargetTopLeft(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
+    const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
+    return [piv_x - 152, piv_y - 356];
+  }
+
   getCannonOriginalPosition(USER_ANCHOR_POINT: number[]) {
     const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
     return [
@@ -126,5 +147,5 @@ export class CanvasPositionAndSizes {
     const availableSpace = (this.#canvas.width - this.getPivotPosition(USER_ANCHOR_POINT)[0]) * 9/10;
     const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
     return conversionRate  
-}
+  }
 }
