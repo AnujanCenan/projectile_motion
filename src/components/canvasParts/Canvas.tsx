@@ -232,8 +232,15 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }
 
   useEffect(() => {
-    gameStateRef.current =[elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], 0]
-    setStateChangeTrigger(x => x ^ 1);
+    if (canvasRef.current && canvasRef.current.parentElement) {
+      gameStateRef.current = [
+        elevationAngle, 
+        launchVelocity, 
+        USER_ANCHOR_POINT[1], 
+        (canvasRef.current.parentElement.clientWidth / canvasRef.current.width) * window.devicePixelRatio
+      ]
+      setStateChangeTrigger(x => x ^ 1);
+    }
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
