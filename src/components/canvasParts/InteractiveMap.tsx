@@ -35,7 +35,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
 
   const rightSideContainer = rightMostScalar * parentCanvasRef.current.width;
   const parentDivContainerWidth = (parentCanvasRef.current.parentElement as HTMLDivElement).clientWidth;
-  const leftSideContainer = rightSideContainer -  parentDivContainerWidth * window.devicePixelRatio;
+  const leftSideContainer = rightSideContainer - parentDivContainerWidth * window.devicePixelRatio;
 
   const highlighter_right_side = (rightSideContainer * scale) * window.devicePixelRatio;
   const highlighter_left_side = (leftSideContainer * scale) * window.devicePixelRatio;
@@ -44,6 +44,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
   const highlighter_height = INTERACTIVE_MAP_HEIGHT * window.devicePixelRatio;
   const highlighter_x = highlighter_left_side;
   const highlighter_y = 0;
+
 
 
   const clickedOn = useRef(false);
@@ -83,13 +84,15 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
         ctx.fillStyle = "red";
         ctx.stroke()
         ctx.fill(); 
-      } 
+      }
     }
   })
+
 
   ///////////////////////////////////////////////////////////////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+
     clickedOn.current = true;
     clicked_x.current = e.pageX;
 
@@ -136,8 +139,6 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
       newVal = 1;
     }
     gameStateRef.current[3] = newVal;
-
-    console.log(`gameStateRef.current[3] = ${gameStateRef.current[3]}`)
   }
   ///////////////////////////////////////////////////////////////////////////////////
   

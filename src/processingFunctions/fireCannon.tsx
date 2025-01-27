@@ -1,6 +1,7 @@
 import { RefObject } from "react";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
+import { calculateScrollScalar } from "./scrollScalarCalculation.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
@@ -10,6 +11,7 @@ export function fireCannon(
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
     width: number,
+    gameStateRef: RefObject<GameState>,
     userStateRef: RefObject<UserState>,
     setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 
@@ -48,9 +50,13 @@ export function fireCannon(
             left: (x) / window.devicePixelRatio - width / 2,
             behavior: "instant"
           });
+
+          gameStateRef.current[3] = calculateScrollScalar(canvas)
           
           if (ctx) {
+            setStateChangeTrigger(x => x ^ 1);
             drawCircle(ctx, x, y, 5, "blue", "black");
+            
           }
           if (initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 

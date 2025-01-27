@@ -22,7 +22,6 @@ import velocitySliderImg from "../../images/velocity/velocitySlider.png"
 import heightScaleImg from "../../images/height/heightBar.png"
 import heightArrowImg from "../../images/height/heightIndicator.png"
 
-
 import targetImg from "../../images/targets/trainingTarget.png"
 
 
@@ -37,6 +36,7 @@ import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx
 import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
+import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
 
 
 interface CanvasProps {
@@ -223,11 +223,12 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
+
       gameStateRef.current = [
         elevationAngle, 
         launchVelocity, 
         USER_ANCHOR_POINT[1], 
-        (canvasRef.current.parentElement.clientWidth / canvasRef.current.width) * window.devicePixelRatio
+        calculateScrollScalar(canvasRef.current)
       ]
       setStateChangeTrigger(x => x ^ 1);
     }
@@ -276,14 +277,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     <>
       
       <div id="container" onScroll={(e) => {
-        if (userStateRef.current !== "firing") {
+        if (canvasRef.current && userStateRef.current !== "firing") {
           userStateRef.current = "scrolling";
-          console.log("Set user state to scrolling")
-          const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
-          const clientWidth = (e.target as HTMLDivElement).clientWidth;
-          const scrollWidth = (e.target as HTMLDivElement).scrollWidth;
           gameStateRef.current = [
-            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], (scrollLeft + clientWidth) / scrollWidth
+            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
           ]
           setStateChangeTrigger(x => x ^ 1);
         }
@@ -384,6 +381,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
               width,
+              gameStateRef,
               userStateRef,
               setStateChangeTrigger
             )} 
