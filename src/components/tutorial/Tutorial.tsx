@@ -7,17 +7,21 @@ import { Salutations } from "../../states/tutorialStates/Salutations";
 import { TutorialState } from "../../states/tutorialStates/TutorialState";
 import { TutorialDialogueState } from "../../states/tutorialStates/TutorialDialogueState";
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
+import { UserGameAction } from "../../states/userGameActions/UserGameAction";
+import { LoadingImages } from "../../states/userGameActions/LoadingImages";
 
 
 export default function Tutorial() {
-  const userStateRef = useRef<UserState>("loading")
+  // const userStateRef = useRef<UserState>("loading")
+  const userGameActionRef = useRef<UserGameAction>(new LoadingImages());
+
   const gameStateRef = useRef<GameState>([0, 0, GROUND_LEVEL_SCALAR, 0]);
   const [stateChangeTrigger, setStateChangeTrigger] = useState(0);
 
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
 
 
-  const [tutorialState, setTutorialState] = useState(new Salutations(userStateRef, gameStateRef, setCompletedCurrDialogue) as TutorialState);
+  const [tutorialState, setTutorialState] = useState(new Salutations(userGameActionRef, gameStateRef, setCompletedCurrDialogue) as TutorialState);
   const [dialogueChildren, setDialogueChildren] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export default function Tutorial() {
         MAX_RANGE={500} 
         target_range={500} 
         target_altitude={0} 
-        userStateRef={userStateRef}
+        userStateRef={userGameActionRef}
         gameStateRef={gameStateRef}
         setStateChangeTrigger={setStateChangeTrigger}
       />

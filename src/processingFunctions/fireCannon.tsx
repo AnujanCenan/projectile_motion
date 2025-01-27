@@ -3,6 +3,9 @@ import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
 import { calculateScrollScalar } from "./scrollScalarCalculation.tsx";
 import { GROUND_LEVEL_SCALAR } from "../globalConstants/groundLevelScalar.tsx";
+import { UserGameAction } from "../states/userGameActions/userGameAction.tsx";
+import { Firing } from "../states/userGameActions/Firing.tsx";
+import { Idle } from "../states/userGameActions/Idle.tsx";
 
 // needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
 export function fireCannon(
@@ -13,12 +16,12 @@ export function fireCannon(
     GROUND_LEVEL_SCALAR: number, 
     width: number,
     gameStateRef: RefObject<GameState>,
-    userStateRef: RefObject<UserState>,
+    userStateRef: RefObject<UserGameAction>,
     setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 
 ) {
 
-  userStateRef.current = "firing";
+  userStateRef.current = new Firing();
   setStateChangeTrigger(x => x ^ 1);
 
   const range_metres = range(
@@ -46,7 +49,7 @@ export function fireCannon(
 
 
       function trackProjectile() {     
-        if (userStateRef.current === "idle")  return;
+        // if (userStateRef.current === "idle")  return;
         x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
         y = initial_y
           - (initial_v * Math.sin(angle_rad) * currTime) 
@@ -72,7 +75,7 @@ export function fireCannon(
           reqNum = requestAnimationFrame(trackProjectile);
         } else {
           cancelAnimationFrame(reqNum);
-          userStateRef.current = "idle";
+          userStateRef.current = new Idle();
 
           const final_x = range_metres * conversionRate + positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT)[0];
           const final_y = GROUND_LEVEL_SCALAR * canvas.height;

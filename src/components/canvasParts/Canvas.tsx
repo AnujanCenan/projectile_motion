@@ -41,20 +41,21 @@ import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
 import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar.tsx"
+import { UserGameAction } from "../../states/userGameActions/userGameAction.tsx"
+import { Firing } from "../../states/userGameActions/Firing.tsx"
+import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 
 
 interface CanvasProps {
   MAX_RANGE: number,
   target_range: number,
   target_altitude: number,
-  userStateRef: RefObject<UserState>,
+  userStateRef: RefObject<UserGameAction>,
   gameStateRef: RefObject<GameState>
   setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
 export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
-  // Hack to make sure the input panel loads in after the canvas is rendered
-
   // Positioning Constants
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
@@ -133,7 +134,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
   
   useEffect(() => {
-    if (userStateRef.current === "firing" || userStateRef.current === "idle" || userStateRef.current === "scrolling") return;
+    if (!userStateRef.current.requiresReDrawing()) return;
     imagePreloader.loadImages(imageArray, () => {
       drawEnvironmentFromCanvas();
     })
@@ -209,8 +210,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           click_y
         )
       }
-    } else {
-      
     }
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
@@ -289,8 +288,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     <>
       
       <div id="container" onScroll={() => {
-        if (canvasRef.current && userStateRef.current !== "firing") {
-          userStateRef.current = "scrolling";
+        if (canvasRef.current && !(userStateRef.current instanceof Firing)) {
+          userStateRef.current = new Scrolling();
           gameStateRef.current = [
             elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
           ]

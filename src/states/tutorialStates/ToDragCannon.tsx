@@ -1,3 +1,4 @@
+import { DraggingCannon } from "../userGameActions/DraggingCannon";
 import { DraggedCannon } from "./DraggedCannon";
 import { TutorialState } from "./TutorialState";
 
@@ -14,7 +15,10 @@ export class ToDragCannon extends TutorialState {
   }
 
   public completedTaskHelper(): boolean {
-    return this.getUserState().current === "draggingCannon" && this.getGameState().current[0] >= 50;
+    return (
+      this.getUserState().current instanceof DraggingCannon && 
+      this.getGameState().current[0] >= 50
+    );
   }
 
 }

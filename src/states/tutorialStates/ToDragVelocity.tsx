@@ -1,3 +1,4 @@
+import { DraggingVelocity } from "../userGameActions/DraggingVelocity";
 import { DraggedVelocity } from "./DraggedVelocity";
 import { TutorialState } from "./TutorialState";
 
@@ -14,6 +15,9 @@ export class ToDragVelocity extends TutorialState {
     
   }
   public completedTaskHelper() {
-    return this.getUserState().current === "draggingVelocity" &&  this.getGameState().current[1] >= 30;
+    return (
+      this.getUserState().current instanceof DraggingVelocity && 
+      this.getGameState().current[1] >= 30
+    );
   }
 }

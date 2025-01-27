@@ -2,6 +2,10 @@ import { RefObject } from "react"
 import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes"
 import "./CSS/InputPanel.css"
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar"
+import { UserGameAction } from "../../states/userGameActions/userGameAction"
+import { InputPanelVelocity } from "../../states/userGameActions/InputPanelVelocity"
+import { InputPanelAngle } from "../../states/userGameActions/InputPanelAngle"
+import { InputPanelHeight } from "../../states/userGameActions/InputPanelHeight"
 
 interface InputPanelProps {
   setElevationAngle: Function 
@@ -17,7 +21,7 @@ interface InputPanelProps {
   MAX_HORIZONTAL_RANGE: number
   CANNON_HORIZONTAL_SCALAR: number
   GROUND_LEVEL_SCALAR: number
-  userStateRef: RefObject<UserState>
+  userStateRef: RefObject<UserGameAction>
   setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 
 }
@@ -43,7 +47,7 @@ export default function InputPanel({
     if (!velocityInputRef || !velocityInputRef.current) {
       return;
     }
-    userStateRef.current = "inputPanelVelocity";
+    userStateRef.current = new InputPanelVelocity();
     setStateChangeTrigger(x => x ^ 1)
     const val = e.target.value;
     try {
@@ -73,7 +77,7 @@ export default function InputPanel({
     if (!angleInputRef || !angleInputRef.current) {
       return;
     }
-    userStateRef.current = "inputPanelAngle";
+    userStateRef.current = new InputPanelAngle();
     setStateChangeTrigger(x => x ^ 1)
 
     const val = e.target.value;
@@ -106,7 +110,7 @@ export default function InputPanel({
     if (!heightInputRef || !heightInputRef.current) {
       return;
     }
-    userStateRef.current = "inputPanelHeight";
+    userStateRef.current = new InputPanelHeight();
     setStateChangeTrigger(x => x ^ 1)
 
     const val = e.target.value;

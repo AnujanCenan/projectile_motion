@@ -1,3 +1,4 @@
+import { DraggingHeightArrow } from "../userGameActions/DraggingHeightArrow";
 import { DraggedHeightArrow } from "./DraggedHeightArrow";
 import { TutorialState } from "./TutorialState";
 
@@ -15,6 +16,9 @@ export class ToDragHeightArrow extends TutorialState {
   }
 
   public completedTaskHelper() {
-    return this.getUserState().current === "draggingHeightArrow" &&  this.getGameState().current[2] <= 0.625;
+    return (
+      this.getUserState().current instanceof DraggingHeightArrow && 
+      this.getGameState().current[2] <= 0.625
+    );
   }
 }
