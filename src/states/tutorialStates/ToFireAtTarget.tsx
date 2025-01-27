@@ -19,7 +19,7 @@ export class ToFireAtTarget extends TutorialState {
     const userState = this.getUserState();
     console.log(`In completed Task Helper: userState = ${userState.current}`)
     return (
-      userState.current === "idle" && 
+      userState.current === "firing" && 
       gameState.current[0] === 45 && 
       gameState.current[1] === 70 && 
       gameState.current[2] === 0.8
