@@ -17,6 +17,16 @@
     "pivot_y": 60
   },
 
+  "height_bar": {
+    "pixel_width": 158,
+    "pixel_height": 917,
+    "y_offset_scale_start": 23,
+    "x_coord_arrow_tip_touch": 100, 
+    "arrow_pixel_width": 103,
+    "arrow_pixel_height": 63,
+    "functional_pixel_height": 866
+  },
+
   "velocity_slider": {
     "pixel_width": 817,
     "pixel_height": 25,
@@ -31,6 +41,14 @@
       "pixel_height": 701,
       "target_x": 152,
       "target_y": 356
+    }
+  ],
+
+  "foregrounds": [
+    {
+      "name": "grass",
+      "width": 1000,
+      "height": 302
     }
   ]
 }
