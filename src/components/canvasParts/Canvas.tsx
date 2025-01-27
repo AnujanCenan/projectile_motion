@@ -370,7 +370,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
               GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, target_altitude, target_range
             )}        
             gameStateRef={gameStateRef}
-            userStateRef={userStateRef}
           />}
 
         {readyToDraw && 
