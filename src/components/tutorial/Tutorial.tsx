@@ -6,11 +6,12 @@ import { JSX, useEffect, useRef, useState } from "react";
 import { Salutations } from "../../states/tutorialStates/Salutations";
 import { TutorialState } from "../../states/tutorialStates/TutorialState";
 import { TutorialDialogueState } from "../../states/tutorialStates/TutorialDialogueState";
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
 
 
 export default function Tutorial() {
   const userStateRef = useRef<UserState>("loading")
-  const gameStateRef = useRef<GameState>([0, 0, 0.8, 0]);
+  const gameStateRef = useRef<GameState>([0, 0, GROUND_LEVEL_SCALAR, 0]);
   const [stateChangeTrigger, setStateChangeTrigger] = useState(0);
 
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
