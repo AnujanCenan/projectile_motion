@@ -1,4 +1,5 @@
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
+import { Firing } from "../userGameActions/Firing";
 import { FiredAtTarget } from "./FiredAtTarget";
 import { TutorialState } from "./TutorialState";
 
@@ -20,7 +21,7 @@ export class ToFireAtTarget extends TutorialState {
     const userState = this.getUserState();
     console.log(`In completed Task Helper: userState = ${userState.current}`)
     return (
-      userState.current === "firing" && 
+      userState.current instanceof Firing && 
       gameState.current[0] === 45 && 
       gameState.current[1] === 70 && 
       gameState.current[2] === GROUND_LEVEL_SCALAR

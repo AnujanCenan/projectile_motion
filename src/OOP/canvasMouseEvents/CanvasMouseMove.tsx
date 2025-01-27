@@ -1,6 +1,10 @@
 import { RefObject } from "react";
 import { CanvasPositionAndSizes } from "../CanvasPositionAndSizes";
 import { calculateAngularDisplacement } from "../../processingFunctions/calculateAngularDisplacement";
+import { UserGameAction } from "../../states/userGameActions/UserGameAction";
+import { DraggingCannon } from "../../states/userGameActions/DraggingCannon";
+import { DraggingVelocity } from "../../states/userGameActions/DraggingVelocity";
+import { DraggingHeightArrow } from "../../states/userGameActions/DraggingHeightArrow";
 
 export class CanvasMouseMove {
 
@@ -150,16 +154,16 @@ export class CanvasMouseMove {
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
     
-    userStateRef: RefObject<UserState>,
+    userStateRef: RefObject<UserGameAction>,
     setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
   ) {
 
     if (this.#cannonClick.current) {
       this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
-     userStateRef.current = "draggingCannon";
+     userStateRef.current = new DraggingCannon();
     } else if (this.#sliderClick.current) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
-      userStateRef.current = "draggingVelocity";
+      userStateRef.current = new DraggingVelocity();
     } 
     else if (this.#heightArrowClick.current) {
       this.#handleHeightArrowClick(
@@ -170,7 +174,7 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
-      userStateRef.current = "draggingHeightArrow";
+      userStateRef.current = new DraggingHeightArrow();
       setStateChangeTrigger(x => x ^ 1);
     }
   }

@@ -1,21 +1,22 @@
 import { RefObject } from "react";
+import { UserGameAction } from "../userGameActions/UserGameAction";
 
 export abstract class TutorialState {
   private userState;
   private gameState;
   private setCompletedDialogue;
   constructor(
-    userState: RefObject<UserState>, 
+    userGameAction: RefObject<UserGameAction>, 
     gameState: RefObject<GameState>,
      setCompletedDialgoue: React.Dispatch<React.SetStateAction<boolean>>
   ) {
-    this.userState = userState;
+    this.userState = userGameAction;
     this.gameState = gameState;
     this.setCompletedDialogue = setCompletedDialgoue;
   }
   
   /// getters
-  public getUserState(): RefObject<UserState> {
+  public getUserState(): RefObject<UserGameAction> {
     return this.userState;
   }
 

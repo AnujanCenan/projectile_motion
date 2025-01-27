@@ -30,5 +30,4 @@ export class UsedInputPanel extends TutorialDialogueState {
   public checkIfCompletedTask(): TutorialState {
     return this;
   }
-
 }

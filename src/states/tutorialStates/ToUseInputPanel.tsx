@@ -1,3 +1,4 @@
+import { InputPanelVelocity } from "../userGameActions/InputPanelVelocity";
 import { TutorialState } from "./TutorialState";
 import { UsedInputPanel } from "./UsedInputPanel";
 
@@ -14,6 +15,9 @@ export class ToUseInputPanel extends TutorialState {
   }
 
   public completedTaskHelper() {
-    return  this.getUserState().current === "inputPanelVelocity" &&  this.getGameState().current[1] === 40
+    return (
+      this.getUserState().current instanceof InputPanelVelocity && 
+      this.getGameState().current[1] === 40
+    );
   }
 }
