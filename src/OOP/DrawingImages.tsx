@@ -232,7 +232,7 @@ export class DrawingImages {
       altitude, 
       range
     )
-    const growthFactor = 0.5;
+    const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorTarget();
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
 

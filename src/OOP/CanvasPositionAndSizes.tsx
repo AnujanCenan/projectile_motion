@@ -152,7 +152,7 @@ export class CanvasPositionAndSizes {
     altitude: number, 
     range: number
   ) {
-    const growthFactor = 0.5;
+    const growthFactor = this.getGrowthFactorTarget();
 
     const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
     return [
@@ -164,24 +164,28 @@ export class CanvasPositionAndSizes {
 
   /// GROWTH FACTOR
   getGrowthFactorCannon() {
-    const FRACTION_OF_SCREEN = 1/3;
-    return (FRACTION_OF_SCREEN * window.innerWidth) / this.#cannonInfo.pixel_width
+    const FRACTION_OF_SCREEN = 1/6;
+    return ((FRACTION_OF_SCREEN * window.innerWidth) / this.#cannonInfo.pixel_width) * window.devicePixelRatio
   }
 
   getGrowthFactorVelocity() {
-    const FRACTION_OF_CANVAS = 2/5;
-    return (FRACTION_OF_CANVAS * window.innerWidth) / this.#velocitySliderInfo.pixel_width; // 817 is the velocityBar_pixel_width
+    const FRACTION_OF_CANVAS = 1/5;
+    return ((FRACTION_OF_CANVAS * window.innerWidth) / this.#velocitySliderInfo.pixel_width) * window.devicePixelRatio; // 817 is the velocityBar_pixel_width
   }
 
   getGrowthFactorHeight() {
   const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
-  return (FRACTION_OF_CANVAS * this.#canvas.height) / this.#heightBarInfo.functional_pixel_height // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
+  return ((FRACTION_OF_CANVAS * this.#canvas.height) / this.#heightBarInfo.functional_pixel_height); // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
   }
 
   getGrowthFactorForeground() {
-    return this.#canvas.width / this.#foregroundInfo.width; // 1000 is the width of the grass image atm
+    return (this.#canvas.width / this.#foregroundInfo.width); // 1000 is the width of the grass image atm
   }
 
+  getGrowthFactorTarget() {
+    return 0.25 * window.devicePixelRatio;
+  }
+  
   /// CONVERSION RATE
   calculateConversionRate(USER_ANCHOR_POINT: number[]) {
     const availableSpace = (this.#canvas.width - this.getPivotPosition(USER_ANCHOR_POINT)[0]) * 9/10;
