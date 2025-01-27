@@ -118,8 +118,6 @@ export class CanvasMouseMove {
     
     this.#click_x.current = mouse_x;
     this.#click_y.current = mouse_y;
-    
-    window.scrollTo({top: mouse_y - canvas.height * 0.1 * 2, behavior: "smooth"})
 
     if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement < 0.1 * canvas.height) {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);

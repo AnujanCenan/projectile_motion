@@ -19,7 +19,7 @@ export function fireCannon(
 
   userStateRef.current = "firing";
   setStateChangeTrigger(x => x ^ 1);
-  console.log("Set user state to firing")
+
     const canvas = positionAndSizesInterface.getCanvas();
     const ctx = positionAndSizesInterface.getCtx();
     var reqNum: number;
@@ -38,13 +38,15 @@ export function fireCannon(
         const angle_rad = elevationAngle * (Math.PI / 180);
 
 
-        function trackProjectile() {      
+        function trackProjectile() {     
+          if (userStateRef.current === "idle")  return;
           x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
           y = initial_y
             - (initial_v * Math.sin(angle_rad) * currTime) 
             + (1/2 * accel * currTime ** 2);            
 
           currTime += 0.04; // something to experiment with
+          console.log("Scrolling with the cannon");
           (canvas.parentNode as HTMLDivElement).scrollTo({
             top: 0,
             left: (x) / window.devicePixelRatio - width / 2,
@@ -64,8 +66,10 @@ export function fireCannon(
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);
+            console.log("The eagle has landed")
             userStateRef.current = "idle";
-            setStateChangeTrigger(x => x ^ 1)
+            return;
+            // setStateChangeTrigger(x => x ^ 1)
           }
         }
         reqNum = requestAnimationFrame(trackProjectile);
