@@ -5,6 +5,8 @@ import "./CSS/Canvas.css"
 
 import { 
   getCannonInfo, 
+  getForegroundInfo, 
+  getHeightBarInfo, 
   getHolsterInfo,
   getTargetInfo,
   getVelocitySliderInfo,
@@ -38,6 +40,7 @@ import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
 import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar.tsx"
 
 
 interface CanvasProps {
@@ -55,7 +58,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   const [readyToDraw, setReadyToDraw] = useState(false);
 
   // Positioning Constants
-  const GROUND_LEVEL_SCALAR = 0.8;
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
@@ -89,10 +91,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
+  const foregroundInfo = getForegroundInfo("grass");
   const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1")
   const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
+  const heightBarInfo = getHeightBarInfo("height_bar");
   const targetInfo = getTargetInfo("practice_target");
+
 
   // Cannon State Variables
   const [elevationAngle, setElevationAngle] = useState(0);
@@ -164,9 +169,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     if (canvasRef.current) {
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
         canvasRef.current, 
+        foregroundInfo,
         cannonInfo, 
         holsterInfo, 
         velocitySliderInfo, 
+        heightBarInfo,
         targetInfo, 
         MAX_RANGE
       );
