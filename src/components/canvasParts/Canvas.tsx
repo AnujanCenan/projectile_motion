@@ -278,8 +278,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       
       <div id="container" onScroll={() => {
         if (canvasRef.current && userStateRef.current !== "firing") {
-          console.log("Well goota assign scrolling here")
-          console.log(`userstate = `, userStateRef.current)
+
+
           userStateRef.current = "scrolling";
           gameStateRef.current = [
             elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)

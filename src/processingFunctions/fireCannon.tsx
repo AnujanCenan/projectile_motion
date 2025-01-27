@@ -46,7 +46,7 @@ export function fireCannon(
             + (1/2 * accel * currTime ** 2);            
 
           currTime += 0.04; // something to experiment with
-          console.log("Scrolling with the cannon");
+
           (canvas.parentNode as HTMLDivElement).scrollTo({
             top: 0,
             left: (x) / window.devicePixelRatio - width / 2,
@@ -66,7 +66,7 @@ export function fireCannon(
             reqNum = requestAnimationFrame(trackProjectile);
           } else {
             cancelAnimationFrame(reqNum);
-            console.log("The eagle has landed")
+
             userStateRef.current = "idle";
             return;
             // setStateChangeTrigger(x => x ^ 1)

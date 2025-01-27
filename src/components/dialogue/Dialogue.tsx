@@ -40,9 +40,9 @@ export default function Dialogue({
 
       
       // const child = document.getElementById('dialogue_container') as HTMLDivElement;
-      // console.log(`parent = ${child.parentElement}`)
+
       // const parent = child.parentElement as HTMLDivElement;
-      // console.log(`child = ${child}`)
+
 
       // parent.removeChild(child);
 
