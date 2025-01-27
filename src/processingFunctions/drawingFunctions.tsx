@@ -16,6 +16,14 @@ export function getTargetInfo(name: string): TargetInfo {
   return Cannons["targets"].find((t) => t.name === name) as TargetInfo;
 }
 
+export function getHeightBarInfo(name: "height_bar") {
+  return Cannons[name];
+}
+
+export function getForegroundInfo(name: string): ForegroundInfo{
+  return Cannons["foregrounds"].find((f) => f.name === name) as ForegroundInfo;
+}
+
 /**
  * @param {CanvasRenderingContext2D} ctx - the context for the canvas
  * @param {HTMLImageElement} image - the image you wish to draw
