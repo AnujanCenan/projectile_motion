@@ -1,11 +1,13 @@
 {
-  "v2": {
-    "pixel_width": 849,
-    "pixel_height": 251,
-
-    "pivot_x": 227,
-    "pivot_y": 118
-  },
+  "cannons": [
+    {
+      "name": "v2",
+      "pixel_width": 849,
+      "pixel_height": 251,
+      "pivot_x": 227,
+      "pivot_y": 118
+    }
+  ],
   
   "holster_v1": {
     "pixel_width": 123,
@@ -20,5 +22,15 @@
     "pixel_height": 25,
     "slider_pixel_width": 50,
     "slider_pixel_height": 51
-  }
+  },
+
+  "targets": [
+    {
+      "name": "practice_target",
+      "pixel_width": 505,
+      "pixel_height": 701,
+      "target_x": 152,
+      "target_y": 356
+    }
+  ]
 }

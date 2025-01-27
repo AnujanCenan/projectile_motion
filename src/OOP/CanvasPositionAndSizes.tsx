@@ -10,6 +10,7 @@ export class CanvasPositionAndSizes {
     cannonInfo: CannonInfo,
     holsterInfo: HolsterInfo, 
     velocitySlider: VelocitySliderInfo,
+    targetInfo: TargetInfo,
     MAX_HORIZONTAL_RANGE: number) 
   {
     this.#canvas = canvas;

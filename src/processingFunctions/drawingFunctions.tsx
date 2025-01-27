@@ -1,7 +1,7 @@
 import Cannons from "../Cannons.json"
 
-export function getCannonInfo(name: "v2") {
-  return Cannons[name];
+export function getCannonInfo(name: string): CannonInfo {
+  return Cannons["cannons"].find((c) => c.name === name) as CannonInfo;
 }
 
 export function getHolsterInfo(name: "holster_v1") {
@@ -10,6 +10,10 @@ export function getHolsterInfo(name: "holster_v1") {
 
 export function getVelocitySliderInfo(name: "velocity_slider") {
   return Cannons[name];
+}
+
+export function getTargetInfo(name: string): TargetInfo {
+  return Cannons["targets"].find((t) => t.name === name) as TargetInfo;
 }
 
 /**

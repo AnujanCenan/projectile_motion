@@ -3,12 +3,7 @@
 export function clickedOnCannon(
   mouse_x: number, 
   mouse_y: number, 
-  cannonInfo: {
-    pixel_width: number;
-    pixel_height: number;
-    pivot_x: number;
-    pivot_y: number;
-  }, 
+  cannonInfo: CannonInfo, 
   cannonGrowthFactor: number,
   pivotPosition: number[],
   angle: number, 

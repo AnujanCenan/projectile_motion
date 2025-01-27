@@ -6,6 +6,7 @@ import "./CSS/Canvas.css"
 import { 
   getCannonInfo, 
   getHolsterInfo,
+  getTargetInfo,
   getVelocitySliderInfo,
   isLandscape
 } from "../../processingFunctions/drawingFunctions.tsx"
@@ -88,10 +89,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
-  const cannonInfo = getCannonInfo("v2")
+  const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1")
   const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
-  
+  const targetInfo = getTargetInfo("practice_target");
+
   // Cannon State Variables
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
@@ -160,7 +162,15 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   // useEffect for initialising all our classes
   useEffect(() => {
     if (canvasRef.current) {
-      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE);
+      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
+        canvasRef.current, 
+        cannonInfo, 
+        holsterInfo, 
+        velocitySliderInfo, 
+        targetInfo, 
+        MAX_RANGE
+      );
+
       if (allImagesReferenced()) {
         drawingInterfaceRef.current = new DrawingImages(
           positionAndSizesInterfaceRef.current,
@@ -241,7 +251,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       e, positionAndSizesInterfaceRef.current!, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )
   }
-  // done
+
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     if (angleInputRef.current && velocityInputRef.current && heightInputRef.current) {
       canvasMouseMoveEvent.current?.mouseMove(
@@ -272,7 +282,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   
   ///////////////////////////////////////////////////////////////////////////////
 
-
   return (
     <>
       
@@ -293,8 +302,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           onMouseUp={() => mouseUp()}
           onMouseMove={(e) => mouseMove(e)}
         >
-
-          <>
           <img 
             src={grassImg}
             alt="grass"
@@ -339,10 +346,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             alt="target"
             ref={targetRef}
           />
-          </>
-
         </canvas>
-      {/* done */}
+
         {canvasRef.current &&
 
           <InputPanel 
