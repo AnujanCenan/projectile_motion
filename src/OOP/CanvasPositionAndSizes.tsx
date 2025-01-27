@@ -186,7 +186,7 @@ export class CanvasPositionAndSizes {
     return 0.25 * window.devicePixelRatio;
   }
   
-  /// CONVERSION RATE
+  /// CONVERSION RATE - ratio of pixels to corresponding metres
   calculateConversionRate(USER_ANCHOR_POINT: number[]) {
     const availableSpace = (this.#canvas.width - this.getPivotPosition(USER_ANCHOR_POINT)[0]) * 9/10;
     const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;

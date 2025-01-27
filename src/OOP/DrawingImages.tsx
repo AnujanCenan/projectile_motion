@@ -207,7 +207,7 @@ export class DrawingImages {
   }
 
   drawForeground(GROUND_LEVEL_SCALAR: number, foreground: HTMLImageElement) {
-    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - 100;
+    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height;
     
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
