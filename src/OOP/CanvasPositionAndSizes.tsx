@@ -3,6 +3,7 @@ export class CanvasPositionAndSizes {
   #cannonInfo;
   #velocitySliderInfo;
   #holsterInfo;
+  #targetInfo;
   #MAX_HORIZONTAL_RANGE;
 
   constructor(
@@ -17,6 +18,7 @@ export class CanvasPositionAndSizes {
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
     this.#velocitySliderInfo = velocitySlider
+    this.#targetInfo = targetInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
   }
 
@@ -42,6 +44,10 @@ export class CanvasPositionAndSizes {
     return this.#velocitySliderInfo;
   }
 
+  getTargetInfo() {
+    return this.#targetInfo;
+  }
+
   getMaxHorizontalRage() {
     return this.#MAX_HORIZONTAL_RANGE;
   }
@@ -57,27 +63,6 @@ export class CanvasPositionAndSizes {
   }
 
   /// TOP LEFT CORNERS
-
-
-
-  getTargetPivot(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
-    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
-    const growthFactor = 0.5;
-  
-  
-    const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
-  
-    // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
-    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate/* - 356 * growthFactor*/;
-    const x_pos = anchor_x + range * conversionRate /*- 152 * growthFactor*/;
-
-    return [x_pos, y_pos]
-  }
-
-  getTargetTopLeft(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
-    const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
-    return [piv_x - 152, piv_y - 356];
-  }
 
   getCannonOriginalPosition(USER_ANCHOR_POINT: number[]) {
     const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
@@ -120,7 +105,42 @@ export class CanvasPositionAndSizes {
 
     const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
     const pos_y = 0.1 * this.#canvas.height - 23 * growthFactor; // 23 pixels is the number of pixels that the actual start of the 
-    return [pos_x, pos_y]  }
+    return [pos_x, pos_y]  
+  }
+
+
+
+  getTargetPivot(
+    GROUND_LEVEL_SCALAR: number,
+    USER_ANCHOR_POINT: number[], 
+    altitude: number, 
+    range: number
+  ) {
+    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
+  
+  
+    const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
+  
+    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate/* - 356 * growthFactor*/;
+    const x_pos = anchor_x + range * conversionRate /*- 152 * growthFactor*/;
+
+    return [x_pos, y_pos]
+  }
+
+  getTargetTopLeft(
+    GROUND_LEVEL_SCALAR: number, 
+    USER_ANCHOR_POINT: number[], 
+    altitude: number, 
+    range: number
+  ) {
+    const growthFactor = 0.5;
+
+    const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
+    return [
+      piv_x - this.#targetInfo.target_x * growthFactor, 
+      piv_y - this.#targetInfo.target_y * growthFactor
+    ];
+  }
 
 
   /// GROWTH FACTOR
