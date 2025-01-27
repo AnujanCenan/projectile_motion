@@ -105,8 +105,8 @@ export class DrawingImages {
         velocityBar, 
         pos_x, 
         pos_y, 
-        817, 
-        25, 
+        this.#velocityBarRef.current.width, 
+        this.#velocityBarRef.current.height, 
         growthFactor
       )
     }
@@ -116,9 +116,13 @@ export class DrawingImages {
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
     const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorVelocity();
 
-    const pixelPerVelocity =  (817 * growthFactor) / MAX_SPEED;
-    const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - 50/2 * growthFactor;
-    const sliderPosY = pos_y - 51/4 * growthFactor;
+    const pixelPerVelocity =  (this.#velocityBarRef.current.width * growthFactor) / MAX_SPEED;
+
+    const sliderWidth = this.#velocitySliderRef.current.width;
+    const sliderHeight = this.#velocitySliderRef.current.height;
+
+    const sliderPosX = pos_x + pixelPerVelocity * launchVelocity - sliderWidth/2 * growthFactor;
+    const sliderPosY = pos_y - sliderHeight/4 * growthFactor;
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
     if (ctx) {
@@ -128,8 +132,8 @@ export class DrawingImages {
         velocitySlider, 
         sliderPosX, sliderPosY, 
 
-        50, 
-        51, 
+        sliderWidth, 
+        sliderHeight, 
         growthFactor
       )
     }
@@ -149,8 +153,8 @@ export class DrawingImages {
         heightScale, 
         pos_x, 
         pos_y, 
-        158, 
-        917, 
+        this.#heightScaleRef.current.width, 
+        this.#heightScaleRef.current.height, 
         growthFactor
       );
     }
@@ -169,8 +173,8 @@ export class DrawingImages {
         heightArrow, 
         arrowPosX, 
         arrowPosY, 
-        103, 
-        63, 
+        this.#heightArrowRef.current.width, 
+        this.#heightArrowRef.current.height, 
         growthFactor
       );
     }
@@ -214,24 +218,21 @@ export class DrawingImages {
         foreground,
         0,
         y_pos,
-        1000,
-        302,
+        this.#foregroundRef.current.width,
+        this.#foregroundRef.current.height,
         this.#canvasPositionAndSizes.getGrowthFactorForeground()
       )
     }
   }
 
   drawTarget(USER_ANCHOR_POINT: number[], GROUND_LEVEL_SCALAR: number, target: HTMLImageElement, range: number, altitude: number) {
-    const conversionRate = this.#canvasPositionAndSizes.calculateConversionRate(USER_ANCHOR_POINT);
+    const [x_pos, y_pos] = this.#canvasPositionAndSizes.getTargetTopLeft(
+      GROUND_LEVEL_SCALAR, 
+      USER_ANCHOR_POINT, 
+      altitude, 
+      range
+    )
     const growthFactor = 0.5;
-
-
-    const anchor_x = this.#canvasPositionAndSizes.getPivotPosition(USER_ANCHOR_POINT)[0]
-
-    // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
-    const y_pos = GROUND_LEVEL_SCALAR * this.#canvasPositionAndSizes.getCanvas().height - altitude * conversionRate - 356 * growthFactor;
-    const x_pos = anchor_x + range * conversionRate - 152 * growthFactor;
-    // const [x_pos, y_pos] = this.#canvasPositionAndSizes.getTargetTopLeft(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range);
 
     const ctx = this.#canvasPositionAndSizes.getCtx()
 
@@ -243,8 +244,8 @@ export class DrawingImages {
         target,
         x_pos,
         y_pos,
-        505,
-        701,
+        this.#targetRef.current.width,
+        this.#targetRef.current.height,
         growthFactor
       )
     }

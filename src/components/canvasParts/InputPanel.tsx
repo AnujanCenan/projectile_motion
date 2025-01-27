@@ -1,6 +1,7 @@
 import { RefObject } from "react"
 import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes"
 import "./CSS/InputPanel.css"
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar"
 
 interface InputPanelProps {
   setElevationAngle: Function 
@@ -34,7 +35,6 @@ export default function InputPanel({
   USER_ANCHOR_PONT,
   MAX_HORIZONTAL_RANGE,
   CANNON_HORIZONTAL_SCALAR,
-  GROUND_LEVEL_SCALAR = 0.8,
   userStateRef,
   setStateChangeTrigger
 }: InputPanelProps) {

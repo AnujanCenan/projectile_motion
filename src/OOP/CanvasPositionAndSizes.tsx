@@ -1,21 +1,33 @@
+import { GROUND_LEVEL_SCALAR } from "../globalConstants/groundLevelScalar";
+
 export class CanvasPositionAndSizes {
   #canvas;
+  #foregroundInfo;
   #cannonInfo;
   #velocitySliderInfo;
   #holsterInfo;
+  #heightBarInfo;
+  #targetInfo;
   #MAX_HORIZONTAL_RANGE;
 
   constructor(
     canvas: HTMLCanvasElement, 
+    foregorundInfo: ForegroundInfo,
     cannonInfo: CannonInfo,
     holsterInfo: HolsterInfo, 
     velocitySlider: VelocitySliderInfo,
+    heightBarInfo: HeightBarInfo,
+    targetInfo: TargetInfo,
     MAX_HORIZONTAL_RANGE: number) 
   {
     this.#canvas = canvas;
+    this.#foregroundInfo = foregorundInfo;
     this.#cannonInfo = cannonInfo;
     this.#holsterInfo = holsterInfo;
-    this.#velocitySliderInfo = velocitySlider
+    this.#velocitySliderInfo = velocitySlider;
+    this.#heightBarInfo = heightBarInfo;
+
+    this.#targetInfo = targetInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
   }
 
@@ -41,6 +53,10 @@ export class CanvasPositionAndSizes {
     return this.#velocitySliderInfo;
   }
 
+  getTargetInfo() {
+    return this.#targetInfo;
+  }
+
   getMaxHorizontalRage() {
     return this.#MAX_HORIZONTAL_RANGE;
   }
@@ -56,27 +72,6 @@ export class CanvasPositionAndSizes {
   }
 
   /// TOP LEFT CORNERS
-
-
-
-  getTargetPivot(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
-    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
-    const growthFactor = 0.5;
-  
-  
-    const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
-  
-    // the (152, 356) magic numbers are the coordinates of the green cross on the ORIGINAL target image
-    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate/* - 356 * growthFactor*/;
-    const x_pos = anchor_x + range * conversionRate /*- 152 * growthFactor*/;
-
-    return [x_pos, y_pos]
-  }
-
-  getTargetTopLeft(GROUND_LEVEL_SCALAR: number, USER_ANCHOR_POINT: number[], altitude: number, range: number) {
-    const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
-    return [piv_x - 152, piv_y - 356];
-  }
 
   getCannonOriginalPosition(USER_ANCHOR_POINT: number[]) {
     const [piv_x, piv_y] = this.getPivotPosition(USER_ANCHOR_POINT);
@@ -100,15 +95,22 @@ export class CanvasPositionAndSizes {
     const cannon_x = this.getCannonOriginalPosition(USER_ANCHOR_POINT)[0];
     const growthFactor = this.getGrowthFactorCannon();
 
-    return [cannon_x, holster_y + this.#holsterInfo.pixel_height * growthFactor + 20];
+    const gapBetweenHolsterAndVelBar = 20;
+    return [
+      cannon_x, 
+      holster_y + this.#holsterInfo.pixel_height * growthFactor + gapBetweenHolsterAndVelBar
+    ];
   }
 
   getHeightArrowPosition(USER_ANCHOR_POINT: number[]) {
     const growthFactor = this.getGrowthFactorHeight();
 
     const scale_pos_x = this.getHeightScalePosition(USER_ANCHOR_POINT)[0]
-    const arrowPosX = scale_pos_x + (100) * growthFactor - 103 * growthFactor;
-    const arrowPosY = USER_ANCHOR_POINT[1] * this.#canvas.height - (63 / 2) * growthFactor;
+    const arrowPosX = scale_pos_x + (this.#heightBarInfo.x_coord_arrow_tip_touch) * growthFactor 
+      - this.#heightBarInfo.arrow_pixel_width * growthFactor;
+
+    const arrowPosY = USER_ANCHOR_POINT[1] * this.#canvas.height 
+      - (this.#heightBarInfo.arrow_pixel_height / 2) * growthFactor;
   
     return [arrowPosX, arrowPosY];
   }
@@ -117,9 +119,47 @@ export class CanvasPositionAndSizes {
     const cannonPosition = this.getCannonOriginalPosition(USER_ANCHOR_POINT)
     const growthFactor = this.getGrowthFactorHeight();
 
-    const pos_x = cannonPosition[0] - 158 * growthFactor - 20; // 158 is the width of the height metre image
-    const pos_y = 0.1 * this.#canvas.height - 23 * growthFactor; // 23 pixels is the number of pixels that the actual start of the 
-    return [pos_x, pos_y]  }
+    const xDistanceFromCannon = 20;
+
+    const pos_x = cannonPosition[0] - this.#heightBarInfo.pixel_width * growthFactor - xDistanceFromCannon;
+    const pos_y = 0.1 * this.#canvas.height 
+      - this.#heightBarInfo.y_offset_scale_start * growthFactor; 
+    return [pos_x, pos_y]  
+  }
+
+
+
+  getTargetPivot(
+    GROUND_LEVEL_SCALAR: number,
+    USER_ANCHOR_POINT: number[], 
+    altitude: number, 
+    range: number
+  ) {
+    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
+  
+  
+    const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
+  
+    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate;
+    const x_pos = anchor_x + range * conversionRate;
+
+    return [x_pos, y_pos]
+  }
+
+  getTargetTopLeft(
+    GROUND_LEVEL_SCALAR: number, 
+    USER_ANCHOR_POINT: number[], 
+    altitude: number, 
+    range: number
+  ) {
+    const growthFactor = 0.5;
+
+    const [piv_x, piv_y] = this.getTargetPivot(GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, altitude, range)
+    return [
+      piv_x - this.#targetInfo.target_x * growthFactor, 
+      piv_y - this.#targetInfo.target_y * growthFactor
+    ];
+  }
 
 
   /// GROWTH FACTOR
@@ -130,16 +170,16 @@ export class CanvasPositionAndSizes {
 
   getGrowthFactorVelocity() {
     const FRACTION_OF_CANVAS = 2/5;
-    return (FRACTION_OF_CANVAS * window.innerWidth) / 817 // 817 is the velocityBar_pixel_width
+    return (FRACTION_OF_CANVAS * window.innerWidth) / this.#velocitySliderInfo.pixel_width; // 817 is the velocityBar_pixel_width
   }
 
-  getGrowthFactorHeight(GROUND_LEVEL_SCALAR: number = 0.8) {
+  getGrowthFactorHeight() {
   const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
-  return (FRACTION_OF_CANVAS * this.#canvas.height) / 866 // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
+  return (FRACTION_OF_CANVAS * this.#canvas.height) / this.#heightBarInfo.functional_pixel_height // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
   }
 
   getGrowthFactorForeground() {
-    return this.#canvas.width / 1000; // 1000 is the width of the grass image atm
+    return this.#canvas.width / this.#foregroundInfo.width; // 1000 is the width of the grass image atm
   }
 
   /// CONVERSION RATE

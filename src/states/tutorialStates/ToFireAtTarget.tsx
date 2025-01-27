@@ -1,3 +1,4 @@
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
 import { FiredAtTarget } from "./FiredAtTarget";
 import { TutorialState } from "./TutorialState";
 
@@ -22,7 +23,7 @@ export class ToFireAtTarget extends TutorialState {
       userState.current === "firing" && 
       gameState.current[0] === 45 && 
       gameState.current[1] === 70 && 
-      gameState.current[2] === 0.8
+      gameState.current[2] === GROUND_LEVEL_SCALAR
     )
   }
 }

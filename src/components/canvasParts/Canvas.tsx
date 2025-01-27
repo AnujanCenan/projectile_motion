@@ -5,7 +5,10 @@ import "./CSS/Canvas.css"
 
 import { 
   getCannonInfo, 
+  getForegroundInfo, 
+  getHeightBarInfo, 
   getHolsterInfo,
+  getTargetInfo,
   getVelocitySliderInfo,
   isLandscape
 } from "../../processingFunctions/drawingFunctions.tsx"
@@ -37,6 +40,7 @@ import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
 import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar.tsx"
 
 
 interface CanvasProps {
@@ -54,7 +58,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   const [readyToDraw, setReadyToDraw] = useState(false);
 
   // Positioning Constants
-  const GROUND_LEVEL_SCALAR = 0.8;
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
@@ -88,10 +91,14 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   const MAX_SPEED = Math.sqrt(9.8 * MAX_RANGE)
 
-  const cannonInfo = getCannonInfo("v2")
+  const foregroundInfo = getForegroundInfo("grass");
+  const cannonInfo = getCannonInfo("v2");
   const holsterInfo = getHolsterInfo("holster_v1")
   const velocitySliderInfo = getVelocitySliderInfo("velocity_slider");
-  
+  const heightBarInfo = getHeightBarInfo("height_bar");
+  const targetInfo = getTargetInfo("practice_target");
+
+
   // Cannon State Variables
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
@@ -160,7 +167,17 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   // useEffect for initialising all our classes
   useEffect(() => {
     if (canvasRef.current) {
-      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(canvasRef.current, cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE);
+      positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
+        canvasRef.current, 
+        foregroundInfo,
+        cannonInfo, 
+        holsterInfo, 
+        velocitySliderInfo, 
+        heightBarInfo,
+        targetInfo, 
+        MAX_RANGE
+      );
+
       if (allImagesReferenced()) {
         drawingInterfaceRef.current = new DrawingImages(
           positionAndSizesInterfaceRef.current,
@@ -241,7 +258,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       e, positionAndSizesInterfaceRef.current!, elevationAngle, launchVelocity, USER_ANCHOR_POINT, MAX_SPEED
     )
   }
-  // done
+
   function mouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     if (angleInputRef.current && velocityInputRef.current && heightInputRef.current) {
       canvasMouseMoveEvent.current?.mouseMove(
@@ -272,7 +289,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   
   ///////////////////////////////////////////////////////////////////////////////
 
-
   return (
     <>
       
@@ -293,8 +309,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           onMouseUp={() => mouseUp()}
           onMouseMove={(e) => mouseMove(e)}
         >
-
-          <>
           <img 
             src={grassImg}
             alt="grass"
@@ -339,10 +353,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             alt="target"
             ref={targetRef}
           />
-          </>
-
         </canvas>
-      {/* done */}
+
         {canvasRef.current &&
 
           <InputPanel 
