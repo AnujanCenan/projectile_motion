@@ -53,9 +53,7 @@ interface CanvasProps {
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
 export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
-
   // Hack to make sure the input panel loads in after the canvas is rendered
-  const [readyToDraw, setReadyToDraw] = useState(false);
 
   // Positioning Constants
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
@@ -129,17 +127,17 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       setCannonHorizontalScalar(0.5);
     }
   }, [width, height]);
+
   //////////////////////// Canvas Loading //////////////////////////////////////
-
-
+  
   const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
   
   useEffect(() => {
+    if (userStateRef.current === "firing" || userStateRef.current === "idle" || userStateRef.current === "scrolling") return;
     imagePreloader.loadImages(imageArray, () => {
-      drawEnvironmentFromCanvas()
+      drawEnvironmentFromCanvas();
     })
-
-  }, [width, height]);
+  });
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -147,7 +145,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     // let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
     if (canvas) fix_dpi(canvas);
-  }, [width, height, readyToDraw]);
+  }, [width, height]);
 
 
   // violates open-close principle because if i add an extra image, it has to be added here
@@ -211,7 +209,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           click_y
         )
       }
-      setReadyToDraw(true);
     } else {
       
     }
@@ -219,7 +216,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     drawEnvironmentFromCanvas();
-
   }, [GROUND_LEVEL_SCALAR, 
     USER_ANCHOR_POINT,
     MAX_SPEED,
@@ -384,7 +380,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             gameStateRef={gameStateRef}
           />}
 
-        {readyToDraw && 
+        { 
           <FireButton 
             fireCannon={() => fireCannon(
               (positionAndSizesInterfaceRef.current)!,
