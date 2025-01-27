@@ -36,6 +36,7 @@ import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx
 import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
 import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
+import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
 
 
 interface CanvasProps {
@@ -223,16 +224,11 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
 
-      const canvasParent = canvasRef.current.parentElement;
-
-      const scrollLeft = canvasParent.scrollLeft;
-      const clientWidth = canvasParent.clientWidth;
-      const scrollWidth = canvasParent.scrollWidth;
       gameStateRef.current = [
         elevationAngle, 
         launchVelocity, 
         USER_ANCHOR_POINT[1], 
-        (scrollLeft + clientWidth) / scrollWidth
+        calculateScrollScalar(canvasRef.current)
       ]
       setStateChangeTrigger(x => x ^ 1);
     }
@@ -281,14 +277,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     <>
       
       <div id="container" onScroll={(e) => {
-        if (userStateRef.current !== "firing") {
+        if (canvasRef.current && userStateRef.current !== "firing") {
           userStateRef.current = "scrolling";
-          console.log("Set user state to scrolling")
-          const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
-          const clientWidth = (e.target as HTMLDivElement).clientWidth;
-          const scrollWidth = (e.target as HTMLDivElement).scrollWidth;
           gameStateRef.current = [
-            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], (scrollLeft + clientWidth) / scrollWidth
+            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
           ]
           setStateChangeTrigger(x => x ^ 1);
         }
@@ -378,6 +370,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
               GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, target_altitude, target_range
             )}        
             gameStateRef={gameStateRef}
+            userStateRef={userStateRef}
           />}
 
         {readyToDraw && 
@@ -389,6 +382,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
               width,
+              gameStateRef,
               userStateRef,
               setStateChangeTrigger
             )} 
