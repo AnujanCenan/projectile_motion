@@ -1,6 +1,5 @@
 import './App.css';
-import LevelSelection from './components/levelSelection/levelSelection.tsx';
-import Tutorial from './components/tutorial/Tutorial.tsx';
+import LevelSelection from './components/levelSelection/LevelSelection';
 
 function App() {
   const levels: Level[] = [
@@ -61,8 +60,9 @@ function App() {
     }
   ]
   return (
-    <LevelSelection levels={levels} />
-  );
+    <LevelSelection
+      levels={levels}
+    />
+  )
 }
-
 export default App;
