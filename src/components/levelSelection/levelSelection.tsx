@@ -15,6 +15,7 @@ export default function LevelSelection({levels, setProjectileMotionPage}: LevelS
     <>
       <div id="levelSelectionWrapper">
         <div id="levelSelectionContainer">
+          <div id="levelSelect_Title">Level Select</div>
           {levels.map((l) => (<LevelPanel level={l} setLevelFocus={setLevelFocus}
             />))
           }

@@ -1,3 +1,8 @@
+@font-face {
+    font-family: space-frigate;
+    src: url(../../../fonts/space-frigate-font/SpaceFrigate-KVdW.ttf);
+}
+
 #levelSelectionWrapper {
     background-color: white;
     display: flex;
@@ -22,4 +27,20 @@
 
     flex-wrap: wrap;
     overflow-y: scroll;
+}
+
+#levelSelect_Title {
+    position: absolute;
+    top: 0;
+    margin-bottom: 20px;
+    font-family: space-frigate;
+    font-size: calc(3.2vw + 1.8vh);
+    /* border: 2px solid black; */
+    padding: 24px;
+
+    border-bottom-right-radius: 36px;
+    border-bottom-left-radius: 36px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    box-shadow: 6px 8px rgb(195, 195, 195);
 }
