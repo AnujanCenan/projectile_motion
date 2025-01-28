@@ -11,6 +11,7 @@ export default function LevelPlaySlider({level, setLevelFocus}: LevelPlayerSlide
         <div id="LevelPlaySlider_title">{level.name}</div>
         <div className="flexBreak"/>
         <div id="LevelPlaySlider_blurb">{level.blurb}</div>
+        <div className="flexBreak"/>
         <div id="LevelPlaySlider_description">{level.description}</div>
         <button id="LevelPlaySlider_cancelButton">Cancel</button>
         <button id="LevelPlaySlider_playButton">Begin Mission</button>

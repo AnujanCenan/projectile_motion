@@ -19,17 +19,22 @@
 
 #LevelPlaySlider_container > div#LevelPlaySlider_blurb {
     margin-top: 2%;
-    font-size: calc(0.8vw + 0.6vh);
-}
-#LevelPlaySlider_container > div#description {
-    font-size: 22px;
+    font-size: calc(1vw + 0.8vh);
 }
 
+#LevelPlaySlider_container > div#LevelPlaySlider_description {
+    margin-top: 4%;
+    font-size: calc(1.2vw + 1vh);
+    padding-left: 10%;
+    padding-right: 10%;
+}
 
 #LevelPlaySlider_container > button {
     display: block;
     width: 90px;
 }
+
+
 
 
 

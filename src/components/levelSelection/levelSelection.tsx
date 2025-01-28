@@ -8,7 +8,7 @@ interface LevelSelectionProps {
 }
 export default function LevelSelection({levels}: LevelSelectionProps) {
 
-  const [levelFocus, setLevelFocus] = useState<Level | null>(null);
+  const [levelFocus, setLevelFocus] = useState<Level | null>(levels[1]);
   return (
     <>
       <div id="levelSelectionWrapper">
