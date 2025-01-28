@@ -1,0 +1,23 @@
+#levelSelectionWrapper {
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+}
+
+#levelSelectionContainer {
+    width: 80%;
+    height: 80%;
+    border: 8px solid black;
+    display: flex;
+    justify-content: center;
+
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
