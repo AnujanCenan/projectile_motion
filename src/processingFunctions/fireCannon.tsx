@@ -3,7 +3,7 @@ import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
 import { calculateScrollScalar } from "./scrollScalarCalculation.tsx";
 import { GROUND_LEVEL_SCALAR } from "../globalConstants/groundLevelScalar.tsx";
-import { UserGameAction } from "../states/userGameActions/userGameAction.tsx";
+import { UserGameAction } from "../states/userGameActions/UserGameAction.tsx";
 import { Firing } from "../states/userGameActions/Firing.tsx";
 import { Idle } from "../states/userGameActions/Idle.tsx";
 
