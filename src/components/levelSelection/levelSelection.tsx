@@ -1,12 +1,14 @@
-import { useState } from "react"
+import { JSX, useState } from "react"
 import "./CSS/LevelSelection.css"
 
 import LevelPanel from "./LevelPanel"
 import LevelPlaySlider from "./LevelPlaySlider";
 interface LevelSelectionProps {
   levels: Level[]
+  setProjectileMotionPage: React.Dispatch<React.SetStateAction<JSX.Element>>
+
 }
-export default function LevelSelection({levels}: LevelSelectionProps) {
+export default function LevelSelection({levels, setProjectileMotionPage}: LevelSelectionProps) {
 
   const [levelFocus, setLevelFocus] = useState<Level | null>(levels[1]);
   return (
@@ -17,9 +19,13 @@ export default function LevelSelection({levels}: LevelSelectionProps) {
             />))
           }
         </div>
-        {levelFocus !== null && 
-            <LevelPlaySlider level={levelFocus} setLevelFocus={setLevelFocus}/>
-          }
+        {
+          levelFocus !== null && 
+          <LevelPlaySlider 
+            level={levelFocus} 
+            setLevelFocus={setLevelFocus} setProjectileMotionPage={setProjectileMotionPage}
+          />
+        }
       </div>
     </>
   )
