@@ -1,6 +1,7 @@
 interface Level {
   name: string;
-  description: string;
+  blurb: string;
+  description?: string;
   completionStatus: boolean;
 }
 

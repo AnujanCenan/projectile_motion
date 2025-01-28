@@ -1,19 +1,21 @@
 import "./CSS/LevelPanel.css"
 
 interface LevelPanelProps {
-  name: string;
-  description: string;
-  completionStatus: boolean;
+  level: Level
+  setLevelFocus: React.Dispatch<React.SetStateAction<Level | null>>
 }
-export default function LevelPanel({name, description, completionStatus}: LevelPanelProps) {
+export default function LevelPanel({level, setLevelFocus}: LevelPanelProps) {
   return (
     <>
-      <div className="levelPanelContainer">
-        <div className="levelName">{name}</div>
-        <div className="flexBreak" />
-        <div className="levelDescription">{description}</div>
-        <div className="flexBreak" />
-        <div className="completionStatus">{completionStatus ? "Complete" : "Incomplete"}</div>
+      <div 
+        className="levelPanelContainer" 
+        onClick={() => setLevelFocus(level)}
+      >
+        <span className="levelName">{level.name}</span>
+        <span className="flexBreak" />
+        <span className="levelBlurb">{level.blurb}</span>
+        <span className="flexBreak" />
+        <span className="completionStatus">{level.completionStatus ? "Complete" : "Incomplete"}</span>
       </div>
 
     </>

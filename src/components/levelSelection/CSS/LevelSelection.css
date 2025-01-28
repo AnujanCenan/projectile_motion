@@ -17,6 +17,7 @@
     border: 8px solid black;
     display: flex;
     justify-content: center;
+    align-items: center;
 
     flex-wrap: wrap;
     overflow-y: scroll;
