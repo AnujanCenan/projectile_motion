@@ -1,6 +1,5 @@
 import { JSX, useRef } from "react"
 import "./CSS/LevelPlaySlider.css"
-import Tutorial from "../tutorial/Tutorial"
 import { LevelNameDirectory } from "../../OOP/LevelNameDirectory"
 interface LevelPlayerSliderProps {
   level: Level
