@@ -33,6 +33,31 @@ function App() {
       name: "Level 5",
       blurb: "Meet Dr Flame",
       completionStatus: false
+    },
+    {
+      name: "Level 6",
+      blurb: "Meet Dr Flame",
+      completionStatus: false
+    },
+    {
+      name: "Level 7",
+      blurb: "Meet Dr Flame",
+      completionStatus: false
+    },
+    {
+      name: "Level 8",
+      blurb: "Meet Dr Flame",
+      completionStatus: false
+    },
+    {
+      name: "Level 9",
+      blurb: "Meet Dr Flame",
+      completionStatus: false
+    },
+    {
+      name: "Level 10",
+      blurb: "Meet Dr Flame",
+      completionStatus: false
     }
   ]
   return (

@@ -1,13 +1,14 @@
 import { useState } from "react"
 import "./CSS/LevelSelection.css"
+
 import LevelPanel from "./LevelPanel"
+import LevelPlaySlider from "./LevelPlaySlider";
 interface LevelSelectionProps {
   levels: Level[]
 }
 export default function LevelSelection({levels}: LevelSelectionProps) {
 
   const [levelFocus, setLevelFocus] = useState<Level | null>(null);
-  
   return (
     <>
       <div id="levelSelectionWrapper">
@@ -15,8 +16,10 @@ export default function LevelSelection({levels}: LevelSelectionProps) {
           {levels.map((l) => (<LevelPanel level={l} setLevelFocus={setLevelFocus}
             />))
           }
-
         </div>
+        {levelFocus !== null && 
+            <LevelPlaySlider level={levelFocus} setLevelFocus={setLevelFocus}/>
+          }
       </div>
     </>
   )

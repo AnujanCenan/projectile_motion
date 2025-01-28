@@ -12,6 +12,7 @@
 }
 
 #levelSelectionContainer {
+    position: relative;
     width: 80%;
     height: 80%;
     border: 8px solid black;

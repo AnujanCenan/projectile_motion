@@ -1,8 +1,10 @@
 .levelPanelContainer {
     /* width: 80px;
     height: 160px; */
+    min-width: 100px;
     width: 20%;
     height: 40%;
+    aspect-ratio:inherit;
     border: 4px solid black;
     margin: 10px;
     border-radius: 22px;
