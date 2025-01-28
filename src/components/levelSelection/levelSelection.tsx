@@ -14,12 +14,14 @@ export default function LevelSelection({levels, setProjectileMotionPage}: LevelS
   return (
     <>
       <div id="levelSelectionWrapper">
-        <div id="levelSelectionContainer">
-          <div id="levelSelect_Title">Level Select</div>
-          {levels.map((l) => (<LevelPanel level={l} setLevelFocus={setLevelFocus}
-            />))
-          }
-        </div>
+        { levelFocus === null &&
+          <div id="levelSelectionContainer">
+            <div id="levelSelect_Title"><span>Level Select</span></div>
+            {levels.map((l) => (<LevelPanel level={l} setLevelFocus={setLevelFocus}
+              />))
+            }
+          </div>
+        }
         {
           levelFocus !== null && 
           <LevelPlaySlider 
