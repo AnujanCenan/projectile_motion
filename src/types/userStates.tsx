@@ -1,3 +1,4 @@
+// should be deprecated
 type UserState = 
     "default"
   | "loading"
