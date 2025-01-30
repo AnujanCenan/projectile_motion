@@ -1,0 +1,85 @@
+@font-face {
+    font-family: space-frigate;
+    src: url(../../../fonts/space-frigate-font/SpaceFrigate-KVdW.ttf);
+}
+
+#levelSelectionWrapper {
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-image: url("../../../images/backdrops/Backdrop2.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+}
+
+#levelSelectionVisibility {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 1%;
+    margin-right: 1%;
+    height: 4%;
+    font-size: calc(110%);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 4px 4px black;
+    background-color: rgb(0, 136, 255);
+    text-align: center;
+}
+
+#levelSelectionVisibility:hover {
+    box-shadow: 2px 2px black;
+    cursor: pointer;
+    background-color: rgb(155, 208, 255);
+    font-size: calc(115%);
+}
+
+#levelSelectionVisibility:active {
+    box-shadow: 4px 4px black;
+    cursor: pointer;
+    background-color: rgb(0, 136, 255);
+}
+
+#levelSelectionContainer {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    border: 4px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+
+#levelSelect_Title {
+    position: relative;
+
+
+    margin-bottom: 5%;
+    font-family: space-frigate;
+    font-size: calc(3.2vw + 1.8vh);
+    /* border: 2px solid black; */
+
+    width: 100%;
+
+}
+
+#levelSelect_Title > span {
+    border-bottom-right-radius: 36px;
+    border-top-right-radius: 36px;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    box-shadow: 6px 8px rgb(195, 195, 195);
+    padding: 24px;
+
+}

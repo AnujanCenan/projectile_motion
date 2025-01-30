@@ -1,3 +1,5 @@
+// should be deprecated
+
 export type TutorialState = 
       "Salutations"
     | "DraggingCannonInstructions"

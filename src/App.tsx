@@ -1,11 +1,16 @@
+import { JSX, SetStateAction, useEffect, useState } from 'react';
 import './App.css';
-import Tutorial from './components/tutorial/Tutorial.tsx';
+import LevelSelection from './components/levelSelection/LevelSelector';
+import levelsFile from "./components/levelSelection/levels.json"
 
 function App() {
-  
-  return (
-    <Tutorial/>
-  );
-}
 
+  const [projectileMotionPage, setProjectileMotionPage] = useState<JSX.Element>(<div/>);
+
+  useEffect(() => {
+    setProjectileMotionPage(_ => <LevelSelection levels={levelsFile.levels} setProjectileMotionPage={setProjectileMotionPage}/>)
+  }, [])
+
+  return projectileMotionPage
+}
 export default App;

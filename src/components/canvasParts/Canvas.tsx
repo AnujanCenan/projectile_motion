@@ -41,7 +41,7 @@ import InteractiveMap from "./InteractiveMap.tsx"
 import { fix_dpi } from "../fixDPI.tsx"
 import { calculateScrollScalar } from "../../processingFunctions/scrollScalarCalculation.tsx"
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar.tsx"
-import { UserGameAction } from "../../states/userGameActions/userGameAction.tsx"
+import { UserGameAction } from "../../states/userGameActions/UserGameAction.tsx"
 import { Firing } from "../../states/userGameActions/Firing.tsx"
 import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 
