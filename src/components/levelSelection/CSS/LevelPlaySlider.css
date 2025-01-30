@@ -8,6 +8,11 @@
     src: url(../../../fonts/typewriter-font/TypewriterBold-PZ2P.ttf);
 }
 
+@font-face {
+    font-family: quicksilver;
+    src: url(../../../fonts/quicksilver-font/Quicksilver-3z2OL.ttf);
+}
+
 #LevelPlaySlider_container {
     width: 80%;
     height: 80%;
@@ -59,8 +64,8 @@ div#LevelPlaySlider_description {
 
 #LevelPlaySlider_buttonContainer > button {
     width: 24%;
-    font-size: calc(1.4vw + 0.8vh);
-
+    font-size: calc(1.5vw + 0.6vh);
+    font-family: quicksilver;
     border: none;
     border: solid black 2px;
     box-shadow: 10px 5px 5px rgb(123, 123, 123);
@@ -69,6 +74,7 @@ div#LevelPlaySlider_description {
 
 #LevelPlaySlider_buttonContainer > button:hover {
     cursor: pointer;
+    font-size: calc(1.6vw + 0.8vh);
     box-shadow: 5px 5px 5px rgb(123, 123, 123);
     color: white;
 }
