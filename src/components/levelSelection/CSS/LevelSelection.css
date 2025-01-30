@@ -13,6 +13,8 @@
     height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;
+    background-image: url("../../../images/backdrops/Backdrop2.png");
+    background-size: cover;
 
 }
 
@@ -24,7 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
+    background-color: transparent;
     flex-wrap: wrap;
     overflow-y: scroll;
 }
@@ -45,7 +47,7 @@
 
 #levelSelect_Title > span {
     border-bottom-right-radius: 36px;
-    border-bottom-left-radius: 36px;
+    border-top-right-radius: 36px;
     background-color: rgb(0, 0, 0);
     color: white;
     box-shadow: 6px 8px rgb(195, 195, 195);
