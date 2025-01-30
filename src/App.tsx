@@ -1,6 +1,6 @@
 import { JSX, SetStateAction, useEffect, useState } from 'react';
 import './App.css';
-import LevelSelection from './components/levelSelection/LevelSelection';
+import LevelSelection from './components/levelSelection/levelSelection';
 import levelsFile from "./components/levelSelection/levels.json"
 
 function App() {

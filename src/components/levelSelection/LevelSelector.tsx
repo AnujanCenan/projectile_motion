@@ -1,5 +1,5 @@
 import { JSX, useState } from "react"
-import "./CSS/LevelSelection.css"
+import "./CSS/LevelSelector.css"
 
 import LevelPanel from "./LevelPanel"
 import LevelPlaySlider from "./LevelPlaySlider";
