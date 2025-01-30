@@ -11,10 +11,15 @@ interface LevelSelectionProps {
 export default function LevelSelection({levels, setProjectileMotionPage}: LevelSelectionProps) {
 
   const [levelFocus, setLevelFocus] = useState<Level | null>(levels[1]);
+  const [levelSelectionVisible, setLevelSelectionVisible] = useState<boolean>(true);
+
+
   return (
     <>
       <div id="levelSelectionWrapper">
-        { levelFocus === null &&
+        <button id="levelSelectionVisibility" onClick={() => setLevelSelectionVisible(b => !b)}>Toggle Visibility</button>
+      
+        { levelSelectionVisible && levelFocus === null &&
           <div id="levelSelectionContainer">
             <div id="levelSelect_Title"><span>Level Select</span></div>
             {levels.map((l) => (<LevelPanel level={l} setLevelFocus={setLevelFocus}
@@ -23,7 +28,7 @@ export default function LevelSelection({levels, setProjectileMotionPage}: LevelS
           </div>
         }
         {
-          levelFocus !== null && 
+          levelSelectionVisible && levelFocus !== null && 
           <LevelPlaySlider 
             level={levelFocus} 
             setLevelFocus={setLevelFocus} setProjectileMotionPage={setProjectileMotionPage}
