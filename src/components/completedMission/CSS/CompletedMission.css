@@ -1,0 +1,76 @@
+#completedMissionWrapper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.flexBreak {
+    width: 100%;
+    height: 0;
+}
+
+#completedMissionContainer {
+    position: absolute;
+    width: 60vw;
+    background-color: white;
+    border: 8px solid grey;
+    border-radius: 24px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#CompletedMission_MissionCompleteText {
+    font-size: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 30px;
+    text-align: center;
+}
+#completedMissionContainer > img#checkmark {
+    width: 80px;
+    height: 80px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+button#completedMission_BackToHome {
+    height: 60px;
+    width: 30%;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    background-color: rgb(60, 139, 60);
+    color: white;
+
+}
+
+button#completedMission_BackToHome:hover {
+
+    background-color: rgb(162, 255, 162);
+    color: black;
+}
+
+#completedMissionContainer > button {
+    cursor: pointer;
+    border: none;
+    border: 2px solid black;
+    border-radius: 6px;
+    box-shadow: 3px 4px black;
+    font-size: calc(0.8vw + 1.2vh);
+}
+
+#completedMissionContainer > button:hover {
+    box-shadow: 2px 3px;
+    font-size: calc(0.9vw + 1.3vh);
+
+}
+#completedMissionContainer > button:active {
+    box-shadow: 1px 2px;
+    font-size: calc(0.8vw + 1.2vh);
+
+}

@@ -38,14 +38,6 @@ export default function Dialogue({
     if (currSpeechIndex + 1 === speeches.length) {
       containerRef.current.style.visibility = "hidden";
 
-      
-      // const child = document.getElementById('dialogue_container') as HTMLDivElement;
-      // console.log(`parent = ${child.parentElement}`)
-      // const parent = child.parentElement as HTMLDivElement;
-      // console.log(`child = ${child}`)
-
-      // parent.removeChild(child);
-
       setCompletedDialogue(true);
     } 
     setCurrSpeechIndex(currSpeechIndex + 1);

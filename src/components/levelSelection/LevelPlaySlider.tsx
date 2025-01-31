@@ -7,7 +7,7 @@ interface LevelPlayerSliderProps {
   setProjectileMotionPage: React.Dispatch<React.SetStateAction<JSX.Element>>
 }
 export default function LevelPlaySlider({level, setLevelFocus, setProjectileMotionPage}: LevelPlayerSliderProps) {
-  const levelNameDirectoryRef = useRef(new LevelNameDirectory());
+  const levelNameDirectoryRef = useRef(new LevelNameDirectory(setProjectileMotionPage));
 
   return (
     <>

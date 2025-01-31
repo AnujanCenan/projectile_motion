@@ -10,7 +10,7 @@ interface LevelSelectionProps {
 }
 export default function LevelSelection({levels, setProjectileMotionPage}: LevelSelectionProps) {
 
-  const [levelFocus, setLevelFocus] = useState<Level | null>(levels[1]);
+  const [levelFocus, setLevelFocus] = useState<Level | null>(null);
   const [levelSelectionVisible, setLevelSelectionVisible] = useState<boolean>(true);
 
 
@@ -31,7 +31,8 @@ export default function LevelSelection({levels, setProjectileMotionPage}: LevelS
           levelSelectionVisible && levelFocus !== null && 
           <LevelPlaySlider 
             level={levelFocus} 
-            setLevelFocus={setLevelFocus} setProjectileMotionPage={setProjectileMotionPage}
+            setLevelFocus={setLevelFocus} 
+            setProjectileMotionPage={setProjectileMotionPage}
           />
         }
       </div>

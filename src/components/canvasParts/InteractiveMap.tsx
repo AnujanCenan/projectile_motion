@@ -99,7 +99,6 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
     const canvasDivContainer = parentCanvasRef.current.parentElement as HTMLDivElement;
     const newScrollPos = (clicked_x.current - absoluteLeftPosition) / scale;
     
-    console.log("Scrolling through the mouse down of the interactive map")
     canvasDivContainer.scrollTo({
       left: newScrollPos - highlighter_width / (2 * scale)
     })
@@ -117,7 +116,6 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
 
     const canvasDivContainer = parentCanvasRef.current.parentElement as HTMLDivElement;
 
-    console.log("Scrolling through the mouse move of the interactive map")
     canvasDivContainer.scrollBy({
       left: translatedDisplacementX
     })
