@@ -36,7 +36,8 @@ export default function Dialogue({
     }
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
-      containerRef.current.style.visibility = "hidden";
+      const wrapper = containerRef.current.parentElement as HTMLDivElement;
+      wrapper.style.visibility = "hidden";
 
       setCompletedDialogue(true);
     } 
@@ -82,6 +83,7 @@ export default function Dialogue({
   //   }
   // })
   return (
+    <div id="dialougeWrapper">
     <div ref={containerRef} id="dialogue_container">
       <div id="dialouge_profile_pic">
         <img ref={profilePicRef} alt="character expression"/>
@@ -97,6 +99,7 @@ export default function Dialogue({
         </button>
       </div>
 
+    </div>
     </div>
   )
 }

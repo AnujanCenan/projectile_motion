@@ -55,6 +55,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   return (
     <>
       {tutorialState instanceof CompletedTutorial && <CompletedMission setProjectileMotionPage={setProjectileMotionPage}/>}
+      {dialogueChildren}
 
       <Canvas 
         MAX_RANGE={500} 
@@ -64,9 +65,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         gameStateRef={gameStateRef}
         setStateChangeTrigger={setStateChangeTrigger}
       />
-      <div id="dialogue_wrapper">
-        {dialogueChildren}
-      </div>
+
       
     </>
 

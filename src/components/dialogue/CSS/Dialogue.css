@@ -5,14 +5,24 @@
     --innerBandColour: rgb(187, 185, 255);
 }
 
+#dialougeWrapper {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    z-index: 99;
+}
+
 #dialogue_container {
     width: 80%;
     color: white;
-    position: absolute;
+    /* position: absolute; */
 
-    /* height: 30vh; */
-    max-height: 600px;
-    left: calc(50% - 40%);
+    height: max-content;
+
+    /* left: calc(50% - 40%); */
 
     display: flex;
     border-radius: 7px;
