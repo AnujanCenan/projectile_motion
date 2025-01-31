@@ -28,6 +28,11 @@
     border-radius: 7px;
     border: black solid 4px;
 
+    /* taken from https://www.w3schools.com/howto/howto_css_disable_text_selection.asp#:~:text=You%20can%20use%20the%20user,be%20used%20to%20prevent%20this. */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+
 }
 
 #dialogue_speech {
