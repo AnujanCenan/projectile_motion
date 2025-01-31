@@ -44,6 +44,7 @@ import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar.tsx
 import { UserGameAction } from "../../states/userGameActions/UserGameAction.tsx"
 import { Firing } from "../../states/userGameActions/Firing.tsx"
 import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
+import { Idle } from "../../states/userGameActions/Idle.tsx"
 
 
 interface CanvasProps {
@@ -103,9 +104,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   const [launchVelocity, setLaunchVelocity] = useState(0)
 
   // User state variables
-  const cannonClick = useRef(false);
-  const sliderClick = useRef(false);
-  const heightArrowClick = useRef(false);
+  // const cannonClick = useRef(false);
+  // const sliderClick = useRef(false);
+  // const heightArrowClick = useRef(false);
 
   const click_x = useRef<number>(0);
   const click_y = useRef<number>(0);
@@ -198,20 +199,22 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
         canvasMouseDownEvent.current = new CanvasMouseDown(
           positionAndSizesInterfaceRef.current,
-          cannonClick,
+          // cannonClick,
           clickedBehindPivot,
-          sliderClick,
-          heightArrowClick,
+          // sliderClick,
+          // heightArrowClick,
+          userStateRef,
           click_x,
           click_y
         )
 
         canvasMouseMoveEvent.current = new CanvasMouseMove(
           positionAndSizesInterfaceRef.current,
-          cannonClick,
+          // cannonClick,
           clickedBehindPivot,
-          sliderClick,
-          heightArrowClick,
+          // sliderClick,
+          // heightArrowClick,
+          userStateRef,
           click_x,
           click_y
         )
@@ -276,16 +279,16 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         setElevationAngle,
         setLaunchVelocity,
         setUserAnchorPoint,
-        userStateRef,
         setStateChangeTrigger
       )
     }
   }
 
   function mouseUp() {
-    cannonClick.current = false;
-    sliderClick.current = false;
-    heightArrowClick.current = false;
+    // cannonClick.current = false;
+    // sliderClick.current = false;
+    // heightArrowClick.current = false;
+    userStateRef.current = new Idle();
   }
   
   ///////////////////////////////////////////////////////////////////////////////

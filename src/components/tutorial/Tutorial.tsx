@@ -11,6 +11,7 @@ import { UserGameAction } from "../../states/userGameActions/UserGameAction";
 import { LoadingImages } from "../../states/userGameActions/LoadingImages";
 import { CompletedTutorial } from "../../states/tutorialStates/CompletedTutorial";
 import CompletedMission from "../completedMission/CompletedMission";
+import { ReadingDialogue } from "../../states/userGameActions/ReadingDialogue";
 
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
@@ -40,17 +41,13 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   }, [completedCurrDialogue])
 
   useEffect(() => {
-    addChild();
-  }, [tutorialState])
-  
-  function addChild() {
     if (tutorialState instanceof TutorialDialogueState) {
+      userGameActionRef.current = new ReadingDialogue();
       setDialogueChildren([
         ...dialogueChildren, tutorialState.getDialogue()
       ]);
-
     } 
-  }
+  }, [tutorialState])
 
   return (
     <>
