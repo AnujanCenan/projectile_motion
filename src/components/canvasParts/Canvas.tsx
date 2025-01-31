@@ -140,6 +140,12 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     })
   });
 
+  useEffect(() => {
+    imagePreloader.loadImages(imageArray, () => {
+      drawEnvironmentFromCanvas();
+    })
+  }, [width, height]);
+
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import "./CSS/Dialogue.css"
 
 interface DialogueProps {
@@ -45,29 +45,32 @@ export default function Dialogue({
   
   useEffect(() => { 
 
-
+    var c = 0;
     function typewriter(speech: string) {
-      // var speed = 30;
-      // writeCharacter();
-      // function writeCharacter() {
-      //   if (!speechRef.current) {
-      //     return
-      //   };
+      const time = 20;
+      timeoutRef.current = setTimeout(writeCharacter, time);
 
-      //   if (c < speech.length) {
-      //     speechRef.current.innerHTML += speech.charAt(c);
-      //     c++;
-      //     timeoutRef.current = setTimeout(writeCharacter, speed);
-      //   }
-      // }
-      speechRef.current!.innerHTML = speech;
+      function writeCharacter() {
+        if (!speechRef.current) {
+          return
+        };
+
+        if (c < speech.length) {
+          speechRef.current.innerHTML += speech.charAt(c);
+          c++;
+          timeoutRef.current = setTimeout(writeCharacter, time);
+        }
+      }
     }
 
     if (currSpeechIndex === speeches.length) return;
     if (profilePicRef.current) {
       profilePicRef.current.src = expressions[orderOfExpressions[currSpeechIndex]]
-      typewriter(speeches[currSpeechIndex]);
     } 
+    typewriter(speeches[currSpeechIndex]);
+    if (timeoutRef.current) {
+      return () => clearTimeout(timeoutRef.current as NodeJS.Timeout);
+    }
   }, [currSpeechIndex])
   
 
