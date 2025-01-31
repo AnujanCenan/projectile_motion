@@ -102,16 +102,12 @@ function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElem
   
   const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current[2]) * canvas.height) / conversionRate;
 
-  console.log(`vertical displacement = ${verticalDisplacement}`)
   const u = gameStateRef.current[1];
   const theta = gameStateRef.current[0];
 
   const u_y = u * Math.sin(degreesToRadians(theta));
 
-  console.log(`u = ${u}; theta = ${theta}; u_y = ${u_y}`)
-
   const t = quadraticFormula(1/2 * 9.8, -u_y, -verticalDisplacement);
-  console.log(`time of flight = ${t}`);
   return t;
 }
 
@@ -121,12 +117,7 @@ function range(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, co
   
   const u = gameStateRef.current[1];
   const theta = gameStateRef.current[0];
-  console.log(`degrees to radians = ${degreesToRadians(theta)}`)
   const u_x = u * Math.cos(degreesToRadians(theta));
-
-  console.log(`u_x = ${u_x}`);
-
-  console.log(`calculated range is ${u_x * tf}`)
 
   return u_x * tf;
 }

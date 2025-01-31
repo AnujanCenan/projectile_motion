@@ -8,7 +8,6 @@ export class ToDragHeightArrow extends TutorialState {
   }
   public checkIfCompletedTask(): TutorialState {
     if (this.completedTaskHelper()) {
-      console.log("Managed to drag the height arrow", this.getSetCompletedDialogue())
       return new DraggedHeightArrow(this.getUserState(), this.getGameState(), this.getSetCompletedDialogue())
     } else {
       return this;
