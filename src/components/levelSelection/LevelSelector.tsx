@@ -10,7 +10,7 @@ interface LevelSelectionProps {
 }
 export default function LevelSelection({levels, setProjectileMotionPage}: LevelSelectionProps) {
 
-  const [levelFocus, setLevelFocus] = useState<Level | null>(levels[1]);
+  const [levelFocus, setLevelFocus] = useState<Level | null>(null);
   const [levelSelectionVisible, setLevelSelectionVisible] = useState<boolean>(true);
 
 

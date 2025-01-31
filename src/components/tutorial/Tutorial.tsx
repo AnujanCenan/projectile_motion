@@ -2,16 +2,20 @@
 
 import Canvas from "../canvasParts/Canvas";
 
-import { JSX, useEffect, useRef, useState } from "react";
+import { JSX, SetStateAction, useEffect, useRef, useState } from "react";
 import { Salutations } from "../../states/tutorialStates/Salutations";
 import { TutorialState } from "../../states/tutorialStates/TutorialState";
 import { TutorialDialogueState } from "../../states/tutorialStates/TutorialDialogueState";
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
 import { UserGameAction } from "../../states/userGameActions/UserGameAction";
 import { LoadingImages } from "../../states/userGameActions/LoadingImages";
+import { CompletedTutorial } from "../../states/tutorialStates/CompletedTutorial";
+import CompletedMission from "../completedMission/CompletedMission";
 
-
-export default function Tutorial() {
+interface TutorialProps {
+  setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
+}
+export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   // const userStateRef = useRef<UserState>("loading")
   const userGameActionRef = useRef<UserGameAction>(new LoadingImages());
 
@@ -50,6 +54,8 @@ export default function Tutorial() {
 
   return (
     <>
+      {tutorialState instanceof CompletedTutorial && <CompletedMission setProjectileMotionPage={setProjectileMotionPage}/>}
+
       <Canvas 
         MAX_RANGE={500} 
         target_range={500} 
