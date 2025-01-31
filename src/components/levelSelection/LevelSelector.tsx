@@ -31,7 +31,8 @@ export default function LevelSelection({levels, setProjectileMotionPage}: LevelS
           levelSelectionVisible && levelFocus !== null && 
           <LevelPlaySlider 
             level={levelFocus} 
-            setLevelFocus={setLevelFocus} setProjectileMotionPage={setProjectileMotionPage}
+            setLevelFocus={setLevelFocus} 
+            setProjectileMotionPage={setProjectileMotionPage}
           />
         }
       </div>
