@@ -1,9 +1,18 @@
 import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
 import { Firing } from "../userGameActions/Firing";
 import { FiredAtTarget } from "./FiredAtTarget";
+import { TutorialActionState } from "./TutorialActionState";
 import { TutorialState } from "./TutorialState";
 
-export class ToFireAtTarget extends TutorialState {
+export class ToFireAtTarget extends TutorialActionState {
+  getObjectives(): string[] {
+    return [
+      "Set angle to 45 degrees",
+      "Set velocity to 70 m/s",
+      "Set height to 0 m",
+      "Click the fire butto"
+    ]
+  }
   public completeDialogue(): TutorialState {
     return this;
   }

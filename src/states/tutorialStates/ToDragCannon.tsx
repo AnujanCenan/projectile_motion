@@ -1,8 +1,16 @@
 import { DraggingCannon } from "../userGameActions/DraggingCannon";
 import { DraggedCannon } from "./DraggedCannon";
+import { TutorialActionState } from "./TutorialActionState";
 import { TutorialState } from "./TutorialState";
 
-export class ToDragCannon extends TutorialState {
+export class ToDragCannon extends TutorialActionState {
+  
+  getObjectives(): string[] {
+    return [
+      "Click on cannon and drag it so that it is greater than 50 degrees"
+    ]
+  }
+  
   public completeDialogue(): TutorialState {
     return this;
   }

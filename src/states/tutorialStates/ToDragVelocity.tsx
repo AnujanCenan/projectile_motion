@@ -1,8 +1,12 @@
 import { DraggingVelocity } from "../userGameActions/DraggingVelocity";
 import { DraggedVelocity } from "./DraggedVelocity";
+import { TutorialActionState } from "./TutorialActionState";
 import { TutorialState } from "./TutorialState";
 
-export class ToDragVelocity extends TutorialState {
+export class ToDragVelocity extends TutorialActionState {
+  getObjectives(): string[] {
+    return ["Drag velocity slider to greater than 30 m/s"]
+  }
   public completeDialogue(): TutorialState {
     return this;
   }
