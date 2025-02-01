@@ -123,23 +123,20 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   const imagePreloader = new CanvasImagePreloader();
 
-
+  function pickHorizontalScalar() {
+    return isLandscape() ? 0.5 : 0.8;
+  }
   useEffect(() => {
-    if (isLandscape()) {
-      setUserAnchorPoint([0.5, USER_ANCHOR_POINT[1]])
-
-    } else {
-      setUserAnchorPoint([0.8, USER_ANCHOR_POINT[1]])
-
-    }
-
+    setUserAnchorPoint([pickHorizontalScalar(), USER_ANCHOR_POINT[1]])
   }, [width, height]);
 
   useEffect(() => {
     if (userStateRef.current instanceof Restarting) {
       setElevationAngle(0);
       setLaunchVelocity(0);
-      setUserAnchorPoint([0.5, 0.8]);
+      
+      
+      setUserAnchorPoint([pickHorizontalScalar(), 0.8]);
       (canvasRef.current?.parentElement as HTMLDivElement).scrollTo({
         left: 0
       })
