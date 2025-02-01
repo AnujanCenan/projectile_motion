@@ -1,8 +1,12 @@
 import { InputPanelVelocity } from "../userGameActions/InputPanelVelocity";
+import { TutorialActionState } from "./TutorialActionState";
 import { TutorialState } from "./TutorialState";
 import { UsedInputPanel } from "./UsedInputPanel";
 
-export class ToUseInputPanel extends TutorialState {
+export class ToUseInputPanel extends TutorialActionState {
+  getObjectives(): string[] {
+    return ["Set velocity to 40 m/s using the input panel"]
+  }
   public completeDialogue(): TutorialState {
     return this;
   }

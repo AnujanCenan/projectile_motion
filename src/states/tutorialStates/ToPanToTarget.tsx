@@ -1,7 +1,13 @@
 import { PannedToTarget } from "./PannedToTarget";
+import { TutorialActionState } from "./TutorialActionState";
 import { TutorialState } from "./TutorialState";
 
-export class ToPanToTarget extends TutorialState {
+export class ToPanToTarget extends TutorialActionState {
+  getObjectives(): string[] {
+    return [
+      "Scroll all the way to the right"
+    ]
+  }
   public completeDialogue(): TutorialState {
     return this;
   }

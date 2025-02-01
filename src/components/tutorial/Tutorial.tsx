@@ -12,6 +12,8 @@ import { LoadingImages } from "../../states/userGameActions/LoadingImages";
 import { CompletedTutorial } from "../../states/tutorialStates/CompletedTutorial";
 import CompletedMission from "../completedMission/CompletedMission";
 import { ReadingDialogue } from "../../states/userGameActions/ReadingDialogue";
+import { TutorialActionState } from "../../states/tutorialStates/TutorialActionState";
+import CurrObjective from "../currObjective/CurrObjective";
 
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
@@ -62,6 +64,9 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         gameStateRef={gameStateRef}
         setStateChangeTrigger={setStateChangeTrigger}
       />
+      {tutorialState instanceof TutorialActionState &&
+      <CurrObjective currObjectives={tutorialState.getObjectives()} />
+      }
 
       
     </>

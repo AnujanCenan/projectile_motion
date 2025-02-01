@@ -45,6 +45,7 @@ import { UserGameAction } from "../../states/userGameActions/UserGameAction.tsx"
 import { Firing } from "../../states/userGameActions/Firing.tsx"
 import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 import { Idle } from "../../states/userGameActions/Idle.tsx"
+import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
 
 
 interface CanvasProps {
@@ -132,20 +133,37 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   //////////////////////// Canvas Loading //////////////////////////////////////
   
-  const imageArray: string[] = [grassImg, holsterImg, cannonImg, velocityBarImg, velocitySliderImg, heightScaleImg, heightArrowImg, targetImg]
+  const imageArray: string[] = [
+    grassImg, 
+    holsterImg, 
+    cannonImg, 
+    velocityBarImg, 
+    velocitySliderImg, 
+    heightScaleImg, 
+    heightArrowImg, 
+    targetImg
+  ]
   
-  useEffect(() => {
-    if (!userStateRef.current.requiresReDrawing()) return;
-    imagePreloader.loadImages(imageArray, () => {
-      drawEnvironmentFromCanvas();
-    })
-  });
+  // useEffect(() => {
+  //   if (!userStateRef.current.requiresReDrawing()) return;
+  //   imagePreloader.loadImages(imageArray, () => {
+  //     drawEnvironmentFromCanvas();
+  //   })
+  // });
+
+  // useEffect(() => {
+  //   imagePreloader.loadImages(imageArray, () => {
+  //     drawEnvironmentFromCanvas();
+  //   })
+  // }, [width, height]);
 
   useEffect(() => {
-    imagePreloader.loadImages(imageArray, () => {
-      drawEnvironmentFromCanvas();
-    })
-  }, [width, height]);
+    if (userStateRef.current instanceof LoadingImages) {
+      imagePreloader.loadImages(imageArray, () => {
+        drawEnvironmentFromCanvas();
+      })
+    }
+  }, [])
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -228,7 +246,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     USER_ANCHOR_POINT,
     MAX_SPEED,
     launchVelocity,
-    elevationAngle])
+    elevationAngle,
+    width, height
+  ])
 
   function drawEnvironmentFromCanvas() {
     drawingInterfaceRef.current?.drawEnvironment(
