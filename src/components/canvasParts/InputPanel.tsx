@@ -147,19 +147,23 @@ export default function InputPanel({
   return (
     <div id="inputPanel">
       <div id="inputPanel_title">Input Panel</div>
-
-      <div id="heightInput" className="singleInputContainer">
-        <span className="inputTitle">Height:</span>
+      
+      {/* angle input */}
+      <div id="angleInput" className="singleInputContainer">
+        <span className="inputTitle">Angle:</span>
         <input 
-          maxLength={4}
-          onChange={(e) => changeHeightWithTextBox(e)}
+          maxLength={6}
+          onChange={(e) => {changeAngleWithTextBox(e)}} 
           placeholder="0"
-          ref={heightInputRef}
-          type="text"
+          ref={angleInputRef}
+          style={{bottom: "95px"}}
+          type="text" 
         />
-        <span className="unit">m</span>
+        <span className="unit">degrees</span>
       </div>
       <div className="flexBreak"/>
+      
+      {/* velocity input */}
       <div id="velocityInput" className="singleInputContainer">
         <span className="inputTitle">Velocity:</span>
         <input 
@@ -172,17 +176,18 @@ export default function InputPanel({
         <span className="unit">m/s</span>
       </div>
       <div className="flexBreak"/>
-      <div id="angleInput" className="singleInputContainer">
-        <span className="inputTitle">Angle:</span>
+
+      {/* height input */}
+      <div id="heightInput" className="singleInputContainer">
+        <span className="inputTitle">Height:</span>
         <input 
-          maxLength={6}
-          onChange={(e) => {changeAngleWithTextBox(e)}} 
+          maxLength={4}
+          onChange={(e) => changeHeightWithTextBox(e)}
           placeholder="0"
-          ref={angleInputRef}
-          style={{bottom: "95px"}}
-          type="text" 
+          ref={heightInputRef}
+          type="text"
         />
-        <span className="unit">degrees</span>
+        <span className="unit">m</span>
       </div>
     </div>
   )
