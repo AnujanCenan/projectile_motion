@@ -46,6 +46,7 @@ import { Firing } from "../../states/userGameActions/Firing.tsx"
 import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 import { Idle } from "../../states/userGameActions/Idle.tsx"
 import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
+import { Restarting } from "../../states/userGameActions/Restarting.tsx"
 
 
 interface CanvasProps {
@@ -133,6 +134,18 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     }
 
   }, [width, height]);
+
+  useEffect(() => {
+    if (userStateRef.current instanceof Restarting) {
+      setElevationAngle(0);
+      setLaunchVelocity(0);
+      setUserAnchorPoint([0.5, 0.8]);
+      (canvasRef.current?.parentElement as HTMLDivElement).scrollTo({
+        left: 0
+      })
+      userStateRef.current = new Idle();
+    }
+  })
 
   //////////////////////// Canvas Loading //////////////////////////////////////
   

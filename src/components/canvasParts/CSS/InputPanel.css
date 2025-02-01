@@ -29,6 +29,7 @@
 
     bottom: calc(var(--fireButtonHeight));
     left: 0;
+    z-index: 2;
 }
 
 .flexBreak {
