@@ -169,7 +169,7 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
-      setStateChangeTrigger(x => x ^ 1);
+      // setStateChangeTrigger(x => x ^ 1);
     }
   }
   
