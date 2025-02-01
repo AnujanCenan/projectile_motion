@@ -21,7 +21,7 @@ export class Conclusion extends TutorialDialogueState {
         "Congratulations. You are now ready to carry out your duties as a projectile motion specialist.",
         "You will be sent to our covert base of operations and you should receive your first mission in 2 to 4 weeks-",
         // character is Unknown Agent
-        "General! We have reported sightings of Doctor Flame trying to steal your nan's naan",
+        "General! We have reported sightings of Doctor Flame trying to rob the jewellery store again",
         // character is General Paddy
         "Damnit!",
         "Buckle up kid, looks like you're going to have to put your new skills to the test..."

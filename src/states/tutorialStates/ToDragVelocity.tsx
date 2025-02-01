@@ -21,7 +21,7 @@ export class ToDragVelocity extends TutorialActionState {
   public completedTaskHelper() {
     return (
       this.getUserState().current instanceof DraggingVelocity && 
-      this.getGameState().current[1] >= 30
+      this.getGameState().current[1] >= 30.5
     );
   }
 }
