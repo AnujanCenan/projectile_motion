@@ -7,7 +7,6 @@ import Dialogue from "../../components/dialogue/Dialogue";
 
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
-import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 
 export class Salutations extends TutorialDialogueState {
   

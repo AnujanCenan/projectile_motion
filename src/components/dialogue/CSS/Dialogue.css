@@ -71,8 +71,9 @@
     aspect-ratio: 1;
     width: 60%;
     border: 2px black solid;
-    border-radius: 50% 50%;
     padding: 15px;
+
+    border-radius: 50% 50%;
     background-color: white;
 }
 
