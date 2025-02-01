@@ -59,7 +59,7 @@ interface CanvasProps {
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
 export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
   // Positioning Constants
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.8);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
 
@@ -125,10 +125,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     if (isLandscape()) {
-      setCannonHorizontalScalar(0.5);
+      setUserAnchorPoint([0.5, USER_ANCHOR_POINT[1]])
+
     } else {
-      setCannonHorizontalScalar(0.5);
+      setUserAnchorPoint([0.8, USER_ANCHOR_POINT[1]])
+
     }
+
   }, [width, height]);
 
   //////////////////////// Canvas Loading //////////////////////////////////////
@@ -247,7 +250,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     MAX_SPEED,
     launchVelocity,
     elevationAngle,
-    width, height
+    width, height,
+    CANNON_HORIZONTAL_SCALAR
   ])
 
   function drawEnvironmentFromCanvas() {

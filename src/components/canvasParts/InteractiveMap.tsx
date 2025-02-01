@@ -2,6 +2,7 @@ import { RefObject, useEffect, useRef } from "react"
 
 import "./CSS/InteractiveMap.css"
 import { fix_dpi } from "../fixDPI";
+import { isLandscape } from "../../processingFunctions/drawingFunctions";
 interface InteractiveMapProps {
   parentCanvasRef: RefObject<HTMLCanvasElement>;
   pivotCoords: number[];
@@ -11,9 +12,9 @@ interface InteractiveMapProps {
   
 }
 export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoords, gameStateRef}: InteractiveMapProps) {
-  
+
   const INTERACTIVE_MAP_WIDTH = 400;
-  const INTERACTIVE_MAP_HEIGHT = 100
+  const INTERACTIVE_MAP_HEIGHT = 80
   const absoluteLeftPosition = 0;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

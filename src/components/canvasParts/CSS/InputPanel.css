@@ -27,7 +27,8 @@
     font-family: futuristic;
     font-size: calc(0.8vw + 0.6vh);
 
-
+    bottom: calc(var(--fireButtonHeight));
+    left: 0;
 }
 
 .flexBreak {
@@ -99,8 +100,6 @@
     #inputPanel {
         width: 40vw;
         height: 40vh;
-        top: 0;
-        right: 0;
         font-size: calc(1.2vh + 0.6vw);
         margin-bottom: 0;
 
