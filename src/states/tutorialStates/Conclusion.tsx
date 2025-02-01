@@ -6,15 +6,14 @@ import Dialogue from "../../components/dialogue/Dialogue";
 
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
-import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
-
+import UnknownAgent from "../../images/characters/UnknownAgent1.png"
 
 export class Conclusion extends TutorialDialogueState {
   getDialogue(): JSX.Element {
     return <Dialogue
       names={[
         "General Paddy", "General Paddy",
-        "Unknown Agent",
+        "Covert Operator",
         "General Paddy", "General Paddy"
       ]} 
       speeches={[
@@ -27,7 +26,7 @@ export class Conclusion extends TutorialDialogueState {
         "Damnit!",
         "Buckle up kid, looks like you're going to have to put your new skills to the test..."
       ]} 
-      expressions={[GeneralPaddy_neutral, GeneralPaddy_angry, GeneralPaddy_happy]} 
+      expressions={[GeneralPaddy_neutral, GeneralPaddy_angry, UnknownAgent]} 
       orderOfExpressions={[0, 0, 2, 1, 0]} 
       setCompletedDialogue={this.getSetCompletedDialogue()}    
     />

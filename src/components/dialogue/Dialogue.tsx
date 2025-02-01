@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import "./CSS/Dialogue.css"
 
 interface DialogueProps {
@@ -36,7 +36,8 @@ export default function Dialogue({
     }
     speechRef.current.innerHTML = "";
     if (currSpeechIndex + 1 === speeches.length) {
-      containerRef.current.style.visibility = "hidden";
+      const wrapper = containerRef.current.parentElement as HTMLDivElement;
+      wrapper.style.visibility = "hidden";
 
       setCompletedDialogue(true);
     } 
@@ -45,29 +46,32 @@ export default function Dialogue({
   
   useEffect(() => { 
 
-
+    var c = 0;
     function typewriter(speech: string) {
-      // var speed = 30;
-      // writeCharacter();
-      // function writeCharacter() {
-      //   if (!speechRef.current) {
-      //     return
-      //   };
+      const time = 20;
+      timeoutRef.current = setTimeout(writeCharacter, time);
 
-      //   if (c < speech.length) {
-      //     speechRef.current.innerHTML += speech.charAt(c);
-      //     c++;
-      //     timeoutRef.current = setTimeout(writeCharacter, speed);
-      //   }
-      // }
-      speechRef.current!.innerHTML = speech;
+      function writeCharacter() {
+        if (!speechRef.current) {
+          return
+        };
+
+        if (c < speech.length) {
+          speechRef.current.innerHTML += speech.charAt(c);
+          c++;
+          timeoutRef.current = setTimeout(writeCharacter, time);
+        }
+      }
     }
 
     if (currSpeechIndex === speeches.length) return;
     if (profilePicRef.current) {
       profilePicRef.current.src = expressions[orderOfExpressions[currSpeechIndex]]
-      typewriter(speeches[currSpeechIndex]);
     } 
+    typewriter(speeches[currSpeechIndex]);
+    if (timeoutRef.current) {
+      return () => clearTimeout(timeoutRef.current as NodeJS.Timeout);
+    }
   }, [currSpeechIndex])
   
 
@@ -79,6 +83,7 @@ export default function Dialogue({
   //   }
   // })
   return (
+    <div id="dialougeWrapper">
     <div ref={containerRef} id="dialogue_container">
       <div id="dialouge_profile_pic">
         <img ref={profilePicRef} alt="character expression"/>
@@ -94,6 +99,7 @@ export default function Dialogue({
         </button>
       </div>
 
+    </div>
     </div>
   )
 }

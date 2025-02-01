@@ -1,30 +1,32 @@
 import { RefObject } from "react";
 import { CanvasPositionAndSizes } from "../CanvasPositionAndSizes";
 import { clickedOnCannon, clickedOnHeightArrow, clickedOnVelocitySlider } from "../../processingFunctions/clickedOnObject";
+import { UserGameAction } from "../../states/userGameActions/UserGameAction";
+import { DraggingCannon } from "../../states/userGameActions/DraggingCannon";
+import { DraggingHeightArrow } from "../../states/userGameActions/DraggingHeightArrow";
+import { DraggingVelocity } from "../../states/userGameActions/DraggingVelocity";
 
 export class CanvasMouseDown {
   #positionsAndSizesInterface;
-  #cannonClick;
+
   #clickedBehindPivot;
-  #sliderClick;
-  #heightArrowClick;
+  #userActionRef;
   #click_x;
   #click_y;
   
   constructor(
     postionsAndSizesInterface: CanvasPositionAndSizes,
-    cannonClick: RefObject<boolean>,
+    // cannonClick: RefObject<boolean>,
     clickedBehindPivot: RefObject<number>,
-    sliderClick: RefObject<boolean>,
-    heightArrowClick: RefObject<boolean>,
+    // sliderClick: RefObject<boolean>,
+    // heightArrowClick: RefObject<boolean>,
+    userActionRef: RefObject<UserGameAction>,
     click_x: RefObject<number>,
     click_y: RefObject<number>
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
-    this.#cannonClick = cannonClick;
     this.#clickedBehindPivot = clickedBehindPivot
-    this.#sliderClick = sliderClick;
-    this.#heightArrowClick = heightArrowClick;
+    this.#userActionRef = userActionRef;
     this.#click_x = click_x;
     this.#click_y = click_y;
   }
@@ -39,7 +41,7 @@ export class CanvasMouseDown {
     const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
-    this.#cannonClick.current = clickedOnCannon(
+    const didClick = clickedOnCannon(
       e.pageX + horizScroll, e.pageY,
       cannonInfo,
       this.#positionsAndSizesInterface.getGrowthFactorCannon(),
@@ -47,6 +49,7 @@ export class CanvasMouseDown {
       elevationAngle,
       this.#clickedBehindPivot,
     )
+    if (didClick) this.#userActionRef.current = new DraggingCannon();
   }
 
   #velocitySliderCheck(
@@ -60,7 +63,7 @@ export class CanvasMouseDown {
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
     const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
-    this.#sliderClick.current = clickedOnVelocitySlider(
+    const didClick = clickedOnVelocitySlider(
       e.pageX + horizScroll, 
       e.pageY, 
       launchVelocity, 
@@ -72,6 +75,8 @@ export class CanvasMouseDown {
       MAX_SPEED, 
       positionAndSizesInterface.getGrowthFactorVelocity()
     )
+
+    if (didClick) this.#userActionRef.current = new DraggingVelocity();
   }
 
   #heightArrowCheck(
@@ -82,12 +87,14 @@ export class CanvasMouseDown {
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
     if (this.#positionsAndSizesInterface) {
-      this.#heightArrowClick.current = clickedOnHeightArrow(
+      const didClick = clickedOnHeightArrow(
         e.pageX + horizScroll,
         e.pageY,
         this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
         this.#positionsAndSizesInterface.getGrowthFactorHeight(),
       )
+
+      if (didClick) this.#userActionRef.current = new DraggingHeightArrow();
     }
 
   }

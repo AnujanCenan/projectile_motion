@@ -9,30 +9,28 @@ import { DraggingHeightArrow } from "../../states/userGameActions/DraggingHeight
 export class CanvasMouseMove {
 
   #positionsAndSizesInterface;
-  #cannonClick;
   #clickedBehindPivot;
-  #sliderClick;
-  #heightArrowClick;
   #click_x;
   #click_y;
+  #userActionRef;
 
   constructor(
     postionsAndSizesInterface: CanvasPositionAndSizes,
-    cannonClick: RefObject<boolean>,
+    // cannonClick: RefObject<boolean>,
     clickedBehindPivot: RefObject<number>,
-    sliderClick: RefObject<boolean>,
-    heightArrowClick: RefObject<boolean>,
+    // sliderClick: RefObject<boolean>,
+    // heightArrowClick: RefObject<boolean>,
+    userActionRef: RefObject<UserGameAction>,
     click_x: RefObject<number>,
     click_y: RefObject<number>,
     
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
-    this.#cannonClick = cannonClick;
     this.#clickedBehindPivot = clickedBehindPivot
-    this.#sliderClick = sliderClick;
-    this.#heightArrowClick = heightArrowClick;
+    this.#userActionRef = userActionRef;
     this.#click_x = click_x;
     this.#click_y = click_y;
+
   }
 
 
@@ -153,19 +151,16 @@ export class CanvasMouseMove {
     setElevationAngle: Function,
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
-    
-    userStateRef: RefObject<UserGameAction>,
+  
     setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
   ) {
 
-    if (this.#cannonClick.current) {
-      this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
-     userStateRef.current = new DraggingCannon();
-    } else if (this.#sliderClick.current) {
+    if (this.#userActionRef.current instanceof DraggingCannon) {
+    this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
+    } else if (this.#userActionRef.current instanceof DraggingVelocity) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
-      userStateRef.current = new DraggingVelocity();
     } 
-    else if (this.#heightArrowClick.current) {
+    else if (this.#userActionRef.current instanceof DraggingHeightArrow) {
       this.#handleHeightArrowClick(
         e, 
         USER_ANCHOR_POINT,
@@ -174,7 +169,6 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
-      userStateRef.current = new DraggingHeightArrow();
       setStateChangeTrigger(x => x ^ 1);
     }
   }

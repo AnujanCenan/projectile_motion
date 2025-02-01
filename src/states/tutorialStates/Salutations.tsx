@@ -7,7 +7,6 @@ import Dialogue from "../../components/dialogue/Dialogue";
 
 import GeneralPaddy_neutral from "../../images/characters/GeneralPaddy/GeneralPaddy_neutral.png"
 import GeneralPaddy_angry from "../../images/characters/GeneralPaddy/GeneralPaddy_angry.png"
-import GeneralPaddy_happy from "../../images/characters/GeneralPaddy/GeneralPaddy_happy.png"
 
 export class Salutations extends TutorialDialogueState {
   
@@ -23,10 +22,9 @@ export class Salutations extends TutorialDialogueState {
       ]}
       expressions={[
         GeneralPaddy_neutral,
-        GeneralPaddy_happy,
         GeneralPaddy_angry
       ]} 
-      orderOfExpressions={[2, 0, 2, 0, 1]}
+      orderOfExpressions={[1, 0, 1, 0, 0]}
       setCompletedDialogue={this.getSetCompletedDialogue()}
     />
   }
