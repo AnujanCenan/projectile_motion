@@ -10,7 +10,7 @@ export class ToFireAtTarget extends TutorialActionState {
       "Set angle to 45 degrees",
       "Set velocity to 70 m/s",
       "Set height to 0 m",
-      "Click the fire butto"
+      "Click the fire button"
     ]
   }
   public completeDialogue(): TutorialState {
