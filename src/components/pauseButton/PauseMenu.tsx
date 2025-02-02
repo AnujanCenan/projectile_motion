@@ -22,26 +22,33 @@ export default function PauseMenu({setProjectileMotionPage, setPaused, setLevelS
   return (
     <>
       <div id="pauseMenuWrapper">
-        <div id="pauseMenuContainer">
-          <div id="buttonsContainer">
-            <button id="PauseMenu_Home" onClick={() => setProjectileMotionPage(<LevelSelection levels={levels.levels} setProjectileMotionPage={setProjectileMotionPage} />)}> 
-              <img src={home} alt="home"/>
-            </button>
+        <div id="pauseMenuHelperWrapper"> 
+          <div id="pauseTitle">PAUSE MENU</div>
+          <div id="pauseMenuContainer">
+            <div id="buttonsContainer">
 
-            <button id="PauseMenu_Play" onClick={() => setPaused(false)}>
-              <img src={play} alt="play"/>
-            </button>
 
-            <button id="PauseMenu_Restart" onClick={() => {
-              setLevelState(levelState);
-              setPaused(false);
-              userGameActionRef.current = new Restarting();
+              <div id="PauseMenu_Play" onClick={() => setPaused(false)}>
+                Resume
+              </div>
 
-              // set user action to restarting
-            }}>
-              <img src={restart} alt="restart"/>
-            </button>
+              <div id="PauseMenu_Restart" onClick={() => {
+                setLevelState(levelState);
+                setPaused(false);
+                userGameActionRef.current = new Restarting();
 
+                // set user action to restarting
+              }}>
+                Restart Level
+              </div>
+
+              <div id="PauseMenu_Home" onClick={() => setProjectileMotionPage(<LevelSelection levels={levels.levels} setProjectileMotionPage={setProjectileMotionPage} />)}> 
+                Return to Level Selection
+              </div>
+
+
+
+            </div>
           </div>
         </div>
       </div>
