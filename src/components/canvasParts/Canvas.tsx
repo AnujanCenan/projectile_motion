@@ -105,11 +105,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   const [elevationAngle, setElevationAngle] = useState(0);
   const [launchVelocity, setLaunchVelocity] = useState(0)
 
-  // User state variables
-  // const cannonClick = useRef(false);
-  // const sliderClick = useRef(false);
-  // const heightArrowClick = useRef(false);
-
   const click_x = useRef<number>(0);
   const click_y = useRef<number>(0);
   const clickedBehindPivot = useRef<number>(1);
@@ -156,23 +151,21 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     heightArrowImg, 
     targetImg
   ]
-  
-  // useEffect(() => {
-  //   if (!userStateRef.current.requiresReDrawing()) return;
-  //   imagePreloader.loadImages(imageArray, () => {
-  //     drawEnvironmentFromCanvas();
-  //   })
-  // });
 
-  // useEffect(() => {
-  //   imagePreloader.loadImages(imageArray, () => {
-  //     drawEnvironmentFromCanvas();
-  //   })
-  // }, [width, height]);
+  const refsArray: RefObject<HTMLImageElement | null>[] = [
+    foregroundRef,
+    holsterRef,
+    cannonRef,
+    velocityBarRef,
+    velocitySliderRef,
+    heightScaleRef,
+    heightArrowRef,
+    targetRef
+  ]
 
   useEffect(() => {
     if (userStateRef.current instanceof LoadingImages) {
-      imagePreloader.loadImages(imageArray, () => {
+      imagePreloader.loadImages(imageArray, refsArray, () => {
         drawEnvironmentFromCanvas();
       })
     }
@@ -181,27 +174,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
   useEffect(() => {
-    // let dpi = window.devicePixelRatio;
     const canvas = canvasRef.current
     if (canvas) fix_dpi(canvas);
   }, [width, height]);
 
-
-  // violates open-close principle because if i add an extra image, it has to be added here
-  function allImagesReferenced() {
-    return (
-      holsterRef.current !== null &&
-      cannonRef.current !== null &&
-      velocityBarRef.current !== null &&
-      velocitySliderRef.current !== null &&
-      heightScaleRef.current !== null &&
-      heightArrowRef.current !== null &&
-      foregroundRef.current !== null &&
-      targetRef.current !== null
-    )
-  }
-
-  // useEffect for initialising all our classes
   useEffect(() => {
     if (canvasRef.current) {
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
@@ -215,41 +191,35 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         MAX_RANGE
       );
 
-      if (allImagesReferenced()) {
-        drawingInterfaceRef.current = new DrawingImages(
-          positionAndSizesInterfaceRef.current,
-          holsterRef as RefObject<HTMLImageElement>,
-          cannonRef as RefObject<HTMLImageElement>,
-          velocityBarRef as RefObject<HTMLImageElement>,
-          velocitySliderRef as RefObject<HTMLImageElement>,
-          heightScaleRef as RefObject<HTMLImageElement>,
-          heightArrowRef as RefObject<HTMLImageElement>,
-          foregroundRef as RefObject<HTMLImageElement>,
-          targetRef as RefObject<HTMLImageElement>
-        )
 
-        canvasMouseDownEvent.current = new CanvasMouseDown(
-          positionAndSizesInterfaceRef.current,
-          // cannonClick,
-          clickedBehindPivot,
-          // sliderClick,
-          // heightArrowClick,
-          userStateRef,
-          click_x,
-          click_y
-        )
+      drawingInterfaceRef.current = new DrawingImages(
+        positionAndSizesInterfaceRef.current,
+        holsterRef,
+        cannonRef,
+        velocityBarRef,
+        velocitySliderRef,
+        heightScaleRef,
+        heightArrowRef,
+        foregroundRef,
+        targetRef
+      )
 
-        canvasMouseMoveEvent.current = new CanvasMouseMove(
-          positionAndSizesInterfaceRef.current,
-          // cannonClick,
-          clickedBehindPivot,
-          // sliderClick,
-          // heightArrowClick,
-          userStateRef,
-          click_x,
-          click_y
-        )
-      }
+      canvasMouseDownEvent.current = new CanvasMouseDown(
+        positionAndSizesInterfaceRef.current,
+        clickedBehindPivot,
+        userStateRef,
+        click_x,
+        click_y
+      )
+
+      canvasMouseMoveEvent.current = new CanvasMouseMove(
+        positionAndSizesInterfaceRef.current,
+        clickedBehindPivot,
+        userStateRef,
+        click_x,
+        click_y
+      )
+
     }
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
 
@@ -319,9 +289,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }
 
   function mouseUp() {
-    // cannonClick.current = false;
-    // sliderClick.current = false;
-    // heightArrowClick.current = false;
     userStateRef.current = new Idle();
   }
   
@@ -345,50 +312,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
           onMouseUp={() => mouseUp()}
           onMouseMove={(e) => mouseMove(e)}
         >
-          <img 
-            src={grassImg}
-            alt="grass"
-            ref={foregroundRef}
-          />
-
-          <img
-            src={cannonImg}
-            alt="barrel"
-            ref={cannonRef}
-          />
-          <img 
-            src={holsterImg}
-            alt="holster"
-            ref={holsterRef}
-          />
-
-          <img
-            src={velocityBarImg}
-            alt="velocityBar"
-            ref={velocityBarRef}
-          />
-          <img
-            src={velocitySliderImg}
-            alt="velocitySlider"
-            ref={velocitySliderRef}
-          />
-
-          <img
-            src={heightScaleImg}
-            alt="heightScale"
-            ref={heightScaleRef}
-          />
-          <img
-            src={heightArrowImg}
-            alt="heightArrow"
-            ref={heightArrowRef}
-          />
-
-          <img
-            src={targetImg}
-            alt="target"
-            ref={targetRef}
-          />
         </canvas>
 
         {canvasRef.current &&

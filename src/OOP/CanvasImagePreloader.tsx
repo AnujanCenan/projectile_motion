@@ -1,6 +1,8 @@
+import { RefObject } from "react";
+
 export class CanvasImagePreloader {
 
-  loadImages(arr: string[], callback: Function) {
+  loadImages(arr: string[], refs: RefObject<HTMLImageElement | null>[],callback: Function) {
     type SrcToImage = { [key: string]: HTMLImageElement };
 
     const images: SrcToImage= {};
@@ -12,6 +14,7 @@ export class CanvasImagePreloader {
         img.onload = imageLoaded;
         img.src = arr[i];
         images[arr[i]] = img;
+        refs[i].current = img;
     }
 
       function imageLoaded() {
