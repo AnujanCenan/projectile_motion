@@ -33,7 +33,7 @@
 }
 
 .flexBreak {
-    width: 100%;
+    flex-basis: 100%;
     height: 0;
 }
 
