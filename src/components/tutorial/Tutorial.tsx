@@ -15,6 +15,7 @@ import { ReadingDialogue } from "../../states/userGameActions/ReadingDialogue";
 import { TutorialActionState } from "../../states/tutorialStates/TutorialActionState";
 import CurrObjective from "../currObjective/CurrObjective";
 import PauseButton from "../pauseButton/pauseButton";
+import CanvasAngleVariable from "../canvasParts/CanvasAngleVariable";
 
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
@@ -68,14 +69,17 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         userGameActionRef={userGameActionRef}
       />
       {/* Main canvas - includes input panel and interactive map */}
-      <Canvas 
-        MAX_RANGE={500} 
-        target_range={500} 
-        target_altitude={0} 
+      {/* <Canvas 
+        MAX_RANGE={500}
+        target_range={500}
+        target_altitude={0}
         userStateRef={userGameActionRef}
         gameStateRef={gameStateRef}
-        setStateChangeTrigger={setStateChangeTrigger}
-      />
+        setStateChangeTrigger={setStateChangeTrigger} 
+        disableInput={{angle: false, velocity: false, height: false}}     
+        /> */}
+
+      <CanvasAngleVariable fixedVelocity={70} fixedHeight={0} max_range={500} target_range={500} target_altitude={0} userGameActionRef={userGameActionRef} gameStateRef={gameStateRef} setStateChangeTrigger={setStateChangeTrigger} />
       {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
         <CurrObjective currObjectives={tutorialState.getObjectives()} />

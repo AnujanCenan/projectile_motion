@@ -47,6 +47,8 @@ import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 import { Idle } from "../../states/userGameActions/Idle.tsx"
 import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
 import { Restarting } from "../../states/userGameActions/Restarting.tsx"
+import { Disabled } from "../../types/DisableInput.tsx"
+
 
 
 interface CanvasProps {
@@ -56,9 +58,11 @@ interface CanvasProps {
   userStateRef: RefObject<UserGameAction>,
   gameStateRef: RefObject<GameState>
   setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
+  refsArray?:  RefObject<HTMLImageElement | null>[];
+  disableInput: Disabled
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, refsArray, disableInput}: CanvasProps) {
   // Positioning Constants
   const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.8);
 
@@ -102,8 +106,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
 
   // Cannon State Variables
-  const [elevationAngle, setElevationAngle] = useState(0);
-  const [launchVelocity, setLaunchVelocity] = useState(0)
+  const [elevationAngle, setElevationAngle] = useState(disableInput.angle === false ? 0 : disableInput.angle);
+  const [launchVelocity, setLaunchVelocity] = useState(disableInput.velocity === false ? 0 : disableInput.velocity)
 
   const click_x = useRef<number>(0);
   const click_y = useRef<number>(0);
@@ -152,7 +156,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     targetImg
   ]
 
-  const refsArray: RefObject<HTMLImageElement | null>[] = [
+  // create this in wrapper component
+
+  const refsArr: RefObject<HTMLImageElement | null>[] = [
     foregroundRef,
     holsterRef,
     cannonRef,
@@ -165,7 +171,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   useEffect(() => {
     if (userStateRef.current instanceof LoadingImages) {
-      imagePreloader.loadImages(imageArray, refsArray, () => {
+      imagePreloader.loadImages(imageArray, refsArr, () => {
         drawEnvironmentFromCanvas();
       })
     }
@@ -217,7 +223,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         clickedBehindPivot,
         userStateRef,
         click_x,
-        click_y
+        click_y,
+        disableInput
       )
 
     }
@@ -332,6 +339,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
             positioningAndSizesInterface={(positionAndSizesInterfaceRef.current)!}
             userStateRef={userStateRef}
             setStateChangeTrigger={setStateChangeTrigger}
+            disableInput={disableInput}
           />
         }
 
