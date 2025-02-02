@@ -1,0 +1,88 @@
+@font-face {
+    font-family: spire-nbp;
+    src: url(../../../fonts/spire-nbp-font/SpireNbp-eoaB.ttf)
+}
+
+@font-face {
+    font-family: smart-patrol-nbp;
+    src: url(../../../fonts/smart-patrol-nbp-font/SmartPatrolNbpRegular-0LaP.ttf)
+}
+
+#pauseMenuWrapper {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 99;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#pauseMenuHelperWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
+}
+
+#pauseTitle {
+    font-family: spire-nbp;
+    font-size: calc(1.2vw + 1.2vh + 4vmin);
+    color: white;
+    text-align: center;
+    border: 6px solid white;
+    height: max-content;
+    width: max-content;
+    max-width: 80%;
+    border-top-left-radius: 1vw;
+    border-top-right-radius: 1vw;
+
+    padding: 4% 4% 1% 4%;
+    word-wrap: break-word;
+    background-color: rgb(0, 75, 10);
+    border-bottom: 0;
+}
+
+#pauseMenuContainer {
+    box-sizing: border-box; /* this property makes border thickness (and padding) contribute to the overall width value */
+    width: calc(100%);
+    aspect-ratio: 16/9;
+    border: 6px white solid;
+    background-color: black;
+
+    display: flex;
+    align-items: center;
+}
+
+
+#buttonsContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    row-gap: 8px;
+}
+
+#buttonsContainer > div {
+    font-family: smart-patrol-nbp;
+    font-size: calc(0.6vw + 0.8vh + 0.8vmin);
+    width: 80%;
+    text-align: center;
+    border-radius: 12px;
+    padding: 1.6% 0;
+    cursor: pointer;
+    border: 2px solid white;
+    background-color: rgb(37, 37, 37);
+
+}

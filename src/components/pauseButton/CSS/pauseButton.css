@@ -1,0 +1,25 @@
+#pauseButtonContainer {
+    width: 4%;
+    aspect-ratio: 1;
+    border: 5px solid black;
+    border-radius: 15%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: white;
+    margin: 1%;
+    cursor: pointer;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+
+}
+
+#pauseButtonContainer:hover {
+    background-color: rgb(168, 168, 168);
+}
+
+#pauseImg {
+    width: 100%;
+}

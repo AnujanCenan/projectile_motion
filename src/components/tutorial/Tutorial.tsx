@@ -14,6 +14,7 @@ import CompletedMission from "../completedMission/CompletedMission";
 import { ReadingDialogue } from "../../states/userGameActions/ReadingDialogue";
 import { TutorialActionState } from "../../states/tutorialStates/TutorialActionState";
 import CurrObjective from "../currObjective/CurrObjective";
+import PauseButton from "../pauseButton/pauseButton";
 
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
@@ -53,9 +54,20 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
 
   return (
     <>
+      {/* Ending Screen when mission is completed */}
       {tutorialState instanceof CompletedTutorial && <CompletedMission setProjectileMotionPage={setProjectileMotionPage}/>}
+      
+      {/* The array of dialogue */}
       {dialogueChildren}
-
+      
+      {/* Pause button */}
+      <PauseButton 
+        setProjectileMotionPage={setProjectileMotionPage}
+        startingLevelState={new Salutations(userGameActionRef, gameStateRef, setCompletedCurrDialogue)}
+        setLevelState={setTutorialState} 
+        userGameActionRef={userGameActionRef}
+      />
+      {/* Main canvas - includes input panel and interactive map */}
       <Canvas 
         MAX_RANGE={500} 
         target_range={500} 
@@ -64,10 +76,10 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         gameStateRef={gameStateRef}
         setStateChangeTrigger={setStateChangeTrigger}
       />
+      {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
-      <CurrObjective currObjectives={tutorialState.getObjectives()} />
+        <CurrObjective currObjectives={tutorialState.getObjectives()} />
       }
-
       
     </>
 

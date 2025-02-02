@@ -46,6 +46,7 @@ import { Firing } from "../../states/userGameActions/Firing.tsx"
 import { Scrolling } from "../../states/userGameActions/Scrolling.tsx"
 import { Idle } from "../../states/userGameActions/Idle.tsx"
 import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
+import { Restarting } from "../../states/userGameActions/Restarting.tsx"
 
 
 interface CanvasProps {
@@ -59,7 +60,7 @@ interface CanvasProps {
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
 export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger}: CanvasProps) {
   // Positioning Constants
-  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.5);
+  const [CANNON_HORIZONTAL_SCALAR, setCannonHorizontalScalar] = useState(isLandscape() ? 0.5: 0.8);
 
   const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR] as number[])
 
@@ -122,14 +123,26 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   const imagePreloader = new CanvasImagePreloader();
 
+  function pickHorizontalScalar() {
+    return isLandscape() ? 0.5 : 0.8;
+  }
+  useEffect(() => {
+    setUserAnchorPoint([pickHorizontalScalar(), USER_ANCHOR_POINT[1]])
+  }, [width, height]);
 
   useEffect(() => {
-    if (isLandscape()) {
-      setCannonHorizontalScalar(0.5);
-    } else {
-      setCannonHorizontalScalar(0.5);
+    if (userStateRef.current instanceof Restarting) {
+      setElevationAngle(0);
+      setLaunchVelocity(0);
+      
+      
+      setUserAnchorPoint([pickHorizontalScalar(), 0.8]);
+      (canvasRef.current?.parentElement as HTMLDivElement).scrollTo({
+        left: 0
+      })
+      userStateRef.current = new Idle();
     }
-  }, [width, height]);
+  })
 
   //////////////////////// Canvas Loading //////////////////////////////////////
   
@@ -247,7 +260,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     MAX_SPEED,
     launchVelocity,
     elevationAngle,
-    width, height
+    width, height,
+    CANNON_HORIZONTAL_SCALAR
   ])
 
   function drawEnvironmentFromCanvas() {

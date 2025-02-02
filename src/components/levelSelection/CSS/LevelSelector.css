@@ -25,8 +25,10 @@
     right: 0;
     margin-top: 1%;
     margin-right: 1%;
-    height: 4%;
+    height: min-content;
     font-size: calc(110%);
+    width: min-content;
+    padding: 1% 1%;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border: none;
     border-radius: 8px;
