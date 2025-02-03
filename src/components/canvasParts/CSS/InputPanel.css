@@ -26,6 +26,7 @@
     border: 5px solid black;
     font-family: futuristic;
     font-size: calc(0.8vw + 0.6vh);
+    background-color: rgb(165, 165, 165);
 
     bottom: calc(var(--fireButtonHeight));
     left: 0;

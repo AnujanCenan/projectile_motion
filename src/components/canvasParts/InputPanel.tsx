@@ -6,6 +6,7 @@ import { UserGameAction } from "../../states/userGameActions/UserGameAction"
 import { InputPanelVelocity } from "../../states/userGameActions/InputPanelVelocity"
 import { InputPanelAngle } from "../../states/userGameActions/InputPanelAngle"
 import { InputPanelHeight } from "../../states/userGameActions/InputPanelHeight"
+import { Disabled } from "../../types/DisableInput"
 
 interface InputPanelProps {
   setElevationAngle: Function 
@@ -23,7 +24,7 @@ interface InputPanelProps {
   GROUND_LEVEL_SCALAR: number
   userStateRef: RefObject<UserGameAction>
   setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
-
+  disableInput: Disabled
 }
 
 export default function InputPanel({
@@ -40,7 +41,8 @@ export default function InputPanel({
   MAX_HORIZONTAL_RANGE,
   CANNON_HORIZONTAL_SCALAR,
   userStateRef,
-  setStateChangeTrigger
+  setStateChangeTrigger,
+  disableInput
 }: InputPanelProps) {
 
   function changeVelocityWithTextBox(e: React.ChangeEvent<HTMLInputElement>) {
@@ -122,10 +124,10 @@ export default function InputPanel({
       if (isNaN(parseFloat(val))) {
         return;
       }
-      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT);
+      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT[0]);
       
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
-      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
+      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate * 1000) / 1000; 
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
         heightInputRef.current.value = "0";
@@ -154,7 +156,8 @@ export default function InputPanel({
         <input 
           maxLength={6}
           onChange={(e) => {changeAngleWithTextBox(e)}} 
-          placeholder="0"
+          placeholder={disableInput.angle === false ? "0" : `${disableInput.angle}`}
+          disabled={disableInput.angle !== false}
           ref={angleInputRef}
           style={{bottom: "95px"}}
           type="text" 
@@ -169,7 +172,8 @@ export default function InputPanel({
         <input 
           maxLength={8}
           onChange={(e) => changeVelocityWithTextBox(e)}
-          placeholder="0"
+          placeholder={disableInput.velocity === false ? "0" : `${disableInput.velocity}`}
+          disabled={disableInput.velocity !== false}
           ref={velocityInputRef}
           type="text"
         />
@@ -183,7 +187,8 @@ export default function InputPanel({
         <input 
           maxLength={4}
           onChange={(e) => changeHeightWithTextBox(e)}
-          placeholder="0"
+          placeholder={disableInput.height === false ? "0" : `${disableInput.height}`}
+          disabled={disableInput.height !== false}
           ref={heightInputRef}
           type="text"
         />

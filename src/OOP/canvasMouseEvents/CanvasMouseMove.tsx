@@ -5,6 +5,7 @@ import { UserGameAction } from "../../states/userGameActions/UserGameAction";
 import { DraggingCannon } from "../../states/userGameActions/DraggingCannon";
 import { DraggingVelocity } from "../../states/userGameActions/DraggingVelocity";
 import { DraggingHeightArrow } from "../../states/userGameActions/DraggingHeightArrow";
+import { Disabled } from "../../types/DisableInput";
 
 export class CanvasMouseMove {
 
@@ -13,6 +14,7 @@ export class CanvasMouseMove {
   #click_x;
   #click_y;
   #userActionRef;
+  private disabledInput: Disabled;
 
   constructor(
     postionsAndSizesInterface: CanvasPositionAndSizes,
@@ -23,6 +25,7 @@ export class CanvasMouseMove {
     userActionRef: RefObject<UserGameAction>,
     click_x: RefObject<number>,
     click_y: RefObject<number>,
+    disabledInput: Disabled
     
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
@@ -30,6 +33,7 @@ export class CanvasMouseMove {
     this.#userActionRef = userActionRef;
     this.#click_x = click_x;
     this.#click_y = click_y;
+    this.disabledInput = disabledInput;
 
   }
 
@@ -41,6 +45,8 @@ export class CanvasMouseMove {
     angleInputRef: RefObject<HTMLInputElement>,
     setElevationAngle: Function,
   ) {
+    if (this.disabledInput.angle !== false) return;
+
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement;
     const horizScroll = container.scrollLeft
@@ -76,6 +82,8 @@ export class CanvasMouseMove {
     velocityInputRef: RefObject<HTMLInputElement>,
     setLaunchVelocity: Function
   ) {
+    if (this.disabledInput.velocity !== false) return;
+
       const canvas = this.#positionsAndSizesInterface.getCanvas();
       const container = canvas.parentNode as HTMLDivElement;
       const horizScroll = container.scrollLeft
@@ -109,6 +117,8 @@ export class CanvasMouseMove {
     heightInputRef: RefObject<HTMLInputElement>,
     setUserAnchorPoint: Function,
   ) {
+    if (this.disabledInput.height !== false) return;
+
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement;
     const horizScroll = container.scrollLeft
@@ -129,7 +139,7 @@ export class CanvasMouseMove {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvas.height])
     }
 
-    const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT);
+    const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0]);
     const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvas.height) / conversionRate;
     heightInputRef.current.value = (Math.round(metreHeight * 1000) / 1000).toString();
   }

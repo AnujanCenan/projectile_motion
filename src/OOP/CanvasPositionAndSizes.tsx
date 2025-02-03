@@ -63,13 +63,20 @@ export class CanvasPositionAndSizes {
 
   //////////////////////////////////////////////////////////////////////////////
   //// PIVOT
-  getPivotPosition(USER_ANCHOR_POINT: number[]) {
-    const pivX = window.innerWidth * USER_ANCHOR_POINT[0] * window.devicePixelRatio;
-
-    const pivY = this.#canvas.height * USER_ANCHOR_POINT[1]
-  
-    return [pivX, pivY]
+  getPivotX(pivot_x_scalar: number) {
+    return window.innerWidth * pivot_x_scalar * window.devicePixelRatio;
   }
+
+  getPivotY(pivot_y_scalar: number) {
+    return this.#canvas.height * pivot_y_scalar;
+  }
+
+
+  getPivotPosition(USER_ANCHOR_POINT: number[]) {
+    return [this.getPivotX(USER_ANCHOR_POINT[0]), this.getPivotY(USER_ANCHOR_POINT[1])]
+  }
+
+
 
   /// TOP LEFT CORNERS
 
@@ -135,7 +142,7 @@ export class CanvasPositionAndSizes {
     altitude: number, 
     range: number
   ) {
-    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT);
+    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT[0]);
   
   
     const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
@@ -187,8 +194,8 @@ export class CanvasPositionAndSizes {
   }
   
   /// CONVERSION RATE - ratio of pixels to corresponding metres
-  calculateConversionRate(USER_ANCHOR_POINT: number[]) {
-    const availableSpace = (this.#canvas.width - this.getPivotPosition(USER_ANCHOR_POINT)[0]) * 9/10;
+  calculateConversionRate(pivot_x_scalar: number) {
+    const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
     const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
     return conversionRate  
   }
