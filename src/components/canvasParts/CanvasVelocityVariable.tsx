@@ -12,7 +12,7 @@ import heightScaleImg from "../../images/height/heightBar.png"
 import heightArrowImg from "../../images/height/heightIndicator.png"
 import targetImg from "../../images/targets/trainingTarget.png"            // needs to be parameteriesd
 
-interface CanvasAngleVariableProps{
+interface CanvasVelocityVariableProps{
   fixedVelocity: number;
   fixedHeight: number;
   max_range: number;
@@ -22,7 +22,7 @@ interface CanvasAngleVariableProps{
   gameStateRef: RefObject<GameState>
   setStateChangeTrigger: React.Dispatch<SetStateAction<number>>
 }
-export default function CanvasAngleVariable({
+export default function CanvasVelocityVariable({
   fixedVelocity, 
   fixedHeight,
   max_range,
@@ -31,7 +31,7 @@ export default function CanvasAngleVariable({
   userGameActionRef,
   gameStateRef,
   setStateChangeTrigger,
-}: CanvasAngleVariableProps) {
+}: CanvasVelocityVariableProps) {
 
   const foregroundRef = useRef<HTMLImageElement>(null);
   const holsterRef = useRef<HTMLImageElement>(null);
@@ -39,10 +39,12 @@ export default function CanvasAngleVariable({
   const targetRef = useRef<HTMLImageElement>(null);
 
   const objectsToDraw: DrawingToSrcAndImage = {
-    cannon: { src: cannonImg, imageRef:  useRef<HTMLImageElement>(null) },
-    holster: { src: holsterImg, imageRef:  useRef<HTMLImageElement>(null) },
-    foreground: { src: grassImg, imageRef:  useRef<HTMLImageElement>(null) },
-    target: { src: targetImg, imageRef:  useRef<HTMLImageElement>(null) },
+    cannon: { src: cannonImg, imageRef: useRef<HTMLImageElement>(null) },
+    holster: { src: holsterImg, imageRef: useRef<HTMLImageElement>(null) },
+    foreground: { src: grassImg, imageRef: useRef<HTMLImageElement>(null) },
+    target: { src: targetImg, imageRef: useRef<HTMLImageElement>(null) },
+    velocityBar: { src: velocityBarImg, imageRef: useRef<HTMLImageElement>(null) },
+    velocitySlider: { src: velocitySliderImg, imageRef: useRef<HTMLImageElement>(null) },
   }
 
   return (
