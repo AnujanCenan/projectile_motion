@@ -17,6 +17,15 @@ import CurrObjective from "../currObjective/CurrObjective";
 import PauseButton from "../pauseButton/pauseButton";
 import CanvasAngleVariable from "../canvasParts/CanvasAngleVariable";
 
+import grassImg from "../../images/foregrounds/grassFlat.png"
+import cannonImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
+import holsterImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_holster.png"
+import velocityBarImg from "../../images/velocity/velocityBar.png"
+import velocitySliderImg from "../../images/velocity/velocitySlider.png"
+import heightScaleImg from "../../images/height/heightBar.png"
+import heightArrowImg from "../../images/height/heightIndicator.png"
+import targetImg from "../../images/targets/trainingTarget.png"
+
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
 }
@@ -53,6 +62,37 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
     } 
   }, [tutorialState])
 
+  const foregroundRef = useRef<HTMLImageElement>(null);
+  const holsterRef = useRef<HTMLImageElement>(null);
+  const cannonRef = useRef<HTMLImageElement>(null);
+  const velocityBarRef = useRef<HTMLImageElement>(null);
+  const velocitySliderRef = useRef<HTMLImageElement>(null);
+  const heightScaleRef = useRef<HTMLImageElement>(null);
+  const heightArrowRef = useRef<HTMLImageElement>(null);
+  const targetRef = useRef<HTMLImageElement>(null);
+
+  const refsArray = [
+    foregroundRef,
+    holsterRef,
+    cannonRef,
+    velocityBarRef,
+    velocitySliderRef,
+    heightScaleRef,
+    heightArrowRef,
+    targetRef
+  ];
+
+  const srcArray = [
+    grassImg,
+    holsterImg,
+    cannonImg,
+    velocityBarImg,
+    velocitySliderImg,
+    heightScaleImg,
+    heightArrowImg,
+    targetImg
+  ]
+
   return (
     <>
       {/* Ending Screen when mission is completed */}
@@ -69,17 +109,30 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         userGameActionRef={userGameActionRef}
       />
       {/* Main canvas - includes input panel and interactive map */}
-      {/* <Canvas 
+      <Canvas 
         MAX_RANGE={500}
         target_range={500}
         target_altitude={0}
         userStateRef={userGameActionRef}
         gameStateRef={gameStateRef}
-        setStateChangeTrigger={setStateChangeTrigger} 
-        disableInput={{angle: false, velocity: false, height: false}}     
-        /> */}
+        setStateChangeTrigger={setStateChangeTrigger}
+        disableInput={{ angle: false, velocity: false, height: false }} 
+        refsArray={refsArray} 
+        srcArray={srcArray}        
+      />
 
-      <CanvasAngleVariable fixedVelocity={70} fixedHeight={0} max_range={500} target_range={500} target_altitude={0} userGameActionRef={userGameActionRef} gameStateRef={gameStateRef} setStateChangeTrigger={setStateChangeTrigger} />
+      <CanvasAngleVariable 
+        fixedVelocity={70} 
+        fixedHeight={60} 
+        max_range={500} 
+        target_range={500} 
+        target_altitude={10} 
+        userGameActionRef={userGameActionRef} 
+        gameStateRef={gameStateRef} 
+        setStateChangeTrigger={setStateChangeTrigger} 
+        refsArray={refsArray} 
+        srcArray={srcArray}
+      />
       {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
         <CurrObjective currObjectives={tutorialState.getObjectives()} />

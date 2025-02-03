@@ -27,7 +27,7 @@ export function fireCannon(
   const range_metres = range(
     gameStateRef, 
     positionAndSizesInterface.getCanvas(), 
-    positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT)
+    positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0])
   );
 
   const canvas = positionAndSizesInterface.getCanvas();
@@ -38,7 +38,7 @@ export function fireCannon(
       const [initial_x, initial_y] 
         = positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT);
 
-      const conversionRate = positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT);
+      const conversionRate = positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0]);
 
       const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
       const initial_v =  launchVelocity * conversionRate;

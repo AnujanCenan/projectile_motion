@@ -139,7 +139,7 @@ export class CanvasMouseMove {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvas.height])
     }
 
-    const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT);
+    const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0]);
     const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvas.height) / conversionRate;
     heightInputRef.current.value = (Math.round(metreHeight * 1000) / 1000).toString();
   }

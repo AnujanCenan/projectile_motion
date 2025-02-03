@@ -124,7 +124,7 @@ export default function InputPanel({
       if (isNaN(parseFloat(val))) {
         return;
       }
-      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT);
+      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT[0]);
       
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
       const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
