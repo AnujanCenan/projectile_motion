@@ -127,7 +127,7 @@ export default function InputPanel({
       const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT[0]);
       
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
-      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate / 10) * 10; 
+      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate * 1000) / 1000; 
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
         heightInputRef.current.value = "0";

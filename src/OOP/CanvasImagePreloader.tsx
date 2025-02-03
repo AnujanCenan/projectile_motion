@@ -4,9 +4,6 @@ import { DrawingToSrcAndImage, SrcAndImage } from "./DrawingImages";
 export class CanvasImagePreloader {
 
   loadImages(objectsToDraw: DrawingToSrcAndImage,callback: Function) {
-    type SrcToImage = { [key: string]: HTMLImageElement };
-
-    const images: SrcToImage= {};
     var loadedImageCount = 0;
 
     // Make sure arr is actually an array and any other error checking
@@ -35,9 +32,10 @@ export class CanvasImagePreloader {
     }
 
       function imageLoaded() {
-        const size = Object.keys(images).length;
+        const size = Object.keys(objectsToDraw).length;
         loadedImageCount++;
         if (loadedImageCount >= size) {
+          console.log("All images loaded; calling callback: drawingEnvironemnt")
             callback();
         }
     }

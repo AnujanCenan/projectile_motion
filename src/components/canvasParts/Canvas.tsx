@@ -129,6 +129,10 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }, [width, height]);
 
   useEffect(() => {
+    gameStateRef.current[2] = USER_ANCHOR_POINT[1];
+  }, [USER_ANCHOR_POINT]);
+
+  useEffect(() => {
     if (userStateRef.current instanceof Restarting) {
       setElevationAngle(disableInput.angle !== false ? disableInput.angle : 0);
       setLaunchVelocity(disableInput.velocity !== false ? disableInput.velocity : 0);
@@ -169,9 +173,29 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       imagePreloader.loadImages(objectsToDraw, () => {
         drawEnvironmentFromCanvas();
       })
-
     }
   }, [])
+/////////////////////////// Height Check ///////////////////////////////////////
+  useEffect(() => {
+    if (disableInput.height !== false) {
+      const fixedHeight = disableInput.height;
+      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
+      // probably need a check to make sure the asked for fixed height is less than max metre height
+      setUserAnchorPoint([USER_ANCHOR_POINT[0], calculateAnchorPointY(fixedHeight)]);
+    }
+  }, [])
+
+  function calculateAnchorPointY(height: number): number {
+    if (positionAndSizesInterfaceRef.current && canvasRef.current) {
+      const convRate = positionAndSizesInterfaceRef.current.calculateConversionRate(USER_ANCHOR_POINT[0]);
+
+      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
+      const anchor_point_y = GROUND_LEVEL_SCALAR - ((height * convRate)/ canvasRef.current.height);
+      return anchor_point_y
+    } else {
+      return GROUND_LEVEL_SCALAR;
+    }
+  }
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
@@ -220,11 +244,22 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       )
     }
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
-
   
+  useEffect(() => {
+    if (canvasRef.current && canvasRef.current.parentElement) {
+
+      gameStateRef.current = [
+        elevationAngle, 
+        launchVelocity, 
+        USER_ANCHOR_POINT[1], 
+        calculateScrollScalar(canvasRef.current)
+      ]
+      setStateChangeTrigger(x => x ^ 1);
+    }
+  }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   useEffect(() => {
-    
+    console.log("1. in useEffect for drawEnvironmentFromCanvas; USER_ANCHOR_POINT = ", USER_ANCHOR_POINT);
     drawEnvironmentFromCanvas();
   }, [GROUND_LEVEL_SCALAR, 
     USER_ANCHOR_POINT,
@@ -234,6 +269,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     width, height,
     CANNON_HORIZONTAL_SCALAR
   ])
+
+  console.log("2. between useEffect and drawEnvironmentFromCanvas; USER_ANCHOR_POINT = ", USER_ANCHOR_POINT);
 
   function drawEnvironmentFromCanvas() {
 
@@ -251,45 +288,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
       target_altitude,
     )
   }
-  
-
-  useEffect(() => {
-    
-    if (disableInput.height !== false) {
-      const fixedHeight = disableInput.height;
-      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
-      // probably need a check to make sure the asked for fixed height is less than max metre height
-      gameStateRef.current[2] = calculateAnchorPointY(fixedHeight);
-      setUserAnchorPoint([USER_ANCHOR_POINT[0], gameStateRef.current[2]]);
-      
-    }
-  }, [])
-
-  function calculateAnchorPointY(height: number): number {
-    if (positionAndSizesInterfaceRef.current && canvasRef.current) {
-      const convRate = positionAndSizesInterfaceRef.current.calculateConversionRate(USER_ANCHOR_POINT[0]);
-
-      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
-      const anchor_point_y = GROUND_LEVEL_SCALAR - ((height * convRate)/ canvasRef.current.height);
-      return anchor_point_y
-    } else {
-      return GROUND_LEVEL_SCALAR;
-    }
-
-  }
-
-  useEffect(() => {
-    if (canvasRef.current && canvasRef.current.parentElement) {
-
-      gameStateRef.current = [
-        elevationAngle, 
-        launchVelocity, 
-        USER_ANCHOR_POINT[1], 
-        calculateScrollScalar(canvasRef.current)
-      ]
-      setStateChangeTrigger(x => x ^ 1);
-    }
-  }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   //////////////////////// Changing Angles Mouse Events ////////////////////////
 
