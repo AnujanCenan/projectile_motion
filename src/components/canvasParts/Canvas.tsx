@@ -17,7 +17,7 @@ import FireButton from "./FireButton.tsx";
 import InputPanel from "./InputPanel.tsx";
 import { fireCannon } from "../../processingFunctions/fireCannon.tsx";
 import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes.tsx";
-import { DrawingImages } from "../../OOP/DrawingImages.tsx"
+import { DrawingImages, DrawingToSrcAndImage } from "../../OOP/DrawingImages.tsx"
 import { CanvasMouseDown } from "../../OOP/canvasMouseEvents/CanvasMouseDown.tsx"
 import { CanvasMouseMove } from "../../OOP/canvasMouseEvents/CanvasMouseMove.tsx"
 import { CanvasImagePreloader } from "../../OOP/CanvasImagePreloader.tsx"
@@ -42,8 +42,7 @@ import { Disabled } from "../../types/DisableInput.tsx"
  * @param gameStateRef - The reference to the game's current state
  * @param setStateChangeTrigger - The function that triggers a state change
  * @param disableInput - The input types (angle, velocity, height) that is disabled
- * @param refsArray - The references to the images that need to be loaded
- * @param srcArray - The sources of the images that need to be loaded
+ * @param objectsToDraw - The objects (image)to draw on the canvas
  * 
  * Note: the refsArray and srcArray must be in the same order
  */
@@ -55,11 +54,10 @@ interface CanvasProps {
   gameStateRef: RefObject<GameState>
   setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>  
   disableInput: Disabled
-  refsArray:  RefObject<HTMLImageElement | null>[];
-  srcArray: string[];
+  objectsToDraw: DrawingToSrcAndImage;
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, refsArray, srcArray}: CanvasProps) {
+export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
   // Positioning Constants
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.5: 0.8;
 
@@ -168,10 +166,9 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   useEffect(() => {
     if (userStateRef.current instanceof LoadingImages) {
       
-      imagePreloader.loadImages(srcArray, refsArr, () => {
+      imagePreloader.loadImages(objectsToDraw, () => {
         drawEnvironmentFromCanvas();
       })
-    
 
     }
   }, [])
@@ -202,14 +199,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
       drawingInterfaceRef.current = new DrawingImages(
         positionAndSizesInterfaceRef.current,
-        holsterRef,
-        cannonRef,
-        velocityBarRef,
-        velocitySliderRef,
-        heightScaleRef,
-        heightArrowRef,
-        foregroundRef,
-        targetRef
+        objectsToDraw
       )
 
       canvasMouseDownEvent.current = new CanvasMouseDown(

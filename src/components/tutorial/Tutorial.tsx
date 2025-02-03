@@ -25,6 +25,7 @@ import velocitySliderImg from "../../images/velocity/velocitySlider.png"
 import heightScaleImg from "../../images/height/heightBar.png"
 import heightArrowImg from "../../images/height/heightIndicator.png"
 import targetImg from "../../images/targets/trainingTarget.png"
+import { DrawingToSrcAndImage } from "../../OOP/DrawingImages";
 
 interface TutorialProps {
   setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>
@@ -71,27 +72,17 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   const heightArrowRef = useRef<HTMLImageElement>(null);
   const targetRef = useRef<HTMLImageElement>(null);
 
-  const refsArray = [
-    foregroundRef,
-    holsterRef,
-    cannonRef,
-    velocityBarRef,
-    velocitySliderRef,
-    heightScaleRef,
-    heightArrowRef,
-    targetRef
-  ];
-
-  const srcArray = [
-    grassImg,
-    holsterImg,
-    cannonImg,
-    velocityBarImg,
-    velocitySliderImg,
-    heightScaleImg,
-    heightArrowImg,
-    targetImg
-  ]
+  const objectsToDraw: DrawingToSrcAndImage = {
+    cannon: { src: cannonImg, imageRef: cannonRef },
+    holster: { src: holsterImg, imageRef: holsterRef },
+    foreground: { src: grassImg, imageRef: foregroundRef },
+    target: { src: targetImg, imageRef: targetRef },
+    
+    velocityBar: { src: velocityBarImg, imageRef: velocityBarRef },
+    velocitySlider: { src: velocitySliderImg, imageRef: velocitySliderRef },
+    heightArrow: { src: heightArrowImg, imageRef: heightArrowRef },
+    heightScale: { src: heightScaleImg, imageRef: heightScaleRef }
+  }
 
   return (
     <>
@@ -117,11 +108,10 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         gameStateRef={gameStateRef}
         setStateChangeTrigger={setStateChangeTrigger}
         disableInput={{ angle: false, velocity: false, height: false }} 
-        refsArray={refsArray} 
-        srcArray={srcArray}        
+        objectsToDraw={objectsToDraw}
       />
-
-      <CanvasAngleVariable 
+    
+      {/* <CanvasAngleVariable 
         fixedVelocity={70} 
         fixedHeight={60} 
         max_range={500} 
@@ -130,9 +120,8 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         userGameActionRef={userGameActionRef} 
         gameStateRef={gameStateRef} 
         setStateChangeTrigger={setStateChangeTrigger} 
-        refsArray={refsArray} 
-        srcArray={srcArray}
-      />
+        objectsToDraw={objectsToDraw}
+      /> */}
       {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
         <CurrObjective currObjectives={tutorialState.getObjectives()} />

@@ -1,6 +1,7 @@
 import { RefObject, SetStateAction, useRef } from "react";
 import Canvas from "./Canvas";
 import { UserGameAction } from "../../states/userGameActions/UserGameAction";
+import { DrawingToSrcAndImage } from "../../OOP/DrawingImages";
 
 interface CanvasAngleVariableProps{
   fixedVelocity: number;
@@ -11,8 +12,7 @@ interface CanvasAngleVariableProps{
   userGameActionRef: RefObject<UserGameAction>
   gameStateRef: RefObject<GameState>
   setStateChangeTrigger: React.Dispatch<SetStateAction<number>>
-  refsArray: RefObject<HTMLImageElement | null>[];
-  srcArray: string[];
+  objectsToDraw: DrawingToSrcAndImage;
 }
 export default function CanvasAngleVariable({
   fixedVelocity, 
@@ -23,8 +23,7 @@ export default function CanvasAngleVariable({
   userGameActionRef,
   gameStateRef,
   setStateChangeTrigger,
-  refsArray,
-  srcArray
+  objectsToDraw
 
 }: CanvasAngleVariableProps) {
 
@@ -38,8 +37,7 @@ export default function CanvasAngleVariable({
       userStateRef={userGameActionRef}
       gameStateRef={gameStateRef}
       setStateChangeTrigger={setStateChangeTrigger}
-      refsArray={refsArray}
-      srcArray={srcArray}    
+      objectsToDraw={objectsToDraw}
       disableInput={{ angle: false, velocity: fixedVelocity, height: fixedHeight }} 
     />
   )
