@@ -32,7 +32,6 @@ interface TutorialProps {
 }
 export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   // const userStateRef = useRef<UserState>("loading")
-  console.log("Tutorial.tsx; rendering now")
   const userGameActionRef = useRef<UserGameAction>(new LoadingImages());
 
   const gameStateRef = useRef<GameState>([0, 0, GROUND_LEVEL_SCALAR, 0]);
@@ -101,7 +100,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         userGameActionRef={userGameActionRef}
       />
       {/* Main canvas - includes input panel and interactive map */}
-      {/* <Canvas 
+      <Canvas 
         MAX_RANGE={500}
         target_range={500}
         target_altitude={0}
@@ -110,9 +109,9 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         setStateChangeTrigger={setStateChangeTrigger}
         disableInput={{ angle: false, velocity: false, height: false }} 
         objectsToDraw={objectsToDraw}
-      /> */}
+      />
     
-      <CanvasAngleVariable 
+      {/* <CanvasAngleVariable 
         fixedVelocity={70} 
         fixedHeight={60} 
         max_range={500} 
@@ -121,7 +120,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         userGameActionRef={userGameActionRef} 
         gameStateRef={gameStateRef} 
         setStateChangeTrigger={setStateChangeTrigger} 
-      />
+      /> */}
       {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
         <CurrObjective currObjectives={tutorialState.getObjectives()} />
