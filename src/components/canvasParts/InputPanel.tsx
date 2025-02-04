@@ -124,10 +124,11 @@ export default function InputPanel({
       if (isNaN(parseFloat(val))) {
         return;
       }
-      const conversionRate = positioningAndSizesInterface.calculateConversionRate(USER_ANCHOR_PONT[0]);
+      const conversionRateY = positioningAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_PONT);
       
-      const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRate)/ canvas.height);
-      const maxMetreHeight = Math.round(((GROUND_LEVEL_SCALAR - 0.1) * canvas.height) / conversionRate * 1000) / 1000; 
+      const anchor_point_y = GROUND_LEVEL_SCALAR - ((parseFloat(val) * conversionRateY)/ canvas.height);
+      const maxMetreHeight = positioningAndSizesInterface.getMaxAltitude();
+      
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
         heightInputRef.current.value = "0";

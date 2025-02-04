@@ -16,6 +16,7 @@ interface CanvasVelocityVariableProps{
   fixedVelocity: number;
   fixedHeight: number;
   max_range: number;
+  max_height: number;
   target_range: number;
   target_altitude: number;
   userGameActionRef: RefObject<UserGameAction>
@@ -26,6 +27,7 @@ export default function CanvasVelocityVariable({
   fixedVelocity, 
   fixedHeight,
   max_range,
+  max_height,
   target_range,
   target_altitude,
   userGameActionRef,
@@ -50,6 +52,7 @@ export default function CanvasVelocityVariable({
   return (
     <Canvas 
       MAX_RANGE={max_range}
+      MAX_HEIGHT={max_height}
       target_range={target_range}
       target_altitude={target_altitude}
       userStateRef={userGameActionRef}

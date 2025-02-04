@@ -48,6 +48,7 @@ import { Disabled } from "../../types/DisableInput.tsx"
  */
 interface CanvasProps {
   MAX_RANGE: number,
+  MAX_HEIGHT: number,
   target_range: number,
   target_altitude: number,
   userStateRef: RefObject<UserGameAction>,
@@ -57,7 +58,7 @@ interface CanvasProps {
   objectsToDraw: DrawingToSrcAndImage;
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
+export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
   // Positioning Constants
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.5: 0.8;
 
@@ -70,23 +71,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   //// Element References
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // Image references
-  const cannonRef = useRef<HTMLImageElement>(null);
-  const holsterRef = useRef<HTMLImageElement>(null);
-
-  const velocityBarRef = useRef<HTMLImageElement>(null);
-  const velocitySliderRef = useRef<HTMLImageElement>(null);
-
-  const heightScaleRef = useRef<HTMLImageElement>(null);
-  const heightArrowRef = useRef<HTMLImageElement>(null);
-
-
-  // Foreground image reference
-  const foregroundRef = useRef<HTMLImageElement>(null);
-  
-  // Target image reference
-  const targetRef = useRef<HTMLImageElement>(null);
 
   // Textbox references
   const angleInputRef = useRef<HTMLInputElement>(null);
@@ -153,20 +137,6 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   //////////////////////// Canvas Loading //////////////////////////////////////
   
-
-  // create this in wrapper component
-
-  const refsArr: RefObject<HTMLImageElement | null>[] = [
-    foregroundRef,
-    holsterRef,
-    cannonRef,
-    velocityBarRef,
-    velocitySliderRef,
-    heightScaleRef,
-    heightArrowRef,
-    targetRef
-  ]
-
   useEffect(() => {
     if (userStateRef.current instanceof LoadingImages) {
       
@@ -187,7 +157,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
 
   function calculateAnchorPointY(height: number): number {
     if (positionAndSizesInterfaceRef.current && canvasRef.current) {
-      const convRate = positionAndSizesInterfaceRef.current.calculateConversionRate(USER_ANCHOR_POINT[0]);
+      const convRate = positionAndSizesInterfaceRef.current.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
       // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((height * convRate)/ canvasRef.current.height);
@@ -217,7 +187,8 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
         velocitySliderInfo, 
         heightBarInfo,
         targetInfo, 
-        MAX_RANGE
+        MAX_RANGE,
+        MAX_HEIGHT
       );
 
 
@@ -259,7 +230,7 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
   useEffect(() => {
-    console.log("1. in useEffect for drawEnvironmentFromCanvas; USER_ANCHOR_POINT = ", USER_ANCHOR_POINT);
+    
     drawEnvironmentFromCanvas();
   }, [GROUND_LEVEL_SCALAR, 
     USER_ANCHOR_POINT,
@@ -270,13 +241,13 @@ export default function Canvas({MAX_RANGE, target_range, target_altitude, userSt
     CANNON_HORIZONTAL_SCALAR
   ])
 
-  console.log("2. between useEffect and drawEnvironmentFromCanvas; USER_ANCHOR_POINT = ", USER_ANCHOR_POINT);
+  
 
   function drawEnvironmentFromCanvas() {
 
-    console.log("in drawEnvironmentFromCanvas")
-    console.log("Ref = ", gameStateRef.current[2])
-    console.log("USER_ANCHOR_POINT = ", USER_ANCHOR_POINT)
+    
+    
+    
     
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 

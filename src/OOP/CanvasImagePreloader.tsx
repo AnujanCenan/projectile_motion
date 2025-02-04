@@ -35,7 +35,7 @@ export class CanvasImagePreloader {
         const size = Object.keys(objectsToDraw).length;
         loadedImageCount++;
         if (loadedImageCount >= size) {
-          console.log("All images loaded; calling callback: drawingEnvironemnt")
+          
             callback();
         }
     }

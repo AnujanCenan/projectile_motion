@@ -1,4 +1,6 @@
 import { GROUND_LEVEL_SCALAR } from "../globalConstants/groundLevelScalar";
+import { IndependentDirectionStrategy } from "./conversionRate/IndependentDirectionStrategy";
+import { SingleRateStrategy } from "./conversionRate/SingleRateStrategy";
 
 export class CanvasPositionAndSizes {
   #canvas;
@@ -9,6 +11,8 @@ export class CanvasPositionAndSizes {
   #heightBarInfo;
   #targetInfo;
   #MAX_HORIZONTAL_RANGE;
+  #MAX_ALTITUDE: number = 1000;
+  #conversionRateStrategy = new SingleRateStrategy();
 
   constructor(
     canvas: HTMLCanvasElement, 
@@ -18,7 +22,9 @@ export class CanvasPositionAndSizes {
     velocitySlider: VelocitySliderInfo,
     heightBarInfo: HeightBarInfo,
     targetInfo: TargetInfo,
-    MAX_HORIZONTAL_RANGE: number) 
+    MAX_HORIZONTAL_RANGE: number,
+    MAX_ALTITUDE?: number
+  ) 
   {
     this.#canvas = canvas;
     this.#foregroundInfo = foregorundInfo;
@@ -29,6 +35,9 @@ export class CanvasPositionAndSizes {
 
     this.#targetInfo = targetInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
+    if (MAX_ALTITUDE) {
+      this.#MAX_ALTITUDE = MAX_ALTITUDE;
+    }
   }
 
 
@@ -59,6 +68,10 @@ export class CanvasPositionAndSizes {
 
   getMaxHorizontalRage() {
     return this.#MAX_HORIZONTAL_RANGE;
+  }
+
+  getMaxAltitude() {
+    return this.#MAX_ALTITUDE;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -142,13 +155,14 @@ export class CanvasPositionAndSizes {
     altitude: number, 
     range: number
   ) {
-    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT[0]);
+    const conversionRateX = this.calculateConversionRateXDirection(USER_ANCHOR_POINT);
+    const conversionRateY = this.calculateConversionRateYDirection(USER_ANCHOR_POINT);
   
   
     const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
   
-    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate;
-    const x_pos = anchor_x + range * conversionRate;
+    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRateY;
+    const x_pos = anchor_x + range * conversionRateX;
 
     return [x_pos, y_pos]
   }
@@ -194,9 +208,16 @@ export class CanvasPositionAndSizes {
   }
   
   /// CONVERSION RATE - ratio of pixels to corresponding metres
-  calculateConversionRate(pivot_x_scalar: number) {
-    const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
-    const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
-    return conversionRate  
+  // calculateConversionRate(pivot_x_scalar: number) {
+  //   const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
+  //   const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
+  //   return conversionRate  
+  // }
+  calculateConversionRateXDirection(USER_ANCHOR_POINT: number[]) {
+    return this.#conversionRateStrategy.calculateConversionRateXDirection(this, USER_ANCHOR_POINT); 
+  }
+
+  calculateConversionRateYDirection(USER_ANCHOR_POINT: number[]) {
+    return this.#conversionRateStrategy.calculateConversionRateYDirection(this, USER_ANCHOR_POINT); 
   }
 }
