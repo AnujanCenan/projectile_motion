@@ -130,17 +130,17 @@ export class CanvasMouseMove {
     
     this.#click_x.current = mouse_x;
     this.#click_y.current = mouse_y;
-
-    if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement < 0.1 * canvas.height) {
-      setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1]);
+    const topScalar = this.#positionsAndSizesInterface.calculateTopScalar(USER_ANCHOR_POINT);
+    if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement < topScalar * canvas.height) {
+      setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, topScalar]);
     } else if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement > GROUND_LEVEL_SCALAR * canvas.height) {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR]);
     } else {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, USER_ANCHOR_POINT[1] + yDisplacement / canvas.height])
     }
 
-    const conversionRate = this.#positionsAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0]);
-    const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvas.height) / conversionRate;
+    const conversionRateY = this.#positionsAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
+    const metreHeight = ((GROUND_LEVEL_SCALAR - USER_ANCHOR_POINT[1]) * canvas.height) / conversionRateY;
     heightInputRef.current.value = (Math.round(metreHeight * 1000) / 1000).toString();
   }
 

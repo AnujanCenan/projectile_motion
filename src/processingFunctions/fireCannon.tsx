@@ -27,7 +27,7 @@ export function fireCannon(
   const range_metres = range(
     gameStateRef, 
     positionAndSizesInterface.getCanvas(), 
-    positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0])
+    positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT)
   );
 
   const canvas = positionAndSizesInterface.getCanvas();
@@ -38,21 +38,35 @@ export function fireCannon(
       const [initial_x, initial_y] 
         = positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT);
 
-      const conversionRate = positionAndSizesInterface.calculateConversionRate(USER_ANCHOR_POINT[0]);
+    const angle_rad = elevationAngle * (Math.PI / 180);
 
-      const accel = 9.8 * conversionRate;          // TODO: acceleration could become a state variable if we move to different planets
-      const initial_v =  launchVelocity * conversionRate;
+
+      const conversionRateX = positionAndSizesInterface.calculateConversionRateXDirection(USER_ANCHOR_POINT);
+      const conversionRateY = positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
+
+      console.log(`in fire cannon function: conversionRateX: ${conversionRateX}, conversionRateY: ${conversionRateY}`)
+      const accel = 9.8 * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
+      const initial_v =  launchVelocity;
+
+      const initial_v_x = initial_v * Math.cos(angle_rad);      // in real-world m/s
+      const initial_v_y = initial_v * Math.sin(angle_rad);      // in real-world m/s
+
+      const initial_v_x_px = initial_v_x * conversionRateX;
+      const initial_v_y_px = initial_v_y * conversionRateY;
+
       var x = initial_x;
       var y = initial_y;
       var currTime = 0;
-      const angle_rad = elevationAngle * (Math.PI / 180);
+
+      console.log(`initial_x: ${initial_x}, initial_y: ${initial_y}, initial_v_x_px: ${initial_v_x_px}, initial_v_y_px: ${initial_v_y_px}`)
 
 
-      function trackProjectile() {     
+      function trackProjectile() {    
+        console.log("Tracking projectile") 
         // if (userStateRef.current === "idle")  return;
-        x = initial_x + initial_v * Math.cos(angle_rad) * currTime;                 
+        x = initial_x + initial_v_x_px * currTime;                 
         y = initial_y
-          - (initial_v * Math.sin(angle_rad) * currTime) 
+          - (initial_v_y_px * currTime) 
           + (1/2 * accel * currTime ** 2);            
 
         currTime += 0.04; // something to experiment with
@@ -70,14 +84,14 @@ export function fireCannon(
           
         }
         if (initial_y
-          - (initial_v * Math.sin(angle_rad) * currTime) 
+          - (initial_v_y_px * currTime) 
           + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
           reqNum = requestAnimationFrame(trackProjectile);
         } else {
           cancelAnimationFrame(reqNum);
           userStateRef.current = new Idle();
 
-          const final_x = range_metres * conversionRate + positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT)[0];
+          const final_x = range_metres * conversionRateX + positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT)[0];
           const final_y = GROUND_LEVEL_SCALAR * canvas.height;
           if (ctx) {
             drawCircle(ctx, final_x, final_y, 5, "red", "black");

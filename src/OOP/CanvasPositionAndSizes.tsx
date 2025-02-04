@@ -1,4 +1,6 @@
 import { GROUND_LEVEL_SCALAR } from "../globalConstants/groundLevelScalar";
+import { IndependentDirectionStrategy } from "./conversionRate/IndependentDirectionStrategy";
+import { SingleRateStrategy } from "./conversionRate/SingleRateStrategy";
 
 export class CanvasPositionAndSizes {
   #canvas;
@@ -9,6 +11,8 @@ export class CanvasPositionAndSizes {
   #heightBarInfo;
   #targetInfo;
   #MAX_HORIZONTAL_RANGE;
+  #MAX_ALTITUDE: number = 1000;
+  #conversionRateStrategy = new SingleRateStrategy();
 
   constructor(
     canvas: HTMLCanvasElement, 
@@ -18,7 +22,9 @@ export class CanvasPositionAndSizes {
     velocitySlider: VelocitySliderInfo,
     heightBarInfo: HeightBarInfo,
     targetInfo: TargetInfo,
-    MAX_HORIZONTAL_RANGE: number) 
+    MAX_HORIZONTAL_RANGE: number,
+    MAX_ALTITUDE?: number
+  ) 
   {
     this.#canvas = canvas;
     this.#foregroundInfo = foregorundInfo;
@@ -29,6 +35,9 @@ export class CanvasPositionAndSizes {
 
     this.#targetInfo = targetInfo;
     this.#MAX_HORIZONTAL_RANGE = MAX_HORIZONTAL_RANGE;
+    if (MAX_ALTITUDE) {
+      this.#MAX_ALTITUDE = MAX_ALTITUDE;
+    }
   }
 
 
@@ -59,6 +68,10 @@ export class CanvasPositionAndSizes {
 
   getMaxHorizontalRage() {
     return this.#MAX_HORIZONTAL_RANGE;
+  }
+
+  getMaxAltitude() {
+    return this.#MAX_ALTITUDE;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -110,7 +123,7 @@ export class CanvasPositionAndSizes {
   }
 
   getHeightArrowPosition(USER_ANCHOR_POINT: number[]) {
-    const growthFactor = this.getGrowthFactorHeight();
+    const growthFactor = this.getGrowthFactorHeight(USER_ANCHOR_POINT);
 
     const scale_pos_x = this.getHeightScalePosition(USER_ANCHOR_POINT)[0]
     const arrowPosX = scale_pos_x + (this.#heightBarInfo.x_coord_arrow_tip_touch) * growthFactor 
@@ -124,12 +137,12 @@ export class CanvasPositionAndSizes {
 
   getHeightScalePosition(USER_ANCHOR_POINT: number[]) {
     const cannonPosition = this.getCannonOriginalPosition(USER_ANCHOR_POINT)
-    const growthFactor = this.getGrowthFactorHeight();
+    const growthFactor = this.getGrowthFactorHeight(USER_ANCHOR_POINT);
 
     const xDistanceFromCannon = 20;
 
     const pos_x = cannonPosition[0] - this.#heightBarInfo.pixel_width * growthFactor - xDistanceFromCannon;
-    const pos_y = 0.1 * this.#canvas.height 
+    const pos_y = this.calculateTopScalar(USER_ANCHOR_POINT) * this.#canvas.height 
       - this.#heightBarInfo.y_offset_scale_start * growthFactor; 
     return [pos_x, pos_y]  
   }
@@ -142,13 +155,14 @@ export class CanvasPositionAndSizes {
     altitude: number, 
     range: number
   ) {
-    const conversionRate = this.calculateConversionRate(USER_ANCHOR_POINT[0]);
+    const conversionRateX = this.calculateConversionRateXDirection(USER_ANCHOR_POINT);
+    const conversionRateY = this.calculateConversionRateYDirection(USER_ANCHOR_POINT);
   
   
     const anchor_x = this.getPivotPosition(USER_ANCHOR_POINT)[0]
   
-    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRate;
-    const x_pos = anchor_x + range * conversionRate;
+    const y_pos = GROUND_LEVEL_SCALAR * this.getCanvas().height - altitude * conversionRateY;
+    const x_pos = anchor_x + range * conversionRateX;
 
     return [x_pos, y_pos]
   }
@@ -180,8 +194,8 @@ export class CanvasPositionAndSizes {
     return ((FRACTION_OF_CANVAS * window.innerWidth) / this.#velocitySliderInfo.pixel_width) * window.devicePixelRatio; // 817 is the velocityBar_pixel_width
   }
 
-  getGrowthFactorHeight() {
-  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
+  getGrowthFactorHeight(USER_ANCHOR_POINT: number[]) {
+  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  this.calculateTopScalar(USER_ANCHOR_POINT)
   return ((FRACTION_OF_CANVAS * this.#canvas.height) / this.#heightBarInfo.functional_pixel_height); // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
   }
 
@@ -194,9 +208,23 @@ export class CanvasPositionAndSizes {
   }
   
   /// CONVERSION RATE - ratio of pixels to corresponding metres
-  calculateConversionRate(pivot_x_scalar: number) {
-    const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
-    const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
-    return conversionRate  
+  // calculateConversionRate(pivot_x_scalar: number) {
+  //   const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
+  //   const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
+  //   return conversionRate  
+  // }
+  calculateConversionRateXDirection(USER_ANCHOR_POINT: number[]) {
+    return this.#conversionRateStrategy.calculateConversionRateXDirection(this, USER_ANCHOR_POINT); 
+  }
+
+  calculateConversionRateYDirection(USER_ANCHOR_POINT: number[]) {
+    return this.#conversionRateStrategy.calculateConversionRateYDirection(this, USER_ANCHOR_POINT); 
+  }
+
+  calculateTopScalar(USER_ANCHOR_POINT: number[]) {
+    const yConversionRate = this.calculateConversionRateYDirection(USER_ANCHOR_POINT);
+    const heightOfRuler = this.getMaxAltitude() * yConversionRate;
+    const topScalar = GROUND_LEVEL_SCALAR - (heightOfRuler / this.#canvas.height);
+    return topScalar;
   }
 }

@@ -102,6 +102,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
       {/* Main canvas - includes input panel and interactive map */}
       <Canvas 
         MAX_RANGE={500}
+        MAX_HEIGHT={100}
         target_range={500}
         target_altitude={0}
         userStateRef={userGameActionRef}
