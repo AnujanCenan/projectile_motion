@@ -123,7 +123,7 @@ export class CanvasPositionAndSizes {
   }
 
   getHeightArrowPosition(USER_ANCHOR_POINT: number[]) {
-    const growthFactor = this.getGrowthFactorHeight();
+    const growthFactor = this.getGrowthFactorHeight(USER_ANCHOR_POINT);
 
     const scale_pos_x = this.getHeightScalePosition(USER_ANCHOR_POINT)[0]
     const arrowPosX = scale_pos_x + (this.#heightBarInfo.x_coord_arrow_tip_touch) * growthFactor 
@@ -137,12 +137,12 @@ export class CanvasPositionAndSizes {
 
   getHeightScalePosition(USER_ANCHOR_POINT: number[]) {
     const cannonPosition = this.getCannonOriginalPosition(USER_ANCHOR_POINT)
-    const growthFactor = this.getGrowthFactorHeight();
+    const growthFactor = this.getGrowthFactorHeight(USER_ANCHOR_POINT);
 
     const xDistanceFromCannon = 20;
 
     const pos_x = cannonPosition[0] - this.#heightBarInfo.pixel_width * growthFactor - xDistanceFromCannon;
-    const pos_y = 0.1 * this.#canvas.height 
+    const pos_y = this.calculateTopScalar(USER_ANCHOR_POINT) * this.#canvas.height 
       - this.#heightBarInfo.y_offset_scale_start * growthFactor; 
     return [pos_x, pos_y]  
   }
@@ -194,8 +194,8 @@ export class CanvasPositionAndSizes {
     return ((FRACTION_OF_CANVAS * window.innerWidth) / this.#velocitySliderInfo.pixel_width) * window.devicePixelRatio; // 817 is the velocityBar_pixel_width
   }
 
-  getGrowthFactorHeight() {
-  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  0.1
+  getGrowthFactorHeight(USER_ANCHOR_POINT: number[]) {
+  const FRACTION_OF_CANVAS = GROUND_LEVEL_SCALAR -  this.calculateTopScalar(USER_ANCHOR_POINT)
   return ((FRACTION_OF_CANVAS * this.#canvas.height) / this.#heightBarInfo.functional_pixel_height); // 866 is the pixel height of the scale (that is actually the ruler (not the cosmetic ends))
   }
 
@@ -219,5 +219,12 @@ export class CanvasPositionAndSizes {
 
   calculateConversionRateYDirection(USER_ANCHOR_POINT: number[]) {
     return this.#conversionRateStrategy.calculateConversionRateYDirection(this, USER_ANCHOR_POINT); 
+  }
+
+  calculateTopScalar(USER_ANCHOR_POINT: number[]) {
+    const yConversionRate = this.calculateConversionRateYDirection(USER_ANCHOR_POINT);
+    const heightOfRuler = this.getMaxAltitude() * yConversionRate;
+    const topScalar = GROUND_LEVEL_SCALAR - (heightOfRuler / this.#canvas.height);
+    return topScalar;
   }
 }

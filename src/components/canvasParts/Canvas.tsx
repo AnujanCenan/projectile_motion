@@ -149,7 +149,6 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   useEffect(() => {
     if (disableInput.height !== false) {
       const fixedHeight = disableInput.height;
-      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
       // probably need a check to make sure the asked for fixed height is less than max metre height
       setUserAnchorPoint([USER_ANCHOR_POINT[0], calculateAnchorPointY(fixedHeight)]);
     }
@@ -159,7 +158,6 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
     if (positionAndSizesInterfaceRef.current && canvasRef.current) {
       const convRate = positionAndSizesInterfaceRef.current.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
-      // const maxMetreHeight = (GROUND_LEVEL_SCALAR - 0.1) * canvasRef.current.height / convRate;
       const anchor_point_y = GROUND_LEVEL_SCALAR - ((height * convRate)/ canvasRef.current.height);
       return anchor_point_y
     } else {
@@ -244,10 +242,6 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   
 
   function drawEnvironmentFromCanvas() {
-
-    
-    
-    
     
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 

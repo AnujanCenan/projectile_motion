@@ -10,7 +10,8 @@ export class IndependentDirectionStrategy implements CalculateConversionRateStra
   }
 
   calculateConversionRateYDirection(positionAndSizes: CanvasPositionAndSizes, USER_ANCHOR_POINT: number[]): number {
-    const availableSpace = (GROUND_LEVEL_SCALAR - 0.1) * (positionAndSizes.getCanvas().height);
+    const topScalar = positionAndSizes.calculateTopScalar(USER_ANCHOR_POINT)
+    const availableSpace = (GROUND_LEVEL_SCALAR - topScalar) * (positionAndSizes.getCanvas().height);
     const conversionRate = availableSpace / positionAndSizes.getMaxAltitude();
     return conversionRate 
   }

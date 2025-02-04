@@ -1,12 +1,12 @@
 body {
-    overflow-y: hidden;
+    overflow-y: scroll;
 }
 #container {
     max-height: 100%;
     height: 100vh;
     width: 100%; 
     overflow-x: scroll; 
-    overflow-y: hidden; 
+    overflow-y: scroll; 
     white-space: nowrap;
 
 

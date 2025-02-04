@@ -132,8 +132,8 @@ export default function InputPanel({
       if (parseFloat(val) < 0) {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, GROUND_LEVEL_SCALAR])
         heightInputRef.current.value = "0";
-      } else if (anchor_point_y < 0.1) {
-        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, 0.1])
+      } else if (anchor_point_y < positioningAndSizesInterface.calculateTopScalar(USER_ANCHOR_PONT)) {
+        setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, positioningAndSizesInterface.calculateTopScalar(USER_ANCHOR_PONT)])
         heightInputRef.current.value = `${maxMetreHeight}`;
       } else {
         setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, anchor_point_y])

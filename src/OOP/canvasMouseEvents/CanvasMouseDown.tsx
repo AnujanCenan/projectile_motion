@@ -91,7 +91,7 @@ export class CanvasMouseDown {
         e.pageX + horizScroll,
         e.pageY,
         this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
-        this.#positionsAndSizesInterface.getGrowthFactorHeight(),
+        this.#positionsAndSizesInterface.getGrowthFactorHeight(USER_ANCHOR_POINT),
       )
 
       if (didClick) this.#userActionRef.current = new DraggingHeightArrow();
