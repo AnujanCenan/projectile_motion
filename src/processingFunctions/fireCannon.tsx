@@ -14,15 +14,15 @@ export function fireCannon(
     launchVelocity: number, 
     elevationAngle: number, 
     GROUND_LEVEL_SCALAR: number, 
-    width: number,
     gameStateRef: RefObject<GameState>,
     userStateRef: RefObject<UserGameAction>,
+    drawEnvironment: Function,
     setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
 
 ) {
 
   userStateRef.current = new Firing();
-  setStateChangeTrigger(x => x ^ 1);
+  gameStateRef.current[3] = 0;
 
   const range_metres = range(
     gameStateRef, 
@@ -44,7 +44,6 @@ export function fireCannon(
       const conversionRateX = positionAndSizesInterface.calculateConversionRateXDirection(USER_ANCHOR_POINT);
       const conversionRateY = positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
-      console.log(`in fire cannon function: conversionRateX: ${conversionRateX}, conversionRateY: ${conversionRateY}`)
       const accel = 9.8 * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
       const initial_v =  launchVelocity;
 
@@ -58,45 +57,45 @@ export function fireCannon(
       var y = initial_y;
       var currTime = 0;
 
-      console.log(`initial_x: ${initial_x}, initial_y: ${initial_y}, initial_v_x_px: ${initial_v_x_px}, initial_v_y_px: ${initial_v_y_px}`)
-
-
       function trackProjectile() {    
-        console.log("Tracking projectile") 
         // if (userStateRef.current === "idle")  return;
+        const nextXDisplacement = initial_x + initial_v_x_px * currTime - x;
         x = initial_x + initial_v_x_px * currTime;                 
         y = initial_y
           - (initial_v_y_px * currTime) 
           + (1/2 * accel * currTime ** 2);            
 
         currTime += 0.04; // something to experiment with
-        (canvas.parentNode as HTMLDivElement).scrollTo({
-          top: 0,
-          left: (x) / window.devicePixelRatio - width / 2,
-          behavior: "instant"
-        });
 
-        gameStateRef.current[3] = calculateScrollScalar(canvas)
-        
+        gameStateRef.current[3] += nextXDisplacement;
+        const drawX = positionAndSizesInterface.getPivotX(USER_ANCHOR_POINT[0])
         if (ctx) {
+          drawEnvironment()
+          drawCircle(ctx, drawX, y, 5, "blue", "black");
           setStateChangeTrigger(x => x ^ 1);
-          drawCircle(ctx, x, y, 5, "blue", "black");
-          
         }
         if (initial_y
           - (initial_v_y_px * currTime) 
           + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
           reqNum = requestAnimationFrame(trackProjectile);
         } else {
+          const drawX = positionAndSizesInterface.getPivotX(USER_ANCHOR_POINT[0])
+
           cancelAnimationFrame(reqNum);
           userStateRef.current = new Idle();
-
           const final_x = range_metres * conversionRateX + positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT)[0];
+          const nextXDisplacement = final_x - x;
+
           const final_y = GROUND_LEVEL_SCALAR * canvas.height;
+          gameStateRef.current[3] += nextXDisplacement;
+          setStateChangeTrigger(x => x ^ 1);
+
           if (ctx) {
-            drawCircle(ctx, final_x, final_y, 5, "red", "black");
+            drawEnvironment();
+            drawCircle(ctx, drawX, final_y, 5, "red", "black");
+            console.log(gameStateRef.current[3])
+
           }
-          setStateChangeTrigger(x => x ^ 1)
           return;
         }
       }
