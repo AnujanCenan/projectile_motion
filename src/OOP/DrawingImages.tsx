@@ -34,7 +34,7 @@ export class DrawingImages {
 
   }
 
-  drawHolster(holsterImage: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
+  drawHolster(holsterImage: HTMLImageElement, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
     const holsterInfo = this.#canvasPositionAndSizes.getHolsterInfo();
 
     const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
@@ -50,7 +50,7 @@ export class DrawingImages {
       drawImageNoRotation(
         ctx,
         holsterImage, 
-        TOP_LEFT_CORNER[0] , 
+        TOP_LEFT_CORNER[0] - scrollVal, 
         TOP_LEFT_CORNER[1],
         holsterInfo.pixel_width, 
         holsterInfo.pixel_height, 
@@ -59,7 +59,7 @@ export class DrawingImages {
     }
   }
 
-  drawCannon(cannonImage: HTMLImageElement, angle: number, USER_ANCHOR_POINT: number[]) {
+  drawCannon(cannonImage: HTMLImageElement, angle: number, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
     const cannonInfo = this.#canvasPositionAndSizes.getCannonInfo();
 
     const growthFactor = this.#canvasPositionAndSizes.getGrowthFactorCannon();
@@ -75,7 +75,7 @@ export class DrawingImages {
       drawImageWithRotation(
         ctx,
         cannonImage, 
-        TOP_LEFT_CORNER[0] , 
+        TOP_LEFT_CORNER[0] - scrollVal, 
         TOP_LEFT_CORNER[1],
         cannonInfo.pivot_x, 
         cannonInfo.pivot_y, 
@@ -89,7 +89,7 @@ export class DrawingImages {
 
   //// Velocity Methods
 
-  drawVelocityBar(velocityBar: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
+  drawVelocityBar(velocityBar: HTMLImageElement, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
 
     if (!this.#drawingObjects.velocityBar?.imageRef.current) return;
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
@@ -102,7 +102,7 @@ export class DrawingImages {
       drawImageNoRotation(
         ctx,
         velocityBar, 
-        pos_x, 
+        pos_x - scrollVal, 
         pos_y, 
         this.#drawingObjects.velocityBar?.imageRef.current.width, 
         this.#drawingObjects.velocityBar?.imageRef.current.height, 
@@ -111,7 +111,7 @@ export class DrawingImages {
     }
   }
 
-  drawVelocitySlider(velocitySlider: HTMLImageElement, launchVelocity: number, MAX_SPEED: number, USER_ANCHOR_POINT: number[]) {
+  drawVelocitySlider(velocitySlider: HTMLImageElement, launchVelocity: number, MAX_SPEED: number, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
   if (!this.#drawingObjects.velocityBar?.imageRef.current || !this.#drawingObjects.velocitySlider?.imageRef.current) return;
 
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getVelocityBarPosition(USER_ANCHOR_POINT);
@@ -131,8 +131,8 @@ export class DrawingImages {
       drawImageNoRotation(
         ctx,  
         velocitySlider, 
-        sliderPosX, sliderPosY, 
-
+        sliderPosX - scrollVal, 
+        sliderPosY, 
         sliderWidth, 
         sliderHeight, 
         growthFactor
@@ -141,23 +141,20 @@ export class DrawingImages {
   }
 
 
-  drawHeightScale(heightScale: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
-    console.log("Drawing height scale")
+  drawHeightScale(heightScale: HTMLImageElement, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
+
     if (!this.#drawingObjects.heightScale?.imageRef.current) return;
-    console.log("Got past the null check")
 
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
     const growthFactor =  this.#canvasPositionAndSizes.getGrowthFactorHeight(USER_ANCHOR_POINT);
     
     const ctx = this.#canvasPositionAndSizes.getCtx()
-    console.log("Position values are ", pos_x, pos_y);
-    console.log("Growth factor value is ", growthFactor);
     if (ctx) {
       
       drawImageNoRotation(
         ctx,
         heightScale, 
-        pos_x, 
+        pos_x - scrollVal, 
         pos_y, 
         this.#drawingObjects.heightScale.imageRef.current.width, 
         this.#drawingObjects.heightScale.imageRef.current.height, 
@@ -166,7 +163,7 @@ export class DrawingImages {
     }
   }
 
-  drawHeightArrow(heightArrow: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
+  drawHeightArrow(heightArrow: HTMLImageElement, USER_ANCHOR_POINT: number[], scrollVal: number = 0) {
     if (!this.#drawingObjects.heightArrow?.imageRef.current) return;
     const growthFactor =  this.#canvasPositionAndSizes.getGrowthFactorHeight(USER_ANCHOR_POINT);
     
@@ -178,7 +175,7 @@ export class DrawingImages {
       drawImageNoRotation(
         ctx,
         heightArrow, 
-        arrowPosX, 
+        arrowPosX - scrollVal, 
         arrowPosY, 
         this.#drawingObjects.heightArrow.imageRef.current.width, 
         this.#drawingObjects.heightArrow.imageRef.current.height, 
@@ -187,7 +184,7 @@ export class DrawingImages {
     }
   }
 
-  drawHeightPlatform(USER_ANCHOR_POINT: number[], GROUND_LEVEL_SCALAR: number) {
+  drawHeightPlatform(USER_ANCHOR_POINT: number[], GROUND_LEVEL_SCALAR: number, scrollVal: number = 0) {
 
     const SCALAR_OF_HOLSTER_WIDTH = 3;
 
@@ -197,9 +194,10 @@ export class DrawingImages {
     const [holster_x, holster_y] = this.#canvasPositionAndSizes.getHolsterPosition(USER_ANCHOR_POINT);
 
 
-    const platform_x = holster_x - width / 4;
+    const platform_x = (holster_x - width / 4) - scrollVal;
     const platform_y = holster_y + 
       this.#canvasPositionAndSizes.getHolsterInfo().pixel_height * this.#canvasPositionAndSizes.getGrowthFactorCannon();
+
 
 
     const ctx = this.#canvasPositionAndSizes.getCtx();
@@ -233,7 +231,7 @@ export class DrawingImages {
     }
   }
 
-  drawTarget(USER_ANCHOR_POINT: number[], GROUND_LEVEL_SCALAR: number, target: HTMLImageElement, range: number, altitude: number) {
+  drawTarget(USER_ANCHOR_POINT: number[], GROUND_LEVEL_SCALAR: number, target: HTMLImageElement, range: number, altitude: number, scrollVal: number = 0) {
     if (!this.#drawingObjects.target.imageRef.current) return;
     const [x_pos, y_pos] = this.#canvasPositionAndSizes.getTargetTopLeft(
       GROUND_LEVEL_SCALAR, 
@@ -251,7 +249,7 @@ export class DrawingImages {
       drawImageNoRotation(
         ctx,
         target,
-        x_pos,
+        x_pos - scrollVal,
         y_pos,
         this.#drawingObjects.target.imageRef.current.width,
         this.#drawingObjects.target.imageRef.current.height,
@@ -268,6 +266,7 @@ export class DrawingImages {
     elevationAngle: number,
     target_range: number,
     target_altitude: number,
+    scrollVal: number
   ) {
     
     const canvas = this.#canvasPositionAndSizes.getCanvas();
@@ -278,19 +277,19 @@ export class DrawingImages {
 
       if (this.#drawingObjects.foreground.imageRef.current)
         this.drawForeground(GROUND_LEVEL_SCALAR, this.#drawingObjects.foreground.imageRef.current);
-      this.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR);
+      this.drawHeightPlatform(USER_ANCHOR_POINT, GROUND_LEVEL_SCALAR, scrollVal);
       if (this.#drawingObjects.holster.imageRef.current)
-        this.drawHolster(this.#drawingObjects.holster.imageRef.current, USER_ANCHOR_POINT);
+        this.drawHolster(this.#drawingObjects.holster.imageRef.current, USER_ANCHOR_POINT, scrollVal);
       if (this.#drawingObjects.cannon.imageRef.current)
-        this.drawCannon(this.#drawingObjects.cannon.imageRef.current, -elevationAngle, USER_ANCHOR_POINT);
+        this.drawCannon(this.#drawingObjects.cannon.imageRef.current, -elevationAngle, USER_ANCHOR_POINT, scrollVal);
       if (this.#drawingObjects.velocityBar?.imageRef.current)
-        this.drawVelocityBar(this.#drawingObjects.velocityBar.imageRef.current, USER_ANCHOR_POINT);  
+        this.drawVelocityBar(this.#drawingObjects.velocityBar.imageRef.current, USER_ANCHOR_POINT, scrollVal);
       if (this.#drawingObjects.velocitySlider?.imageRef.current)
-        this.drawVelocitySlider(this.#drawingObjects.velocitySlider.imageRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT);
+        this.drawVelocitySlider(this.#drawingObjects.velocitySlider.imageRef.current, launchVelocity, MAX_SPEED, USER_ANCHOR_POINT, scrollVal);
       if (this.#drawingObjects.heightScale?.imageRef.current)
-        this.drawHeightScale(this.#drawingObjects.heightScale.imageRef.current, USER_ANCHOR_POINT);
+        this.drawHeightScale(this.#drawingObjects.heightScale.imageRef.current, USER_ANCHOR_POINT, scrollVal);
       if (this.#drawingObjects.heightArrow?.imageRef.current)
-        this.drawHeightArrow(this.#drawingObjects.heightArrow.imageRef.current, USER_ANCHOR_POINT);
+        this.drawHeightArrow(this.#drawingObjects.heightArrow.imageRef.current, USER_ANCHOR_POINT, scrollVal);
       
       if (this.#drawingObjects.target.imageRef.current)
         this.drawTarget(
@@ -298,7 +297,8 @@ export class DrawingImages {
           GROUND_LEVEL_SCALAR, 
           this.#drawingObjects.target.imageRef.current, 
           target_range, 
-          target_altitude
+          target_altitude,
+          scrollVal
         )
     }
   }
