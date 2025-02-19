@@ -161,12 +161,10 @@ export class CanvasMouseMove {
     setElevationAngle: Function,
     setLaunchVelocity: Function,
     setUserAnchorPoint: Function,
-  
-    setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
   ) {
 
     if (this.#userActionRef.current instanceof DraggingCannon) {
-    this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
+      this.#handleCannonClick(e, elevationAngle, USER_ANCHOR_POINT, angleInputRef, setElevationAngle);
     } else if (this.#userActionRef.current instanceof DraggingVelocity) {
       this.#handleVelocityClick(e, launchVelocity, MAX_SPEED, velocityInputRef, setLaunchVelocity);
     } 
@@ -179,7 +177,6 @@ export class CanvasMouseMove {
         heightInputRef, 
         setUserAnchorPoint
       );
-      // setStateChangeTrigger(x => x ^ 1);
     }
   }
   
