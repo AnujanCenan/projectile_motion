@@ -32,6 +32,7 @@ import { Idle } from "../../states/userGameActions/Idle.tsx"
 import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
 import { Restarting } from "../../states/userGameActions/Restarting.tsx"
 import { Disabled } from "../../types/DisableInput.tsx"
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../../globalConstants/canvasDimensions.tsx";
 
 
 /**
@@ -60,6 +61,7 @@ interface CanvasProps {
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
 export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
   // Positioning Constants
+  
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.5: 0.8;
 
   // const yScalarRef = useRef(GROUND_LEVEL_SCALAR);
@@ -217,12 +219,11 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
 
-      gameStateRef.current = [
-        elevationAngle, 
-        launchVelocity, 
-        USER_ANCHOR_POINT[1], 
-        calculateScrollScalar(canvasRef.current)
-      ]
+      gameStateRef.current[0] = elevationAngle;
+      gameStateRef.current[1] = launchVelocity;
+      gameStateRef.current[2] = USER_ANCHOR_POINT[1];
+      gameStateRef.current[3] = 0;
+
       setStateChangeTrigger(x => x ^ 1);
     }
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
@@ -236,7 +237,9 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
     launchVelocity,
     elevationAngle,
     width, height,
-    CANNON_HORIZONTAL_SCALAR
+    CANNON_HORIZONTAL_SCALAR,
+    gameStateRef.current[3]
+
   ])
 
   
@@ -251,6 +254,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
       elevationAngle,
       target_range,
       target_altitude,
+      gameStateRef.current[3]
     )
   }
 
@@ -278,7 +282,6 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
         setElevationAngle,
         setLaunchVelocity,
         setUserAnchorPoint,
-        setStateChangeTrigger
       )
     }
   }
@@ -292,17 +295,10 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   return (
     <>
       
-      <div id="container" onScroll={() => {
-        if (canvasRef.current && !(userStateRef.current instanceof Firing)) {
-          userStateRef.current = new Scrolling();
-          gameStateRef.current = [
-            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
-          ]
-          setStateChangeTrigger(x => x ^ 1);
-        }
-      }}>
+      <div id="container">
         <canvas ref={canvasRef} 
           id="canvas" 
+          style={{width:`${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px`}}
           onMouseDown={(e) => mouseDown(e)}
           onMouseUp={() => mouseUp()}
           onMouseMove={(e) => mouseMove(e)}
@@ -333,12 +329,12 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
 
         {canvasRef.current && canvasRef.current.parentElement && positionAndSizesInterfaceRef.current &&      
           <InteractiveMap 
-            parentCanvasRef={canvasRef as RefObject<HTMLCanvasElement>}
+            MAX_RANGE={MAX_RANGE}
             pivotCoords={positionAndSizesInterfaceRef.current.getPivotPosition(USER_ANCHOR_POINT)} 
-            targetCoords={positionAndSizesInterfaceRef.current.getTargetPivot(
-              GROUND_LEVEL_SCALAR, USER_ANCHOR_POINT, target_altitude, target_range
-            )}        
+            targetRange={target_range}  
             gameStateRef={gameStateRef}
+            postionAndSizesInterface={positionAndSizesInterfaceRef as RefObject<CanvasPositionAndSizes>}
+            USER_ANCHOR_POINT={USER_ANCHOR_POINT}
           />}
 
         { 
@@ -349,9 +345,9 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
               launchVelocity, 
               elevationAngle, 
               GROUND_LEVEL_SCALAR, 
-              width,
               gameStateRef,
               userStateRef,
+              drawEnvironmentFromCanvas,
               setStateChangeTrigger
             )} 
           />
