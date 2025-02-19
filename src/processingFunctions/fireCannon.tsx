@@ -93,8 +93,6 @@ export function fireCannon(
           if (ctx) {
             drawEnvironment();
             drawCircle(ctx, drawX, final_y, 5, "red", "black");
-            console.log(gameStateRef.current[3])
-
           }
           return;
         }
