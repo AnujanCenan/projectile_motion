@@ -77,11 +77,11 @@ export class CanvasPositionAndSizes {
   //////////////////////////////////////////////////////////////////////////////
   //// PIVOT
   getPivotX(pivot_x_scalar: number) {
-    return window.innerWidth * pivot_x_scalar * window.devicePixelRatio;
+    return (this.#canvas.width * pivot_x_scalar);
   }
 
   getPivotY(pivot_y_scalar: number) {
-    return this.#canvas.height * pivot_y_scalar;
+    return (this.#canvas.height * pivot_y_scalar);
   }
 
 
