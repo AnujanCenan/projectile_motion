@@ -3,43 +3,53 @@ import { RefObject, useEffect, useRef } from "react"
 import "./CSS/InteractiveMap.css"
 import { fix_dpi } from "../fixDPI";
 import { isLandscape } from "../../processingFunctions/drawingFunctions";
+import { CANVAS_WIDTH } from "../../globalConstants/canvasDimensions";
+import { CanvasPositionAndSizes } from "../../OOP/CanvasPositionAndSizes";
 interface InteractiveMapProps {
-  parentCanvasRef: RefObject<HTMLCanvasElement>;
+  MAX_RANGE: number;
   pivotCoords: number[];
-  targetCoords: number[];
+  targetRange: number;
   gameStateRef: RefObject<GameState>
+  postionAndSizesInterface: RefObject<CanvasPositionAndSizes>
+  USER_ANCHOR_POINT: number[]
 
   
 }
-export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoords, gameStateRef}: InteractiveMapProps) {
+export default function InteractiveMap({MAX_RANGE, pivotCoords, targetRange, gameStateRef, postionAndSizesInterface, USER_ANCHOR_POINT}: InteractiveMapProps) {
 
-  const INTERACTIVE_MAP_WIDTH = 400;
+  const INTERACTIVE_MAP_WIDTH = 200;
   const INTERACTIVE_MAP_HEIGHT = 80
   const absoluteLeftPosition = 0;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const initialScrollScalar = useRef<number>(gameStateRef.current[3])
   // scale = l / L ==> multiplying by scale converts real world pixel distance into interactive map pixel distance
-  const scale = INTERACTIVE_MAP_WIDTH / parentCanvasRef.current.width;
+  const scale = (INTERACTIVE_MAP_WIDTH / (CANVAS_WIDTH * USER_ANCHOR_POINT[0] + (MAX_RANGE * postionAndSizesInterface.current.calculateConversionRateXDirection(USER_ANCHOR_POINT)) + 700))
   
   const yCoord = (INTERACTIVE_MAP_HEIGHT / 2) * window.devicePixelRatio;
+
   const piv_x_real = pivotCoords[0];
-  const piv_x_map = (piv_x_real * scale) * window.devicePixelRatio;
+  const piv_x_map = (piv_x_real * scale)
 
-  const target_x_real = targetCoords[0];
-  const target_x_map = (target_x_real * scale) * window.devicePixelRatio;
+  const target_x_map = (piv_x_map + (targetRange *  window.devicePixelRatio) * scale) * window.devicePixelRatio;
 
-  const radius = 10 * window.devicePixelRatio;
+  const radius = 5 * window.devicePixelRatio;
 
   // information to get the highlighting rectangle
-  const rightMostScalar = gameStateRef.current[3];
+  // const rightMostScalar = gameStateRef.current[3];
 
-  const rightSideContainer = rightMostScalar * parentCanvasRef.current.width;
-  const parentDivContainerWidth = (parentCanvasRef.current.parentElement as HTMLDivElement).clientWidth;
-  const leftSideContainer = rightSideContainer - parentDivContainerWidth * window.devicePixelRatio;
+  // const rightSideContainer = rightMostScalar * parentCanvasRef.current.width;
+  // const parentDivContainerWidth = (parentCanvasRef.current.parentElement as HTMLDivElement).clientWidth;
+  // const leftSideContainer = rightSideContainer - parentDivContainerWidth * window.devicePixelRatio;
 
-  const highlighter_right_side = (rightSideContainer * scale) * window.devicePixelRatio;
-  const highlighter_left_side = (leftSideContainer * scale) * window.devicePixelRatio;
+
+  const canvasLeftBorder = gameStateRef.current[3];
+  const canvasRightBorder = canvasLeftBorder + CANVAS_WIDTH;
+
+  const highlighter_left_side = canvasLeftBorder * scale * window.devicePixelRatio ;
+  const highlighter_right_side = canvasRightBorder * scale * window.devicePixelRatio;
+
+  // const highlighter_left_side = (leftSideContainer * scale) * window.devicePixelRatio;
 
   const highlighter_width = (highlighter_right_side - highlighter_left_side);
   const highlighter_height = INTERACTIVE_MAP_HEIGHT * window.devicePixelRatio;
@@ -93,17 +103,8 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
   ///////////////////////////////////////////////////////////////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-
     clickedOn.current = true;
     clicked_x.current = e.pageX;
-
-    const canvasDivContainer = parentCanvasRef.current.parentElement as HTMLDivElement;
-    const newScrollPos = (clicked_x.current - absoluteLeftPosition) / scale;
-    
-    canvasDivContainer.scrollTo({
-      left: newScrollPos - highlighter_width / (2 * scale)
-    })
-
     updateGameStateMouseDown()
   }
 
@@ -114,21 +115,14 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
     const displacement_x = new_x - clicked_x.current;
     const translatedDisplacementX = displacement_x / scale;
     clicked_x.current = new_x;
-
-    const canvasDivContainer = parentCanvasRef.current.parentElement as HTMLDivElement;
-
-    canvasDivContainer.scrollBy({
-      left: translatedDisplacementX
-    })
-
   }
 
   function mouseUp() {
     clickedOn.current = false;
-    updateGameStateMouseDown();
   }
   
-  window.addEventListener("mouseup", () => {
+  window.addEventListener("mouseup", (e) => {
+    e.stopPropagation();
     mouseUp();
   })
 

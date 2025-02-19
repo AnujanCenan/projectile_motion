@@ -21,7 +21,6 @@ export class ToPanToTarget extends TutorialActionState {
   }
 
   public completedTaskHelper(): boolean {
-    console.log(this.getGameState().current[3])
     return  this.getGameState().current[3] >= 2499;
   }
 }
