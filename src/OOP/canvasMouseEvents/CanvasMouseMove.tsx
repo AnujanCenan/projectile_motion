@@ -14,6 +14,7 @@ export class CanvasMouseMove {
   #click_x;
   #click_y;
   #userActionRef;
+  #gameStateRef;
   private disabledInput: Disabled;
 
   constructor(
@@ -23,6 +24,7 @@ export class CanvasMouseMove {
     // sliderClick: RefObject<boolean>,
     // heightArrowClick: RefObject<boolean>,
     userActionRef: RefObject<UserGameAction>,
+    gameStateRef: RefObject<GameState>,
     click_x: RefObject<number>,
     click_y: RefObject<number>,
     disabledInput: Disabled
@@ -31,6 +33,7 @@ export class CanvasMouseMove {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
     this.#clickedBehindPivot = clickedBehindPivot
     this.#userActionRef = userActionRef;
+    this.#gameStateRef = gameStateRef;
     this.#click_x = click_x;
     this.#click_y = click_y;
     this.disabledInput = disabledInput;
@@ -52,7 +55,7 @@ export class CanvasMouseMove {
     const horizScroll = container.scrollLeft
 
     const angularDisplacement = calculateAngularDisplacement(
-      e.pageX + horizScroll, 
+      e.pageX - this.#gameStateRef.current[3], 
       e.pageY, 
       this.#click_x.current, 
       this.#click_y.current, 
@@ -88,7 +91,7 @@ export class CanvasMouseMove {
       const container = canvas.parentNode as HTMLDivElement;
       const horizScroll = container.scrollLeft
 
-      const mouse_x = e.pageX + horizScroll;
+      const mouse_x = e.pageX - this.#gameStateRef.current[3];
       const mouse_y = e.pageY;
 
       const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
@@ -123,7 +126,7 @@ export class CanvasMouseMove {
     const container = canvas.parentNode as HTMLDivElement;
     const horizScroll = container.scrollLeft
     
-    const mouse_x = e.pageX + horizScroll;
+    const mouse_x = e.pageX - this.#gameStateRef.current[3];
     const mouse_y = e.pageY;
 
     const yDisplacement = (mouse_y - this.#click_y.current) * window.devicePixelRatio;

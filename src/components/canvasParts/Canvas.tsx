@@ -198,9 +198,11 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
       )
 
       canvasMouseDownEvent.current = new CanvasMouseDown(
+
         positionAndSizesInterfaceRef.current,
         clickedBehindPivot,
         userStateRef,
+        gameStateRef,
         click_x,
         click_y
       )
@@ -209,6 +211,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
         positionAndSizesInterfaceRef.current,
         clickedBehindPivot,
         userStateRef,
+        gameStateRef,
         click_x,
         click_y,
         disableInput
@@ -335,6 +338,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
             gameStateRef={gameStateRef}
             postionAndSizesInterface={positionAndSizesInterfaceRef as RefObject<CanvasPositionAndSizes>}
             USER_ANCHOR_POINT={USER_ANCHOR_POINT}
+            setStateChangeTrigger={setStateChangeTrigger}
           />}
 
         { 

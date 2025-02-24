@@ -12,9 +12,10 @@ export function clickedOnCannon(
   if (!clickedBehindPivot) {
     return false;
   }
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(cannonInfo, cannonGrowthFactor,pivotPosition,angle);
+  console.log(`the top left corner is at ${TOP_LEFT_CORNER}`)
   var lambda, mu;
   if (angle === 90) {
     [lambda, mu] = clickedOnUprightCannon(
@@ -115,8 +116,6 @@ export function clickedOnVelocitySlider(
   MAX_SPEED: number, 
   growthFactor: number
 ) {
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
   
   const centreX = TOP_LEFT_BAR[0] + (speed / MAX_SPEED) * velocityBarWidth * growthFactor;
   const centreY = TOP_LEFT_BAR[1] + (velocityBarHeight * growthFactor) / 2;
@@ -135,8 +134,8 @@ export function clickedOnHeightArrow(
   ARROW_TOP_LEFT: number[],
   growthFactor: number, 
 ) {
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
+  // mouse_x *= window.devicePixelRatio;
+  // mouse_y *= window.devicePixelRatio;
 
   const x1 = 103 * growthFactor;
   const y1 = 0;
