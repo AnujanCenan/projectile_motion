@@ -7,9 +7,13 @@
     overflow-y: hidden; 
     white-space: nowrap;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     scrollbar-color: rgb(18, 35, 110) rgb(168, 162, 175);
     scrollbar-width: 2px;
+    z-index: 0;
 }
 
 #canvas {

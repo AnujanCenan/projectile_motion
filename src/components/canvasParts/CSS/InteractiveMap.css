@@ -5,4 +5,5 @@
     /* margin-left: 1%; */
     /* border: 5px solid black; */
     background-color: white;
+    z-index: 1;
 }

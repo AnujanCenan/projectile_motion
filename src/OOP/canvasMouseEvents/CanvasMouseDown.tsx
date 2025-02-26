@@ -8,6 +8,8 @@ import { DraggingVelocity } from "../../states/userGameActions/DraggingVelocity"
 
 export class CanvasMouseDown {
   #positionsAndSizesInterface;
+  #canvasX;
+  #canvasY;
   #clickedBehindPivot;
   #userActionRef;
   #gameStateRef;
@@ -26,6 +28,8 @@ export class CanvasMouseDown {
     click_y: RefObject<number>
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
+    this.#canvasX = this.#positionsAndSizesInterface.getCanvas().getBoundingClientRect().x * window.devicePixelRatio;
+    this.#canvasY =  this.#positionsAndSizesInterface.getCanvas().getBoundingClientRect().y * window.devicePixelRatio;
     this.#clickedBehindPivot = clickedBehindPivot
     this.#userActionRef = userActionRef;
     this.#gameStateRef = gameStateRef;
@@ -38,13 +42,11 @@ export class CanvasMouseDown {
     elevationAngle: number, 
     USER_ANCHOR_POINT: number[]
   ) {
-
-    const canvas = this.#positionsAndSizesInterface.getCanvas();
     const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
-    
+
     const didClick = clickedOnCannon(
-      e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3], 
-      e.pageY * window.devicePixelRatio,
+      e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3] - this.#canvasX, 
+      e.pageY * window.devicePixelRatio - this.#canvasY,
       cannonInfo,
       this.#positionsAndSizesInterface.getGrowthFactorCannon(),
       this.#positionsAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT),
@@ -61,12 +63,10 @@ export class CanvasMouseDown {
     USER_ANCHOR_POINT: number[],
     MAX_SPEED: number
   ) {
-    const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const container = canvas.parentNode as HTMLDivElement; 
     const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
     const didClick = clickedOnVelocitySlider(
-      e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3],
-      e.pageY * window.devicePixelRatio, 
+      e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3] -  this.#canvasX,
+      e.pageY * window.devicePixelRatio -  this.#canvasY, 
       launchVelocity, 
       velocitySliderInfo.pixel_width, 
       velocitySliderInfo.pixel_height, 
@@ -84,12 +84,10 @@ export class CanvasMouseDown {
     e: React.MouseEvent<HTMLCanvasElement, MouseEvent>, 
     USER_ANCHOR_POINT: number[]
   ) {
-    const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const container = canvas.parentNode as HTMLDivElement; 
     if (this.#positionsAndSizesInterface) {
       const didClick = clickedOnHeightArrow(
-        e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3],
-        e.pageY * window.devicePixelRatio,
+        e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3] - this.#canvasX,
+        e.pageY * window.devicePixelRatio - this.#canvasY,
         this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
         this.#positionsAndSizesInterface.getGrowthFactorHeight(USER_ANCHOR_POINT),
       )
@@ -119,8 +117,8 @@ export class CanvasMouseDown {
 
     this.#heightArrowCheck(e, USER_ANCHOR_POINT);
 
-    const horizScroll = (canvas.parentNode as HTMLDivElement).scrollLeft
-    this.#click_x.current = e.pageX + horizScroll;
-    this.#click_y.current = e.pageY;
+
+    this.#click_x.current = e.pageX * window.devicePixelRatio + this.#gameStateRef.current[3] - this.#canvasX;
+    this.#click_y.current = e.pageY * window.devicePixelRatio - this.#canvasY;
   }
 }

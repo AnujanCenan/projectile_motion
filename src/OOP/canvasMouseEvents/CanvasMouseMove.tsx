@@ -10,6 +10,8 @@ import { Disabled } from "../../types/DisableInput";
 export class CanvasMouseMove {
 
   #positionsAndSizesInterface;
+  #canvasX;
+  #canvasY;
   #clickedBehindPivot;
   #click_x;
   #click_y;
@@ -31,6 +33,8 @@ export class CanvasMouseMove {
     
   ) {
     this.#positionsAndSizesInterface = postionsAndSizesInterface;
+    this.#canvasX = this.#positionsAndSizesInterface.getCanvas().getBoundingClientRect().x * window.devicePixelRatio;
+    this.#canvasY =  this.#positionsAndSizesInterface.getCanvas().getBoundingClientRect().y * window.devicePixelRatio;
     this.#clickedBehindPivot = clickedBehindPivot
     this.#userActionRef = userActionRef;
     this.#gameStateRef = gameStateRef;
@@ -50,13 +54,12 @@ export class CanvasMouseMove {
   ) {
     if (this.disabledInput.angle !== false) return;
 
-    const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const container = canvas.parentNode as HTMLDivElement;
-    const horizScroll = container.scrollLeft
-
+    const mouseX = e.pageX * window.devicePixelRatio - this.#gameStateRef.current[3] - this.#canvasX
+    const mouseY = e.pageY * window.devicePixelRatio - this.#canvasY
+    // console.log(`comparing old x and new x: ${this.#click_x.current}, ${this.#click_y.current} vs ${mouseX}, ${mouseY}`)
     const angularDisplacement = calculateAngularDisplacement(
-      e.pageX - this.#gameStateRef.current[3], 
-      e.pageY, 
+      mouseX,
+      mouseY,
       this.#click_x.current, 
       this.#click_y.current, 
       this.#clickedBehindPivot.current,
@@ -64,8 +67,8 @@ export class CanvasMouseMove {
       elevationAngle,
     );
 
-    this.#click_x.current = e.pageX + horizScroll;
-    this.#click_y.current = e.pageY;
+    this.#click_x.current = mouseX;
+    this.#click_y.current = mouseY;
 
     if (elevationAngle + angularDisplacement > 90) {
       setElevationAngle(90)
@@ -87,15 +90,11 @@ export class CanvasMouseMove {
   ) {
     if (this.disabledInput.velocity !== false) return;
 
-      const canvas = this.#positionsAndSizesInterface.getCanvas();
-      const container = canvas.parentNode as HTMLDivElement;
-      const horizScroll = container.scrollLeft
-
-      const mouse_x = e.pageX - this.#gameStateRef.current[3];
-      const mouse_y = e.pageY;
+      const mouse_x = e.pageX * window.devicePixelRatio - this.#gameStateRef.current[3] - this.#canvasX
+      const mouse_y = e.pageY * window.devicePixelRatio - this.#canvasY;
 
       const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
-      const xDisplacement = (mouse_x  - this.#click_x.current) * window.devicePixelRatio;
+      const xDisplacement = (mouse_x  - this.#click_x.current);
       const velocityPerPixel = MAX_SPEED / (velocitySliderInfo.pixel_width * this.#positionsAndSizesInterface.getGrowthFactorVelocity());
       
       this.#click_x.current = mouse_x;
@@ -123,13 +122,11 @@ export class CanvasMouseMove {
     if (this.disabledInput.height !== false) return;
 
     const canvas = this.#positionsAndSizesInterface.getCanvas();
-    const container = canvas.parentNode as HTMLDivElement;
-    const horizScroll = container.scrollLeft
     
-    const mouse_x = e.pageX - this.#gameStateRef.current[3];
-    const mouse_y = e.pageY;
+    const mouse_x = e.pageX * window.devicePixelRatio - this.#gameStateRef.current[3] - this.#canvasX;
+    const mouse_y = e.pageY * window.devicePixelRatio - this.#canvasY;
 
-    const yDisplacement = (mouse_y - this.#click_y.current) * window.devicePixelRatio;
+    const yDisplacement = (mouse_y - this.#click_y.current);
     
     this.#click_x.current = mouse_x;
     this.#click_y.current = mouse_y;

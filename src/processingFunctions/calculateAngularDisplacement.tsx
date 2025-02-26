@@ -8,11 +8,6 @@ export function calculateAngularDisplacement(
   angle: number,
 ) {
   
-  mouse_x *= window.devicePixelRatio;
-  mouse_y *= window.devicePixelRatio;
-  init_mouse_x *= window.devicePixelRatio;
-  init_mouse_y *= window.devicePixelRatio;
-  
   const [global_piv_x, global_piv_y] = global_pivot_pos;
 
   const a = distanceFormula(global_piv_x, global_piv_y, mouse_x, mouse_y);
@@ -23,7 +18,6 @@ export function calculateAngularDisplacement(
   // c^2 = a^2 + b^2 - 2 a b cos(theta)
   const angularDisplacement = (180 / Math.PI) * Math.acos(((a * a) + (b * b) - (c * c)) / (2 * a * b));
   // figure out sign of the anuglar displacement based on where the final mouse pos is relative to the initial mouse pis
-
   var sign = 0;
   // dragging up and to the left
   if (mouse_y < init_mouse_y && mouse_x <= init_mouse_x) {
@@ -66,7 +60,7 @@ function distanceFormula(x1: number, y1: number, x2: number, y2: number) {
   return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
-// calculates the angle between the vector formed by a mouse drag, and the basis vecot <1, 0>
+// calculates the angle between the vector formed by a mouse drag, and the basis vector <1, 0>
 function dragAngle(mouse_x: number, mouse_y: number, init_mouse_x: number, init_mouse_y: number) {
   const horizontalVector = [1, 0];
   const dragVector = [mouse_x - init_mouse_x, mouse_y - init_mouse_y];

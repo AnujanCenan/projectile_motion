@@ -12,10 +12,8 @@ export function clickedOnCannon(
   if (!clickedBehindPivot) {
     return false;
   }
-  // mouse_x *= window.devicePixelRatio;
-  // mouse_y *= window.devicePixelRatio;
+
   const [TOP_LEFT_CORNER, v1, v2] = findCannonPointAndPlane(cannonInfo, cannonGrowthFactor,pivotPosition,angle);
-  console.log(`the top left corner is at ${TOP_LEFT_CORNER}`)
   var lambda, mu;
   if (angle === 90) {
     [lambda, mu] = clickedOnUprightCannon(
