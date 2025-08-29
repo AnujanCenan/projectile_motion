@@ -142,16 +142,12 @@ export class DrawingImages {
 
 
   drawHeightScale(heightScale: HTMLImageElement, USER_ANCHOR_POINT: number[]) {
-    console.log("Drawing height scale")
     if (!this.#drawingObjects.heightScale?.imageRef.current) return;
-    console.log("Got past the null check")
 
     const [pos_x, pos_y] = this.#canvasPositionAndSizes.getHeightScalePosition(USER_ANCHOR_POINT);
     const growthFactor =  this.#canvasPositionAndSizes.getGrowthFactorHeight(USER_ANCHOR_POINT);
     
     const ctx = this.#canvasPositionAndSizes.getCtx()
-    console.log("Position values are ", pos_x, pos_y);
-    console.log("Growth factor value is ", growthFactor);
     if (ctx) {
       
       drawImageNoRotation(

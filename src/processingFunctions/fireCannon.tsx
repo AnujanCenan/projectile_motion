@@ -44,7 +44,6 @@ export function fireCannon(
       const conversionRateX = positionAndSizesInterface.calculateConversionRateXDirection(USER_ANCHOR_POINT);
       const conversionRateY = positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
-      console.log(`in fire cannon function: conversionRateX: ${conversionRateX}, conversionRateY: ${conversionRateY}`)
       const accel = 9.8 * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
       const initial_v =  launchVelocity;
 
@@ -58,11 +57,9 @@ export function fireCannon(
       var y = initial_y;
       var currTime = 0;
 
-      console.log(`initial_x: ${initial_x}, initial_y: ${initial_y}, initial_v_x_px: ${initial_v_x_px}, initial_v_y_px: ${initial_v_y_px}`)
 
 
       function trackProjectile() {    
-        console.log("Tracking projectile") 
         // if (userStateRef.current === "idle")  return;
         x = initial_x + initial_v_x_px * currTime;                 
         y = initial_y
