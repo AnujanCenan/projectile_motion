@@ -75,13 +75,6 @@ export default function Dialogue({
   }, [currSpeechIndex])
   
 
-  // useEffect(() => {
-
-  //   if (setCompletionVariable !== null && completionVal !== null && currSpeechIndex === speeches.length) {
-
-  //     setCompletionVariable(completionVal);
-  //   }
-  // })
   return (
     <div id="dialougeWrapper">
     <div ref={containerRef} id="dialogue_container">
