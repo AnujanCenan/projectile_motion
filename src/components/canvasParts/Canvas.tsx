@@ -58,7 +58,17 @@ interface CanvasProps {
   objectsToDraw: DrawingToSrcAndImage;
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
+export default function Canvas({
+  MAX_RANGE, 
+  MAX_HEIGHT, 
+  target_range, 
+  target_altitude, 
+  userStateRef, 
+  gameStateRef, 
+  setStateChangeTrigger, 
+  disableInput, 
+  objectsToDraw
+}: CanvasProps) {
   // Positioning Constants
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.5: 0.8;
 
@@ -105,7 +115,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   const imagePreloader = new CanvasImagePreloader();
 
   function pickHorizontalScalar() {
-    return isLandscape() ? 0.5 : 0.8;
+    return (isLandscape() ? 0.5 : 0.8);
   }
   useEffect(() => {
     setUserAnchorPoint([pickHorizontalScalar(), USER_ANCHOR_POINT[1]])
