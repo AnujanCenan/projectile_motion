@@ -6,6 +6,8 @@ export class LevelNameDirectory {
   constructor(setProjectileMotionPage: React.Dispatch<SetStateAction<JSX.Element>>) {
     this.setProjectileMotionPage = setProjectileMotionPage;
   }
+  // Factory which builds a level using a switch case statement
+  // Chooses which level to build based on the input levelName string
   getElement(levelName: string): JSX.Element {
     switch (levelName) {
       case "Tutorial":
