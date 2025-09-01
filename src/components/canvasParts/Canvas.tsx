@@ -42,7 +42,7 @@ import { Disabled } from "../../types/DisableInput.tsx"
  * @param gameStateRef - The reference to the game's current state
  * @param setStateChangeTrigger - The function that triggers a state change
  * @param disableInput - The input types (angle, velocity, height) that is disabled
- * @param objectsToDraw - The objects (image)to draw on the canvas
+ * @param objectsToDraw - The objects (images) to draw on the canvas
  * 
  * Note: the refsArray and srcArray must be in the same order
  */
@@ -117,15 +117,19 @@ export default function Canvas({
   function pickHorizontalScalar() {
     return (isLandscape() ? 0.5 : 0.8);
   }
+  
+  // Adjust pivot point
   useEffect(() => {
     setUserAnchorPoint([pickHorizontalScalar(), USER_ANCHOR_POINT[1]])
     
   }, [width, height]);
 
+  // Game State Ref Height Update 
   useEffect(() => {
     gameStateRef.current[2] = USER_ANCHOR_POINT[1];
   }, [USER_ANCHOR_POINT]);
 
+  // Restarting listener 
   useEffect(() => {
     if (userStateRef.current instanceof Restarting) {
       setElevationAngle(disableInput.angle !== false ? disableInput.angle : 0);
@@ -140,8 +144,6 @@ export default function Canvas({
         left: 0
       })
       userStateRef.current = new Idle();
-      
-
     }
   })
 
@@ -155,6 +157,7 @@ export default function Canvas({
       })
     }
   }, [])
+
 /////////////////////////// Height Check ///////////////////////////////////////
   useEffect(() => {
     if (disableInput.height !== false) {
@@ -177,14 +180,13 @@ export default function Canvas({
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
-  
+  // fix dpi
   useEffect(() => {
     const canvas = canvasRef.current
     if (canvas) fix_dpi(canvas);
-    
-
   }, [width, height]);
 
+  // Initialise Class Instances
   useEffect(() => {
     if (canvasRef.current) {
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
@@ -224,6 +226,7 @@ export default function Canvas({
     }
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
   
+  // Refreshing Canvas On Input
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
 
@@ -237,6 +240,8 @@ export default function Canvas({
     }
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
+
+  // Drawing environment
   useEffect(() => {
     
     drawEnvironmentFromCanvas();
@@ -249,7 +254,6 @@ export default function Canvas({
     CANNON_HORIZONTAL_SCALAR
   ])
 
-  
 
   function drawEnvironmentFromCanvas() {
     
@@ -264,7 +268,7 @@ export default function Canvas({
     )
   }
 
-  //////////////////////// Changing Angles Mouse Events ////////////////////////
+  //////////////////////// Mouse Event Listeners ////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     canvasMouseDownEvent.current?.mouseDown(
