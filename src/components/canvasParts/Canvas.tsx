@@ -42,7 +42,7 @@ import { Disabled } from "../../types/DisableInput.tsx"
  * @param gameStateRef - The reference to the game's current state
  * @param setStateChangeTrigger - The function that triggers a state change
  * @param disableInput - The input types (angle, velocity, height) that is disabled
- * @param objectsToDraw - The objects (image)to draw on the canvas
+ * @param objectsToDraw - The objects (images) to draw on the canvas
  * 
  * Note: the refsArray and srcArray must be in the same order
  */
@@ -58,13 +58,23 @@ interface CanvasProps {
   objectsToDraw: DrawingToSrcAndImage;
 }
 // TODO: ensure target_range <= MAX_HORIZONTAL_RANGE
-export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_altitude, userStateRef, gameStateRef, setStateChangeTrigger, disableInput, objectsToDraw}: CanvasProps) {
+export default function Canvas({
+  MAX_RANGE, 
+  MAX_HEIGHT, 
+  target_range, 
+  target_altitude, 
+  userStateRef, 
+  gameStateRef, 
+  setStateChangeTrigger, 
+  disableInput, 
+  objectsToDraw
+}: CanvasProps) {
   // Positioning Constants
   const CANNON_HORIZONTAL_SCALAR = isLandscape() ? 0.5: 0.8;
 
   // const yScalarRef = useRef(GROUND_LEVEL_SCALAR);
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, gameStateRef.current[2]] as number[])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, gameStateRef.current.yPosScalar] as number[])
 
   
   const { width, height } = useWindowSize();
@@ -105,17 +115,21 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
   const imagePreloader = new CanvasImagePreloader();
 
   function pickHorizontalScalar() {
-    return isLandscape() ? 0.5 : 0.8;
+    return (isLandscape() ? 0.5 : 0.8);
   }
+  
+  // Adjust pivot point
   useEffect(() => {
     setUserAnchorPoint([pickHorizontalScalar(), USER_ANCHOR_POINT[1]])
     
   }, [width, height]);
 
+  // Game State Ref Height Update 
   useEffect(() => {
-    gameStateRef.current[2] = USER_ANCHOR_POINT[1];
+    gameStateRef.current.yPosScalar = USER_ANCHOR_POINT[1];
   }, [USER_ANCHOR_POINT]);
 
+  // Restarting listener 
   useEffect(() => {
     if (userStateRef.current instanceof Restarting) {
       setElevationAngle(disableInput.angle !== false ? disableInput.angle : 0);
@@ -130,8 +144,6 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
         left: 0
       })
       userStateRef.current = new Idle();
-      
-
     }
   })
 
@@ -145,6 +157,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
       })
     }
   }, [])
+
 /////////////////////////// Height Check ///////////////////////////////////////
   useEffect(() => {
     if (disableInput.height !== false) {
@@ -167,14 +180,13 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
 
   //////////////////////// Canvas Drawing //////////////////////////////////////
 
-  
+  // fix dpi
   useEffect(() => {
     const canvas = canvasRef.current
     if (canvas) fix_dpi(canvas);
-    
-
   }, [width, height]);
 
+  // Initialise Class Instances
   useEffect(() => {
     if (canvasRef.current) {
       positionAndSizesInterfaceRef.current = new CanvasPositionAndSizes(
@@ -214,19 +226,22 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
     }
   }, [cannonInfo, holsterInfo, velocitySliderInfo, MAX_RANGE])
   
+  // Refreshing Canvas On Input
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
+      gameStateRef.current = {
+        angle: elevationAngle, 
+        velocity: launchVelocity, 
+        yPosScalar: USER_ANCHOR_POINT[1], 
+        xScroll: calculateScrollScalar(canvasRef.current)
+      }
 
-      gameStateRef.current = [
-        elevationAngle, 
-        launchVelocity, 
-        USER_ANCHOR_POINT[1], 
-        calculateScrollScalar(canvasRef.current)
-      ]
       setStateChangeTrigger(x => x ^ 1);
     }
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
 
+
+  // Drawing environment
   useEffect(() => {
     
     drawEnvironmentFromCanvas();
@@ -239,13 +254,12 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
     CANNON_HORIZONTAL_SCALAR
   ])
 
-  
 
   function drawEnvironmentFromCanvas() {
     
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
-      [USER_ANCHOR_POINT[0], gameStateRef.current[2]],
+      [USER_ANCHOR_POINT[0], gameStateRef.current.yPosScalar],
       MAX_SPEED,
       launchVelocity,
       elevationAngle,
@@ -254,7 +268,7 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
     )
   }
 
-  //////////////////////// Changing Angles Mouse Events ////////////////////////
+  //////////////////////// Mouse Event Listeners ////////////////////////
 
   function mouseDown(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
     canvasMouseDownEvent.current?.mouseDown(
@@ -295,9 +309,12 @@ export default function Canvas({MAX_RANGE, MAX_HEIGHT, target_range, target_alti
       <div id="container" onScroll={() => {
         if (canvasRef.current && !(userStateRef.current instanceof Firing)) {
           userStateRef.current = new Scrolling();
-          gameStateRef.current = [
-            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
-          ]
+          gameStateRef.current = {
+            angle: elevationAngle, 
+            velocity: launchVelocity,
+            yPosScalar: USER_ANCHOR_POINT[1], 
+            xScroll: calculateScrollScalar(canvasRef.current)
+          }
           setStateChangeTrigger(x => x ^ 1);
         }
       }}>

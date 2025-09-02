@@ -21,7 +21,7 @@ export class ToDragHeightArrow extends TutorialActionState {
   public completedTaskHelper() {
     return (
       this.getUserState().current instanceof DraggingHeightArrow && 
-      this.getGameState().current[2] <= 0.625
+      this.getGameState().current.yPosScalar <= 0.625
     );
   }
 }

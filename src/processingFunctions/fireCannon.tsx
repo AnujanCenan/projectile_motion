@@ -44,7 +44,6 @@ export function fireCannon(
       const conversionRateX = positionAndSizesInterface.calculateConversionRateXDirection(USER_ANCHOR_POINT);
       const conversionRateY = positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
-      console.log(`in fire cannon function: conversionRateX: ${conversionRateX}, conversionRateY: ${conversionRateY}`)
       const accel = 9.8 * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
       const initial_v =  launchVelocity;
 
@@ -58,11 +57,9 @@ export function fireCannon(
       var y = initial_y;
       var currTime = 0;
 
-      console.log(`initial_x: ${initial_x}, initial_y: ${initial_y}, initial_v_x_px: ${initial_v_x_px}, initial_v_y_px: ${initial_v_y_px}`)
 
 
       function trackProjectile() {    
-        console.log("Tracking projectile") 
         // if (userStateRef.current === "idle")  return;
         x = initial_x + initial_v_x_px * currTime;                 
         y = initial_y
@@ -76,7 +73,7 @@ export function fireCannon(
           behavior: "instant"
         });
 
-        gameStateRef.current[3] = calculateScrollScalar(canvas)
+        gameStateRef.current.xScroll = calculateScrollScalar(canvas)
         
         if (ctx) {
           setStateChangeTrigger(x => x ^ 1);
@@ -114,10 +111,10 @@ export function fireCannon(
 
 function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, conversionRate: number) {
   
-  const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current[2]) * canvas.height) / conversionRate;
+  const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current.yPosScalar) * canvas.height) / conversionRate;
 
-  const u = gameStateRef.current[1];
-  const theta = gameStateRef.current[0];
+  const u = gameStateRef.current.velocity;
+  const theta = gameStateRef.current.angle;
 
   const u_y = u * Math.sin(degreesToRadians(theta));
 
@@ -129,8 +126,8 @@ function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElem
 function range(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, conversionRate: number) {
   const tf = timeOfFlight(gameStateRef, canvas, conversionRate);
   
-  const u = gameStateRef.current[1];
-  const theta = gameStateRef.current[0];
+  const u = gameStateRef.current.velocity;
+  const theta = gameStateRef.current.angle;
   const u_x = u * Math.cos(degreesToRadians(theta));
 
   return u_x * tf;

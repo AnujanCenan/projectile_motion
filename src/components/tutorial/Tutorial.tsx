@@ -15,7 +15,6 @@ import { ReadingDialogue } from "../../states/userGameActions/ReadingDialogue";
 import { TutorialActionState } from "../../states/tutorialStates/TutorialActionState";
 import CurrObjective from "../currObjective/CurrObjective";
 import PauseButton from "../pauseButton/pauseButton";
-import CanvasAngleVariable from "../canvasParts/CanvasAngleVariable";
 
 import grassImg from "../../images/foregrounds/grassFlat.png"
 import cannonImg from "../../images/Cannons/Cannonv2/Cannon_v2.0_body.png"
@@ -34,7 +33,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   // const userStateRef = useRef<UserState>("loading")
   const userGameActionRef = useRef<UserGameAction>(new LoadingImages());
 
-  const gameStateRef = useRef<GameState>([0, 0, GROUND_LEVEL_SCALAR, 0]);
+  const gameStateRef = useRef<GameState>({angle: 0, velocity: 0, yPosScalar: GROUND_LEVEL_SCALAR, xScroll: 0});
   const [stateChangeTrigger, setStateChangeTrigger] = useState(0);
 
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);
@@ -112,16 +111,6 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
         objectsToDraw={objectsToDraw}
       />
     
-      {/* <CanvasAngleVariable 
-        fixedVelocity={70} 
-        fixedHeight={60} 
-        max_range={500} 
-        target_range={500} 
-        target_altitude={10} 
-        userGameActionRef={userGameActionRef} 
-        gameStateRef={gameStateRef} 
-        setStateChangeTrigger={setStateChangeTrigger} 
-      /> */}
       {/* Helpful Hints component */}
       {tutorialState instanceof TutorialActionState &&
         <CurrObjective currObjectives={tutorialState.getObjectives()} />

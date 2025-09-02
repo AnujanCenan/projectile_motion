@@ -30,9 +30,9 @@ export class ToFireAtTarget extends TutorialActionState {
     const userState = this.getUserState();
     return (
       userState.current instanceof Firing && 
-      gameState.current[0] === 45 && 
-      gameState.current[1] === 70 && 
-      gameState.current[2] === GROUND_LEVEL_SCALAR
+      gameState.current.angle === 45 && 
+      gameState.current.velocity === 70 && 
+      gameState.current.yPosScalar === GROUND_LEVEL_SCALAR
     )
   }
 }

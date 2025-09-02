@@ -18,7 +18,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
   const absoluteLeftPosition = 0;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const initialScrollScalar = useRef<number>(gameStateRef.current[3])
+  const initialScrollScalar = useRef<number>(gameStateRef.current.xScroll)
   // scale = l / L ==> multiplying by scale converts real world pixel distance into interactive map pixel distance
   const scale = INTERACTIVE_MAP_WIDTH / parentCanvasRef.current.width;
   
@@ -32,7 +32,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
   const radius = 10 * window.devicePixelRatio;
 
   // information to get the highlighting rectangle
-  const rightMostScalar = gameStateRef.current[3];
+  const rightMostScalar = gameStateRef.current.xScroll;
 
   const rightSideContainer = rightMostScalar * parentCanvasRef.current.width;
   const parentDivContainerWidth = (parentCanvasRef.current.parentElement as HTMLDivElement).clientWidth;
@@ -139,7 +139,7 @@ export default function InteractiveMap({parentCanvasRef, pivotCoords, targetCoor
     } else if (newVal > 1) {
       newVal = 1;
     }
-    gameStateRef.current[3] = newVal;
+    gameStateRef.current.xScroll = newVal;
   }
   ///////////////////////////////////////////////////////////////////////////////////
   
