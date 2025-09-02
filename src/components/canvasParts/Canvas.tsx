@@ -32,6 +32,7 @@ import { Idle } from "../../states/userGameActions/Idle.tsx"
 import { LoadingImages } from "../../states/userGameActions/LoadingImages.tsx"
 import { Restarting } from "../../states/userGameActions/Restarting.tsx"
 import { Disabled } from "../../types/DisableInput.tsx"
+import AnalysisTools from "./AnalysisTools.tsx";
 
 
 /**
@@ -113,6 +114,14 @@ export default function Canvas({
   const canvasMouseMoveEvent = useRef<CanvasMouseMove>(null);
 
   const imagePreloader = new CanvasImagePreloader();
+
+
+    const timeRef = useRef(0)
+    const xVelRef = useRef(0)
+    const xDisRef = useRef(0)
+    const yVelRef = useRef(0)
+    const yDisRef = useRef(0)
+
 
   function pickHorizontalScalar() {
     return (isLandscape() ? 0.5 : 0.8);
@@ -251,7 +260,7 @@ export default function Canvas({
     launchVelocity,
     elevationAngle,
     width, height,
-    CANNON_HORIZONTAL_SCALAR
+    CANNON_HORIZONTAL_SCALAR, 
   ])
 
 
@@ -369,10 +378,25 @@ export default function Canvas({
               width,
               gameStateRef,
               userStateRef,
-              setStateChangeTrigger
-            )} 
+              setStateChangeTrigger,
+              timeRef,
+              xVelRef,
+              xDisRef,
+              yVelRef,
+              yDisRef
+            )}
           />
         }
+
+        <AnalysisTools 
+          time={timeRef.current}
+          xVel={xVelRef.current}
+          xDis={xDisRef.current}
+          yVel={yVelRef.current}
+          yDis={yDisRef.current}
+        />
+
+
 
       </div>
     </>
