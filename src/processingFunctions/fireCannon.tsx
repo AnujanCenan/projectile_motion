@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { Ref, RefObject } from "react";
 import { CanvasPositionAndSizes } from "../OOP/CanvasPositionAndSizes.tsx";
 import { drawCircle } from "./drawingFunctions.tsx";
 import { calculateScrollScalar } from "./scrollScalarCalculation.tsx";
@@ -7,7 +7,10 @@ import { UserGameAction } from "../states/userGameActions/UserGameAction.tsx";
 import { Firing } from "../states/userGameActions/Firing.tsx";
 import { Idle } from "../states/userGameActions/Idle.tsx";
 
-// needs canvas, user anchor point, launch vel, elevation angle, ground level scalar   
+// needs canvas, user anchor point, launch vel, elevation angle, ground level scalar
+
+const GRAV_ACCEL = 9.8
+
 export function fireCannon(
     positionAndSizesInterface: CanvasPositionAndSizes,
     USER_ANCHOR_POINT: number[], 
@@ -17,7 +20,15 @@ export function fireCannon(
     width: number,
     gameStateRef: RefObject<GameState>,
     userStateRef: RefObject<UserGameAction>,
-    setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>
+    setStateChangeTrigger: React.Dispatch<React.SetStateAction<number>>,
+
+    timeRef: RefObject<number>,
+    xVelRef: RefObject<number>,
+    xDisRef: RefObject<number>,
+    yVelRef: RefObject<number>,
+    yDisRef: RefObject<number>
+
+    
 
 ) {
 
@@ -32,6 +43,8 @@ export function fireCannon(
 
   const canvas = positionAndSizesInterface.getCanvas();
   const ctx = positionAndSizesInterface.getCtx();
+
+  const tf = timeOfFlight(gameStateRef, canvas, positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT));
   var reqNum: number;
   try {
     if (canvas) {
@@ -44,11 +57,13 @@ export function fireCannon(
       const conversionRateX = positionAndSizesInterface.calculateConversionRateXDirection(USER_ANCHOR_POINT);
       const conversionRateY = positionAndSizesInterface.calculateConversionRateYDirection(USER_ANCHOR_POINT);
 
-      const accel = 9.8 * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
+      const accel = GRAV_ACCEL * conversionRateY;          // TODO: acceleration could become a state variable if we move to different planets
       const initial_v =  launchVelocity;
 
       const initial_v_x = initial_v * Math.cos(angle_rad);      // in real-world m/s
       const initial_v_y = initial_v * Math.sin(angle_rad);      // in real-world m/s
+
+      xVelRef.current = initial_v_x;
 
       const initial_v_x_px = initial_v_x * conversionRateX;
       const initial_v_y_px = initial_v_y * conversionRateY;
@@ -57,16 +72,28 @@ export function fireCannon(
       var y = initial_y;
       var currTime = 0;
 
-
-
       function trackProjectile() {    
         // if (userStateRef.current === "idle")  return;
+
+
         x = initial_x + initial_v_x_px * currTime;                 
         y = initial_y
           - (initial_v_y_px * currTime) 
-          + (1/2 * accel * currTime ** 2);            
+          + (1/2 * accel * currTime ** 2);
+
+
 
         currTime += 0.04; // something to experiment with
+
+        timeRef.current = currTime;
+
+        xDisRef.current = (x - initial_x) / conversionRateX;
+        yDisRef.current = (initial_y - y) / conversionRateY;
+
+        yVelRef.current = initial_v_y - GRAV_ACCEL * timeRef.current;
+
+        
+
         (canvas.parentNode as HTMLDivElement).scrollTo({
           top: 0,
           left: (x) / window.devicePixelRatio - width / 2,
@@ -76,7 +103,7 @@ export function fireCannon(
         gameStateRef.current.xScroll = calculateScrollScalar(canvas)
         
         if (ctx) {
-          setStateChangeTrigger(x => x ^ 1);
+          // setStateChangeTrigger(x => x ^ 1);
           drawCircle(ctx, x, y, 5, "blue", "black");
           
         }
@@ -84,16 +111,26 @@ export function fireCannon(
           - (initial_v_y_px * currTime) 
           + (1/2 * accel * currTime ** 2)  <= GROUND_LEVEL_SCALAR * canvas.height) {
           reqNum = requestAnimationFrame(trackProjectile);
+          setStateChangeTrigger(x => x ^ 1)
         } else {
           cancelAnimationFrame(reqNum);
-          userStateRef.current = new Idle();
 
           const final_x = range_metres * conversionRateX + positionAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT)[0];
           const final_y = GROUND_LEVEL_SCALAR * canvas.height;
+
+          timeRef.current = tf
+          xDisRef.current = range_metres;
+          yDisRef.current = 0;
+          yVelRef.current = finalVerticalVelocity(initial_v_y, tf)
+
+          setStateChangeTrigger(x => x ^ 1)
+          userStateRef.current = new Idle();
+
           if (ctx) {
             drawCircle(ctx, final_x, final_y, 5, "red", "black");
           }
-          setStateChangeTrigger(x => x ^ 1)
+
+          
           return;
         }
       }
@@ -118,7 +155,7 @@ function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElem
 
   const u_y = u * Math.sin(degreesToRadians(theta));
 
-  const t = quadraticFormula(1/2 * 9.8, -u_y, -verticalDisplacement);
+  const t = quadraticFormula(1/2 * GRAV_ACCEL, -u_y, -verticalDisplacement);
   return t;
 }
 
@@ -131,6 +168,10 @@ function range(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, co
   const u_x = u * Math.cos(degreesToRadians(theta));
 
   return u_x * tf;
+}
+
+function finalVerticalVelocity(initialVerticalVel: number, tf: number) {
+  return initialVerticalVel - GRAV_ACCEL * tf
 }
 
 ////////////////////////////////////////////////////////////////////////////////

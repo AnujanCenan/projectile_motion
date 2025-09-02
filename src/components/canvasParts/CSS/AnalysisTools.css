@@ -1,0 +1,25 @@
+.AnalysisToolsContainer {
+
+    width: 20%;
+    position: absolute;
+    top: 35%;
+    right: 0;
+    background: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 1%;
+    border-radius: 8px;
+    border: black 4px solid;
+    overflow-wrap: break-word;
+    padding-bottom: 10px;
+
+}
+
+.AnalysisToolsContainer > h1 {
+    text-align: center;
+    font-size: calc(0.8vh + 1.0vw);
+}
+
+.AnalysisToolsContainer > div {
+    font-size: calc(0.4vh + 0.7vw);
+}
