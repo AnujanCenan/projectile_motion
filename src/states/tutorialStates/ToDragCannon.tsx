@@ -25,7 +25,7 @@ export class ToDragCannon extends TutorialActionState {
   public completedTaskHelper(): boolean {
     return (
       this.getUserState().current instanceof DraggingCannon && 
-      this.getGameState().current[0] >= 50.5
+      this.getGameState().current.angle >= 50.5
     );
   }
 

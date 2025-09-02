@@ -33,7 +33,7 @@ export default function Tutorial({setProjectileMotionPage}: TutorialProps) {
   // const userStateRef = useRef<UserState>("loading")
   const userGameActionRef = useRef<UserGameAction>(new LoadingImages());
 
-  const gameStateRef = useRef<GameState>([0, 0, GROUND_LEVEL_SCALAR, 0]);
+  const gameStateRef = useRef<GameState>({angle: 0, velocity: 0, yPosScalar: GROUND_LEVEL_SCALAR, xScroll: 0});
   const [stateChangeTrigger, setStateChangeTrigger] = useState(0);
 
   const [completedCurrDialogue, setCompletedCurrDialogue] = useState(false);

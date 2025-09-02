@@ -73,7 +73,7 @@ export function fireCannon(
           behavior: "instant"
         });
 
-        gameStateRef.current[3] = calculateScrollScalar(canvas)
+        gameStateRef.current.xScroll = calculateScrollScalar(canvas)
         
         if (ctx) {
           setStateChangeTrigger(x => x ^ 1);
@@ -111,10 +111,10 @@ export function fireCannon(
 
 function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, conversionRate: number) {
   
-  const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current[2]) * canvas.height) / conversionRate;
+  const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current.yPosScalar) * canvas.height) / conversionRate;
 
-  const u = gameStateRef.current[1];
-  const theta = gameStateRef.current[0];
+  const u = gameStateRef.current.velocity;
+  const theta = gameStateRef.current.angle;
 
   const u_y = u * Math.sin(degreesToRadians(theta));
 
@@ -126,8 +126,8 @@ function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElem
 function range(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, conversionRate: number) {
   const tf = timeOfFlight(gameStateRef, canvas, conversionRate);
   
-  const u = gameStateRef.current[1];
-  const theta = gameStateRef.current[0];
+  const u = gameStateRef.current.velocity;
+  const theta = gameStateRef.current.angle;
   const u_x = u * Math.cos(degreesToRadians(theta));
 
   return u_x * tf;

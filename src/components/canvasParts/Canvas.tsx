@@ -74,7 +74,7 @@ export default function Canvas({
 
   // const yScalarRef = useRef(GROUND_LEVEL_SCALAR);
 
-  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, gameStateRef.current[2]] as number[])
+  const [USER_ANCHOR_POINT, setUserAnchorPoint] = useState([CANNON_HORIZONTAL_SCALAR, gameStateRef.current.yPosScalar] as number[])
 
   
   const { width, height } = useWindowSize();
@@ -126,7 +126,7 @@ export default function Canvas({
 
   // Game State Ref Height Update 
   useEffect(() => {
-    gameStateRef.current[2] = USER_ANCHOR_POINT[1];
+    gameStateRef.current.yPosScalar = USER_ANCHOR_POINT[1];
   }, [USER_ANCHOR_POINT]);
 
   // Restarting listener 
@@ -229,13 +229,13 @@ export default function Canvas({
   // Refreshing Canvas On Input
   useEffect(() => {
     if (canvasRef.current && canvasRef.current.parentElement) {
+      gameStateRef.current = {
+        angle: elevationAngle, 
+        velocity: launchVelocity, 
+        yPosScalar: USER_ANCHOR_POINT[1], 
+        xScroll: calculateScrollScalar(canvasRef.current)
+      }
 
-      gameStateRef.current = [
-        elevationAngle, 
-        launchVelocity, 
-        USER_ANCHOR_POINT[1], 
-        calculateScrollScalar(canvasRef.current)
-      ]
       setStateChangeTrigger(x => x ^ 1);
     }
   }, [elevationAngle, launchVelocity, USER_ANCHOR_POINT])
@@ -259,7 +259,7 @@ export default function Canvas({
     
     drawingInterfaceRef.current?.drawEnvironment(
       GROUND_LEVEL_SCALAR, 
-      [USER_ANCHOR_POINT[0], gameStateRef.current[2]],
+      [USER_ANCHOR_POINT[0], gameStateRef.current.yPosScalar],
       MAX_SPEED,
       launchVelocity,
       elevationAngle,
@@ -309,9 +309,12 @@ export default function Canvas({
       <div id="container" onScroll={() => {
         if (canvasRef.current && !(userStateRef.current instanceof Firing)) {
           userStateRef.current = new Scrolling();
-          gameStateRef.current = [
-            elevationAngle, launchVelocity, USER_ANCHOR_POINT[1], calculateScrollScalar(canvasRef.current)
-          ]
+          gameStateRef.current = {
+            angle: elevationAngle, 
+            velocity: launchVelocity,
+            yPosScalar: USER_ANCHOR_POINT[1], 
+            xScroll: calculateScrollScalar(canvasRef.current)
+          }
           setStateChangeTrigger(x => x ^ 1);
         }
       }}>

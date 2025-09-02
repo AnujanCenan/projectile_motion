@@ -21,7 +21,6 @@ export class ToPanToTarget extends TutorialActionState {
   }
 
   public completedTaskHelper(): boolean {
-    console.log(this.getGameState().current[3])
-    return  this.getGameState().current[3] >= 0.9;
+    return  this.getGameState().current.xScroll >= 0.9;
   }
 }
