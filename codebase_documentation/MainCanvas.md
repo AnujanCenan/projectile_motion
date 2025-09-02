@@ -21,7 +21,7 @@ Initially, we begin by defining some key constants, state variables and referenc
 
 - **CANNON_HORIZONTAL_SCALAR**: set to a value $0 < c < 1$ which, given a window screen $w$, will position the cannon's launch point at an x-coordinate of $w c$. By experiemntation, for a landscape view, $c = 0.5$ and for a portrait view, $c = 0.8$.
 
-- **USER_ANCHOR_POINT**: a number array of size 2. At index 0, we store CANNON_HORIZONTAL_SCALAR. At index 1, we store the value $y$ such that given a window height $h$, the y-coordinate of the cannon's launch point is $hy$. Note that this value is stored in **gameStateRef.current[2]**.
+- **USER_ANCHOR_POINT**: a number array of size 2. At index 0, we store CANNON_HORIZONTAL_SCALAR. At index 1, we store the value $y$ such that given a window height $h$, the y-coordinate of the cannon's launch point is $hy$. Note that this value is stored in **gameStateRef.current.yPosScalar**.
 
 - **width** and **height**: Uses a defined hook to determine the current window width and height - dynamically changes as the window is resized.
 
