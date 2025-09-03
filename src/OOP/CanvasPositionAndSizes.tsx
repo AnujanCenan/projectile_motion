@@ -206,13 +206,7 @@ export class CanvasPositionAndSizes {
   getGrowthFactorTarget() {
     return 0.25 * window.devicePixelRatio;
   }
-  
-  /// CONVERSION RATE - ratio of pixels to corresponding metres
-  // calculateConversionRate(pivot_x_scalar: number) {
-  //   const availableSpace = (this.#canvas.width - this.getPivotX(pivot_x_scalar)) * 9/10;
-  //   const conversionRate = availableSpace / this.#MAX_HORIZONTAL_RANGE;
-  //   return conversionRate  
-  // }
+
   calculateConversionRateXDirection(USER_ANCHOR_POINT: number[]) {
     return this.#conversionRateStrategy.calculateConversionRateXDirection(this, USER_ANCHOR_POINT); 
   }

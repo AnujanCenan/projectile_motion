@@ -13,7 +13,7 @@ export class DragHeightArrowInstructions extends TutorialDialogueState {
       name="General Paddy"
       speeches={[
         "Finally, to change the height of your cannon, you can drag the height arrow up and down",
-        "Move the cannon at least a quarter of a way up"
+        "Move the cannon off the ground"
       ]}
       expressions={[
         GeneralPaddy_neutral,

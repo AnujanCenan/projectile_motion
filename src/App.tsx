@@ -8,7 +8,6 @@ function App() {
 
   useEffect(() => {
     setProjectileMotionPage(_ => <Tutorial setProjectileMotionPage={setProjectileMotionPage}/>)
-    // setProjectileMotionPage(_ => <CompletedMission setProjectileMotionPage={setProjectileMotionPage}/>);
   }, [])
 
   return projectileMotionPage

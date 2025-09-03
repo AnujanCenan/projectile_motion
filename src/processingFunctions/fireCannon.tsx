@@ -95,7 +95,7 @@ export function fireCannon(
         
 
         (canvas.parentNode as HTMLDivElement).scrollTo({
-          top: 0,
+          top: y / window.devicePixelRatio - 10,
           left: (x) / window.devicePixelRatio - width / 2,
           behavior: "instant"
         });
@@ -147,7 +147,7 @@ export function fireCannon(
 
 
 function timeOfFlight(gameStateRef: RefObject<GameState>, canvas: HTMLCanvasElement, conversionRate: number) {
-  
+  // assumes time of flight is when the projectile hits the ground
   const verticalDisplacement = ((GROUND_LEVEL_SCALAR - gameStateRef.current.yPosScalar) * canvas.height) / conversionRate;
 
   const u = gameStateRef.current.velocity;
