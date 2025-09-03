@@ -1,3 +1,4 @@
+import { GROUND_LEVEL_SCALAR } from "../../globalConstants/groundLevelScalar";
 import { DraggingHeightArrow } from "../userGameActions/DraggingHeightArrow";
 import { DraggedHeightArrow } from "./DraggedHeightArrow";
 import { TutorialActionState } from "./TutorialActionState";
@@ -5,7 +6,7 @@ import { TutorialState } from "./TutorialState";
 
 export class ToDragHeightArrow extends TutorialActionState {
   getObjectives(): string[] {
-    return ["Drag height arrow a quarter of the way up"]
+    return ["Drag height arrow off the ground"]
   }
   public completeDialogue(): TutorialState {
     return this;
@@ -21,7 +22,7 @@ export class ToDragHeightArrow extends TutorialActionState {
   public completedTaskHelper() {
     return (
       this.getUserState().current instanceof DraggingHeightArrow && 
-      this.getGameState().current.yPosScalar <= 0.625
+      this.getGameState().current.yPosScalar <= GROUND_LEVEL_SCALAR - 0.03
     );
   }
 }
