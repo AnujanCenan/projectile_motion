@@ -40,9 +40,10 @@ export class CanvasMouseDown {
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const cannonInfo = this.#positionsAndSizesInterface.getCannonInfo();
     const container = canvas.parentNode as HTMLDivElement; 
-    const horizScroll = container.scrollLeft
+    const horizScroll = container.scrollLeft;
+    const vertScroll = container.scrollTop;
     const didClick = clickedOnCannon(
-      e.pageX + horizScroll, e.pageY,
+      e.pageX + horizScroll, e.pageY + vertScroll,
       cannonInfo,
       this.#positionsAndSizesInterface.getGrowthFactorCannon(),
       this.#positionsAndSizesInterface.getPivotPosition(USER_ANCHOR_POINT),
@@ -62,10 +63,12 @@ export class CanvasMouseDown {
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
+    const vertScroll = container.scrollTop;;
     const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
+
     const didClick = clickedOnVelocitySlider(
       e.pageX + horizScroll, 
-      e.pageY, 
+      e.pageY + vertScroll, 
       launchVelocity, 
       velocitySliderInfo.pixel_width, 
       velocitySliderInfo.pixel_height, 
@@ -86,10 +89,11 @@ export class CanvasMouseDown {
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement; 
     const horizScroll = container.scrollLeft
+    const vertScroll = container.scrollTop;
     if (this.#positionsAndSizesInterface) {
       const didClick = clickedOnHeightArrow(
         e.pageX + horizScroll,
-        e.pageY,
+        e.pageY + vertScroll,
         this.#positionsAndSizesInterface.getHeightArrowPosition(USER_ANCHOR_POINT),
         this.#positionsAndSizesInterface.getGrowthFactorHeight(USER_ANCHOR_POINT),
       )
@@ -120,7 +124,9 @@ export class CanvasMouseDown {
     this.#heightArrowCheck(e, USER_ANCHOR_POINT);
 
     const horizScroll = (canvas.parentNode as HTMLDivElement).scrollLeft
+    const vertScroll = (canvas.parentNode as HTMLDivElement).scrollTop
+
     this.#click_x.current = e.pageX + horizScroll;
-    this.#click_y.current = e.pageY;
+    this.#click_y.current = e.pageY + vertScroll;
   }
 }

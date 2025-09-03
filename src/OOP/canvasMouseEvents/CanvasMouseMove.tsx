@@ -50,10 +50,11 @@ export class CanvasMouseMove {
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement;
     const horizScroll = container.scrollLeft
+    const vertScroll = container.scrollTop;
 
     const angularDisplacement = calculateAngularDisplacement(
       e.pageX + horizScroll, 
-      e.pageY, 
+      e.pageY + vertScroll, 
       this.#click_x.current, 
       this.#click_y.current, 
       this.#clickedBehindPivot.current,
@@ -62,7 +63,7 @@ export class CanvasMouseMove {
     );
 
     this.#click_x.current = e.pageX + horizScroll;
-    this.#click_y.current = e.pageY;
+    this.#click_y.current = e.pageY + vertScroll;
 
     if (elevationAngle + angularDisplacement > 90) {
       setElevationAngle(90)
@@ -87,9 +88,10 @@ export class CanvasMouseMove {
       const canvas = this.#positionsAndSizesInterface.getCanvas();
       const container = canvas.parentNode as HTMLDivElement;
       const horizScroll = container.scrollLeft
-
+      const vertScroll = container.scrollTop;
+      
       const mouse_x = e.pageX + horizScroll;
-      const mouse_y = e.pageY;
+      const mouse_y = e.pageY + vertScroll;
 
       const velocitySliderInfo = this.#positionsAndSizesInterface.getVelocitySliderInfo();
       const xDisplacement = (mouse_x  - this.#click_x.current) * window.devicePixelRatio;
@@ -121,16 +123,18 @@ export class CanvasMouseMove {
 
     const canvas = this.#positionsAndSizesInterface.getCanvas();
     const container = canvas.parentNode as HTMLDivElement;
-    const horizScroll = container.scrollLeft
+    const horizScroll = container.scrollLeft;
+    const vertScroll = container.scrollTop;
     
     const mouse_x = e.pageX + horizScroll;
-    const mouse_y = e.pageY;
+    const mouse_y = e.pageY + vertScroll;
 
     const yDisplacement = (mouse_y - this.#click_y.current) * window.devicePixelRatio;
     
     this.#click_x.current = mouse_x;
     this.#click_y.current = mouse_y;
     const topScalar = this.#positionsAndSizesInterface.calculateTopScalar(USER_ANCHOR_POINT);
+    console.log(`TOP SCALAR = ${topScalar}`);
     if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement < topScalar * canvas.height) {
       setUserAnchorPoint([CANNON_HORIZONTAL_SCALAR, topScalar]);
     } else if (USER_ANCHOR_POINT[1] * canvas.height + yDisplacement > GROUND_LEVEL_SCALAR * canvas.height) {
