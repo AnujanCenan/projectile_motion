@@ -242,7 +242,7 @@ export default function Canvas({
         angle: elevationAngle, 
         velocity: launchVelocity, 
         yPosScalar: USER_ANCHOR_POINT[1], 
-        xScroll: calculateScrollScalar(canvasRef.current)
+        xScroll: calculateScrollScalar(canvasRef.current),
       }
 
       setStateChangeTrigger(x => x ^ 1);
@@ -276,6 +276,14 @@ export default function Canvas({
       target_altitude,
     )
   }
+
+  // Scroll to show bottom of the canvas
+  useEffect(() => {
+    if (canvasRef.current) {
+      const parent = canvasRef.current.parentElement as HTMLDivElement;
+      parent.scrollTop = parent.scrollHeight;
+    }
+  }, [])
 
   //////////////////////// Mouse Event Listeners ////////////////////////
 
@@ -322,7 +330,7 @@ export default function Canvas({
             angle: elevationAngle, 
             velocity: launchVelocity,
             yPosScalar: USER_ANCHOR_POINT[1], 
-            xScroll: calculateScrollScalar(canvasRef.current)
+            xScroll: calculateScrollScalar(canvasRef.current),
           }
           setStateChangeTrigger(x => x ^ 1);
         }
